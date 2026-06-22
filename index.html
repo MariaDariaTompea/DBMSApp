@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Database Management Course Recap - Babes-Bolyai University">
+    <title>Database Management | Babeș-Bolyai University</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Sakura Petals Canvas -->
+    <canvas id="sakura-canvas"></canvas>
+
+    <!-- Floating Tech Particles -->
+    <div class="tech-particles" id="tech-particles"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-logo" id="nav-home">
+            <div class="logo-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <ellipse cx="12" cy="5" rx="9" ry="3"/>
+                    <path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/>
+                    <path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"/>
+                </svg>
+            </div>
+            <span class="logo-text">DB<span class="logo-accent">Mgmt</span></span>
+        </div>
+        <div class="nav-menu">
+            <a href="#" class="nav-link active" data-menu="manual" id="nav-manual">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
+                    <line x1="8" y1="7" x2="16" y2="7"/>
+                    <line x1="8" y1="11" x2="14" y2="11"/>
+                </svg>
+                <span>MANUAL</span>
+            </a>
+            <a href="#" class="nav-link" data-menu="building" id="nav-building">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="6" width="20" height="12" rx="2"/>
+                    <path d="M12 18v3"/>
+                    <path d="M8 21h8"/>
+                    <path d="M6 10h.01"/>
+                    <path d="M10 10h.01"/>
+                    <path d="M14 10h.01"/>
+                    <path d="M18 10h.01"/>
+                    <path d="M6 14h12"/>
+                </svg>
+                <span>BUILDING</span>
+            </a>
+        </div>
+        <div class="nav-sakura-badge">
+            <span class="sakura-icon">🌸</span>
+        </div>
+    </nav>
+
+    <!-- ==================== INTRO HERO ==================== -->
+    <main class="hero" id="intro-section">
+        <!-- Decorative floating elements -->
+        <div class="floating-icons">
+            <div class="float-icon icon-1">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"/></svg>
+            </div>
+            <div class="float-icon icon-2">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            </div>
+            <div class="float-icon icon-3">
+                <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M6 8h.01"/><path d="M10 8h.01"/><path d="M14 8h.01"/><path d="M18 8h.01"/><path d="M8 16h8"/></svg>
+            </div>
+            <div class="float-icon icon-4">
+                <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/><line x1="14" y1="4" x2="10" y2="20"/></svg>
+            </div>
+            <div class="float-icon icon-5">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+            </div>
+            <div class="float-icon icon-6">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/></svg>
+            </div>
+        </div>
+
+        <div class="hero-content">
+            <div class="badge">
+                <span class="badge-dot"></span>
+                <span>Course Recap 2025</span>
+            </div>
+            <h1 class="hero-title">
+                <span class="title-line-1">
+                    <span class="word" style="--delay: 0.1s">Data</span>
+                    <span class="word" style="--delay: 0.2s">Base</span>
+                    <span class="word highlight" style="--delay: 0.35s">MANAGEMENT</span>
+                </span>
+                <span class="title-line-2">
+                    <span class="word" style="--delay: 0.5s">Babeș-Bolyai</span>
+                    <span class="word" style="--delay: 0.65s">University</span>
+                </span>
+            </h1>
+            <p class="hero-subtitle">A comprehensive recap of database concepts, SQL queries, normalization, and modern data management techniques.</p>
+            <div class="hero-actions">
+                <a href="#" class="btn btn-primary" id="btn-manual">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
+                    <span>Open Manual</span>
+                </a>
+                <a href="#" class="btn btn-secondary" id="btn-building">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M12 18v3"/><path d="M8 21h8"/></svg>
+                    <span>Start Building</span>
+                </a>
+            </div>
+            <div class="stats-row">
+                <div class="stat-item">
+                    <div class="stat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+                    <div class="stat-text"><span class="stat-number">SQL</span><span class="stat-label">Queries</span></div>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <div class="stat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+                    <div class="stat-text"><span class="stat-number">Normal</span><span class="stat-label">Forms</span></div>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <div class="stat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"/></svg></div>
+                    <div class="stat-text"><span class="stat-number">DBMS</span><span class="stat-label">Design</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="hero-decoration">
+            <div class="deco-ring ring-1"></div>
+            <div class="deco-ring ring-2"></div>
+            <div class="deco-ring ring-3"></div>
+            <div class="sakura-branch">🌸</div>
+        </div>
+    </main>
+
+    <!-- ==================== BOOK OVERLAY ==================== -->
+    <div class="book-overlay" id="book-overlay">
+        <div class="book-scene">
+            <div class="book" id="book">
+                <!-- Book Cover (front) -->
+                <div class="book-cover book-cover-front" id="book-cover-front">
+                    <div class="cover-inner">
+                        <div class="cover-ornament top-left">🌸</div>
+                        <div class="cover-ornament top-right">🌸</div>
+                        <div class="cover-ornament bottom-left">🌸</div>
+                        <div class="cover-ornament bottom-right">🌸</div>
+                        <div class="cover-spine-line"></div>
+                        <div class="cover-content">
+                            <div class="cover-label" id="book-label">MANUAL</div>
+                            <div class="cover-title" id="book-title">Database<br>Management</div>
+                            <div class="cover-divider"></div>
+                            <div class="cover-subtitle" id="book-subtitle">Babeș-Bolyai University</div>
+                            <div class="cover-icon">
+                                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"/></svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Book Pages (visible when open) -->
+                <div class="book-pages" id="book-pages">
+                    <div class="book-page-bg"></div>
+                    <div class="page-content" id="page-content">
+                        <!-- Filled dynamically -->
+                    </div>
+                </div>
+
+                <!-- Book Cover (back / spine visual) -->
+                <div class="book-cover book-cover-back"></div>
+            </div>
+        </div>
+        <button class="book-close-btn" id="book-close-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+    </div>
+
+    <!-- ==================== CONTENT PAGE (Empty Placeholder) ==================== -->
+    <div class="content-page" id="content-page">
+        <div class="content-page-inner">
+            <button class="back-btn" id="back-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                <span>Back to Book</span>
+            </button>
+            <div class="content-placeholder">
+                <div class="placeholder-icon" id="placeholder-icon">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+                </div>
+                <h2 class="placeholder-title" id="placeholder-title">Chapter Title</h2>
+                <p class="placeholder-desc">This section is under construction. Content coming soon! 🌸</p>
+                <div class="placeholder-dots">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== FADE TRANSITION ==================== -->
+    <div class="fade-overlay" id="fade-overlay"></div>
+
+    <!-- Footer / Credits -->
+    <footer class="credits-footer" id="credits-footer">
+        <div class="credits-content">
+            <div class="credits-left">
+                <span class="credits-sakura">🌸</span>
+                <span class="credits-text">Crafted with care</span>
+            </div>
+            <div class="credits-center">
+                <span class="credits-label">Credits</span>
+                <span class="credits-name">Tompea Maria-Daria</span>
+            </div>
+            <div class="credits-right">
+                <span class="credits-uni">Babeș-Bolyai University</span>
+                <span class="credits-year">2025</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
