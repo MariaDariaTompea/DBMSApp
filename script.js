@@ -100,9 +100,9 @@ const LESSON_PAGES = {
         `<div class="page-chapter-label">Chapter 1 — Numeric Types</div>
          <h2>Numbers in SQL</h2>
          <hr class="page-divider">
-         <h3><span class="h3-icon">#</span> Integer Types</h3>
+         <h3 class="h3-tip-trigger"><span class="h3-icon">#</span> Integer Types<span class="h3-tooltip"><span class="h3-tooltip-badge">Analyst Tip</span><span class="h3-tooltip-text">You will probably use <strong>INT</strong> values for basic projects (like keys or counters), but as a data analyst, you will mostly work with fractional types like <strong>FLOAT</strong>, <strong>REAL</strong>, or <strong>DECIMAL</strong> for calculations and metrics, alongside <strong>DATETIME</strong> for time-series trends.</span></h3>
          <p>Integers store whole numbers. The main difference between them is the <strong>range of values</strong> they can hold:</p>
-         <table class="compare-table">
+         <table class="compare-table" data-table-id="ch1-integers">
             <tr><th>Type</th><th>Size</th><th>Range</th><th>Use Case</th></tr>
             <tr><td><code>TINYINT</code></td><td>1 byte</td><td>0 to 255</td><td>Age, status flags</td></tr>
             <tr><td><code>SMALLINT</code></td><td>2 bytes</td><td>−32,768 to 32,767</td><td>Year, small counters</td></tr>
@@ -110,7 +110,7 @@ const LESSON_PAGES = {
             <tr><td><code>BIGINT</code></td><td>8 bytes</td><td>±9.2 quintillion</td><td>Large counters, timestamps</td></tr>
          </table>
          <h3><span class="h3-icon">%</span> Decimal / Floating Types</h3>
-         <table class="compare-table">
+         <table class="compare-table" data-table-id="ch1-decimals">
             <tr><th>Type</th><th>Precision</th><th>Use Case</th></tr>
             <tr><td><code>FLOAT</code></td><td>~7 digits</td><td>Scientific data (approximate)</td></tr>
             <tr><td><code>REAL</code></td><td>~15 digits</td><td>More precise floats</td></tr>
@@ -168,7 +168,7 @@ const LESSON_PAGES = {
 );</code></div>
 
          <h3><span class="h3-icon">::</span> Date & Time Types</h3>
-         <table class="compare-table">
+         <table class="compare-table" data-table-id="ch1-datetime">
             <tr><th>Type</th><th>Format</th><th>Example</th><th>Use Case</th></tr>
             <tr><td><code>DATE</code></td><td>YYYY-MM-DD</td><td>2025-06-22</td><td>Birthdays, deadlines</td></tr>
             <tr><td><code>TIME</code></td><td>HH:MM:SS</td><td>14:30:00</td><td>Schedules, shifts</td></tr>
@@ -185,7 +185,7 @@ const LESSON_PAGES = {
          <h2>Quick Reference Card</h2>
          <hr class="page-divider">
          <p>Here's a cheat sheet of the most important data types you'll use throughout the course:</p>
-         <table class="compare-table">
+         <table class="compare-table" data-table-id="ch1-reference">
             <tr><th>Type</th><th>Category</th><th>When to Use</th></tr>
             <tr><td><code>INT</code></td><td>Numeric</td><td>IDs, counts, quantities — your default integer</td></tr>
             <tr><td><code>DECIMAL(p,s)</code></td><td>Numeric</td><td>Money, prices — when you need exact precision</td></tr>
@@ -208,7 +208,7 @@ const LESSON_PAGES = {
          <p>The <code>CREATE TABLE</code> statement defines the structure: column names, data types, and constraints.</p>
          <div class="diagram-box">
             <div class="diagram-title">Anatomy of a Table</div>
-            <table class="compare-table" style="margin:0">
+            <table class="compare-table" style="margin:0" data-table-id="ch2-anatomy">
                 <tr><th>StudentID</th><th>Name</th><th>Email</th><th>Age</th><th>Active</th></tr>
                 <tr><td>1</td><td>Maria</td><td>maria@ubb.ro</td><td>21</td><td>✓</td></tr>
                 <tr><td>2</td><td>Andrei</td><td>andrei@ubb.ro</td><td>22</td><td>✓</td></tr>
@@ -243,7 +243,7 @@ const LESSON_PAGES = {
          <h2>Column Constraints</h2>
          <hr class="page-divider">
          <p>Constraints enforce <strong>rules</strong> on the data to maintain integrity:</p>
-         <table class="compare-table">
+         <table class="compare-table" data-table-id="ch2-constraints">
             <tr><th>Constraint</th><th>Meaning</th><th>Example</th></tr>
             <tr><td><code>PRIMARY KEY</code></td><td>Unique identifier for each row</td><td>StudentID</td></tr>
             <tr><td><code>NOT NULL</code></td><td>Column cannot be empty</td><td>FirstName</td></tr>
@@ -351,7 +351,7 @@ const LESSON_PAGES = {
     <span class="sql-kw">FOREIGN KEY</span> (DeptID) <span class="sql-kw">REFERENCES</span> Departments(DeptID)
 );</code></div>
          <h3><span class="h3-icon">FK</span> What Foreign Keys Enforce</h3>
-         <table class="compare-table">
+         <table class="compare-table" data-table-id="ch3-fk-rules">
             <tr><th>Rule</th><th>Meaning</th></tr>
             <tr><td>Referential Integrity</td><td>You can't insert a DeptID that doesn't exist in the Departments table</td></tr>
             <tr><td>Cascade Delete</td><td>Optionally delete child rows when parent is deleted</td></tr>
@@ -367,7 +367,7 @@ const LESSON_PAGES = {
          <h2>Parent vs Child Tables</h2>
          <hr class="page-divider">
          <p>When two tables are linked by a Foreign Key, one is the <strong>parent</strong> and the other is the <strong>child</strong>.</p>
-         <table class="compare-table">
+         <table class="compare-table" data-table-id="ch3-parent-child">
             <tr><th>Aspect</th><th>Parent Table</th><th>Child Table</th></tr>
             <tr><td>Has the…</td><td>Primary Key (referenced)</td><td>Foreign Key (references PK)</td></tr>
             <tr><td>Created…</td><td>First (before child)</td><td>After parent exists</td></tr>
@@ -395,6 +395,249 @@ const LESSON_PAGES = {
          <p style="text-align:center;margin-top:12px;color:#a8346e;font-weight:600;">Remember: The table with the Foreign Key is always the <em>child!</em></p>`
     ]
 };
+
+
+/* ==========================================================
+   TABLE TRANSLATIONS (English & Japanese)
+   ========================================================== */
+const TABLE_TRANSLATIONS = {
+    'ch1-integers': {
+        en: `
+            <tr><th>Type</th><th>Size</th><th>Range</th><th>Use Case</th></tr>
+            <tr><td><code>TINYINT</code></td><td>1 byte</td><td>0 to 255</td><td>Age, status flags</td></tr>
+            <tr><td><code>SMALLINT</code></td><td>2 bytes</td><td>−32,768 to 32,767</td><td>Year, small counters</td></tr>
+            <tr><td><code>INT</code></td><td>4 bytes</td><td>−2.1B to 2.1B</td><td>IDs, quantities (most used)</td></tr>
+            <tr><td><code>BIGINT</code></td><td>8 bytes</td><td>±9.2 quintillion</td><td>Large counters, timestamps</td></tr>
+        `,
+        jp: `
+            <tr><th>データ型</th><th>サイズ</th><th>範囲</th><th>主な用途</th></tr>
+            <tr><td><code>TINYINT</code></td><td>1バイト</td><td>0 から 255</td><td>年齢、ステータスフラグ</td></tr>
+            <tr><td><code>SMALLINT</code></td><td>2バイト</td><td>−32,768 から 32,767</td><td>年、小さなカウンタ</td></tr>
+            <tr><td><code>INT</code></td><td>4バイト</td><td>−21億 から 21億</td><td>ID、数量（最も使用される）</td></tr>
+            <tr><td><code>BIGINT</code></td><td>8バイト</td><td>±9.2京</td><td>巨大なカウンタ、タイムスタンプ</td></tr>
+        `
+    },
+    'ch1-decimals': {
+        en: `
+            <tr><th>Type</th><th>Precision</th><th>Use Case</th></tr>
+            <tr><td><code>FLOAT</code></td><td>~7 digits</td><td>Scientific data (approximate)</td></tr>
+            <tr><td><code>REAL</code></td><td>~15 digits</td><td>More precise floats</td></tr>
+            <tr><td><code>DECIMAL(p,s)</code></td><td>Exact</td><td>Money, financial data (most used)</td></tr>
+        `,
+        jp: `
+            <tr><th>データ型</th><th>精度</th><th>主な用途</th></tr>
+            <tr><td><code>FLOAT</code></td><td>約7桁</td><td>科学データ（近似値）</td></tr>
+            <tr><td><code>REAL</code></td><td>約15桁</td><td>より高精度な浮動小数点数</td></tr>
+            <tr><td><code>DECIMAL(p,s)</code></td><td>厳密（正確）</td><td>金額、財務データ（最も使用される）</td></tr>
+        `
+    },
+    'ch1-datetime': {
+        en: `
+            <tr><th>Type</th><th>Format</th><th>Example</th><th>Use Case</th></tr>
+            <tr><td><code>DATE</code></td><td>YYYY-MM-DD</td><td>2025-06-22</td><td>Birthdays, deadlines</td></tr>
+            <tr><td><code>TIME</code></td><td>HH:MM:SS</td><td>14:30:00</td><td>Schedules, shifts</td></tr>
+            <tr><td><code>DATETIME</code></td><td>YYYY-MM-DD HH:MM:SS</td><td>2025-06-22 14:30:00</td><td>Created/Updated timestamps (most used)</td></tr>
+            <tr><td><code>TIMESTAMP</code></td><td>Auto UTC</td><td>Auto-generated</td><td>Change tracking</td></tr>
+        `,
+        jp: `
+            <tr><th>データ型</th><th>フォーマット</th><th>例</th><th>主な用途</th></tr>
+            <tr><td><code>DATE</code></td><td>YYYY-MM-DD</td><td>2025-06-22</td><td>誕生日、締め切り</td></tr>
+            <tr><td><code>TIME</code></td><td>HH:MM:SS</td><td>14:30:00</td><td>スケジュール、シフト勤務</td></tr>
+            <tr><td><code>DATETIME</code></td><td>YYYY-MM-DD HH:MM:SS</td><td>2025-06-22 14:30:00</td><td>作成/更新時のタイムスタンプ（最も使用される）</td></tr>
+            <tr><td><code>TIMESTAMP</code></td><td>自動 UTC</td><td>自動生成</td><td>変更履歴の追跡</td></tr>
+        `
+    },
+    'ch1-reference': {
+        en: `
+            <tr><th>Type</th><th>Category</th><th>When to Use</th></tr>
+            <tr><td><code>INT</code></td><td>Numeric</td><td>IDs, counts, quantities — your default integer</td></tr>
+            <tr><td><code>DECIMAL(p,s)</code></td><td>Numeric</td><td>Money, prices — when you need exact precision</td></tr>
+            <tr><td><code>VARCHAR(n)</code></td><td>Text</td><td>Names, emails, addresses — most common text type</td></tr>
+            <tr><td><code>CHAR(n)</code></td><td>Text</td><td>Fixed codes — country codes, status codes</td></tr>
+            <tr><td><code>TEXT</code></td><td>Text</td><td>Long content — descriptions, articles, notes</td></tr>
+            <tr><td><code>BIT</code></td><td>Boolean</td><td>True/false flags — is_active, is_verified</td></tr>
+            <tr><td><code>DATE</code></td><td>Temporal</td><td>Calendar dates — birthdays, deadlines</td></tr>
+            <tr><td><code>DATETIME</code></td><td>Temporal</td><td>Precise timestamps — created_at, updated_at</td></tr>
+        `,
+        jp: `
+            <tr><th>データ型</th><th>カテゴリ</th><th>使用するタイミング</th></tr>
+            <tr><td><code>INT</code></td><td>数値型</td><td>ID、カウント、数量 — 標準的な整数</td></tr>
+            <tr><td><code>DECIMAL(p,s)</code></td><td>数値型</td><td>金額、価格 — 厳密な精度が必要な場合</td></tr>
+            <tr><td><code>VARCHAR(n)</code></td><td>文字列型</td><td>名前、メールアドレス、住所 — 最も一般的な文字列</td></tr>
+            <tr><td><code>CHAR(n)</code></td><td>文字列型</td><td>固定長のコード — 国名コード、ステータスコード</td></tr>
+            <tr><td><code>TEXT</code></td><td>文字列型</td><td>長いコンテンツ — 説明文、記事、メモ</td></tr>
+            <tr><td><code>BIT</code></td><td>真偽値型</td><td>True/Falseフラグ — 有効状態（is_active）、認証済（is_verified）</td></tr>
+            <tr><td><code>DATE</code></td><td>日付/時間型</td><td>カレンダーの日付 — 誕生日、締め切り</td></tr>
+            <tr><td><code>DATETIME</code></td><td>日付/時間型</td><td>正確なタイムスタンプ — 作成日時（created_at）、更新日時（updated_at）</td></tr>
+        `
+    },
+    'ch2-anatomy': {
+        en: `
+            <tr><th>StudentID</th><th>Name</th><th>Email</th><th>Age</th><th>Active</th></tr>
+            <tr><td>1</td><td>Maria</td><td>maria@ubb.ro</td><td>21</td><td>✓</td></tr>
+            <tr><td>2</td><td>Andrei</td><td>andrei@ubb.ro</td><td>22</td><td>✓</td></tr>
+            <tr><td>3</td><td>Elena</td><td>elena@ubb.ro</td><td>20</td><td>✗</td></tr>
+        `,
+        jp: `
+            <tr><th>学生ID</th><th>名前</th><th>メール</th><th>年齢</th><th>有効</th></tr>
+            <tr><td>1</td><td>マリア</td><td>maria@ubb.ro</td><td>21</td><td>✓</td></tr>
+            <tr><td>2</td><td>アンドレイ</td><td>andrei@ubb.ro</td><td>22</td><td>✓</td></tr>
+            <tr><td>3</td><td>エレナ</td><td>elena@ubb.ro</td><td>20</td><td>✗</td></tr>
+        `
+    },
+    'ch2-constraints': {
+        en: `
+            <tr><th>Constraint</th><th>Meaning</th><th>Example</th></tr>
+            <tr><td><code>PRIMARY KEY</code></td><td>Unique identifier for each row</td><td>StudentID</td></tr>
+            <tr><td><code>NOT NULL</code></td><td>Column cannot be empty</td><td>FirstName</td></tr>
+            <tr><td><code>UNIQUE</code></td><td>All values must be different</td><td>Email</td></tr>
+            <tr><td><code>DEFAULT</code></td><td>Automatic value if none given</td><td>IsActive = 1</td></tr>
+            <tr><td><code>CHECK</code></td><td>Value must satisfy a condition</td><td>Age > 0</td></tr>
+            <tr><td><code>FOREIGN KEY</code></td><td>Links to another table's PK</td><td>DeptID → Departments</td></tr>
+        `,
+        jp: `
+            <tr><th>制約</th><th>意味</th><th>例</th></tr>
+            <tr><td><code>PRIMARY KEY</code></td><td>各行を一意に識別するキー（主キー）</td><td>StudentID</td></tr>
+            <tr><td><code>NOT NULL</code></td><td>列を空（NULL）にできない</td><td>FirstName</td></tr>
+            <tr><td><code>UNIQUE</code></td><td>すべての値が一意である必要がある</td><td>Email</td></tr>
+            <tr><td><code>DEFAULT</code></td><td>値が指定されない場合の自動値</td><td>IsActive = 1</td></tr>
+            <tr><td><code>CHECK</code></td><td>値が条件を満たさなければならない</td><td>Age > 0</td></tr>
+            <tr><td><code>FOREIGN KEY</code></td><td>他のテーブルの主キーを参照（外部キー）</td><td>DeptID → Departments</td></tr>
+        `
+    },
+    'ch3-fk-rules': {
+        en: `
+            <tr><th>Rule</th><th>Meaning</th></tr>
+            <tr><td>Referential Integrity</td><td>You can't insert a DeptID that doesn't exist in the Departments table</td></tr>
+            <tr><td>Cascade Delete</td><td>Optionally delete child rows when parent is deleted</td></tr>
+            <tr><td>Cascade Update</td><td>Optionally update child FK when parent PK changes</td></tr>
+        `,
+        jp: `
+            <tr><th>ルール</th><th>意味</th></tr>
+            <tr><td>参照整合性</td><td>Departmentsに存在しないDeptIDの挿入は不可</td></tr>
+            <tr><td>カスケード削除</td><td>親行が削除された際に、連動して子行も自動削除</td></tr>
+            <tr><td>カスケード更新</td><td>親の主キー変更時に、連動して子の外部キーを自動更新</td></tr>
+        `
+    },
+    'ch3-parent-child': {
+        en: `
+            <tr><th>Aspect</th><th>Parent Table</th><th>Child Table</th></tr>
+            <tr><td>Has the…</td><td>Primary Key (referenced)</td><td>Foreign Key (references PK)</td></tr>
+            <tr><td>Created…</td><td>First (before child)</td><td>After parent exists</td></tr>
+            <tr><td>Deleted…</td><td>After children, or with CASCADE</td><td>Freely (doesn't break refs)</td></tr>
+            <tr><td>Example</td><td>Departments</td><td>Students (has DeptID FK)</td></tr>
+        `,
+        jp: `
+            <tr><th>特徴</th><th>親テーブル（Parent）</th><th>子テーブル（Child）</th></tr>
+            <tr><td>保持するキー</td><td>主キー（PRIMARY KEY - 参照先）</td><td>外部キー（FOREIGN KEY - 参照元）</td></tr>
+            <tr><td>作成順序</td><td>先（子テーブルより前）</td><td>後（親テーブルの存在後）</td></tr>
+            <tr><td>削除順序</td><td>子テーブルの後（又はCASCADE）</td><td>自由（参照を破損しない）</td></tr>
+            <tr><td>例</td><td>Departments</td><td>Students (DeptID 外部キーを保持)</td></tr>
+        `
+    }
+};
+
+function setupTableTranslations() {
+    const tables = lessonBook.querySelectorAll('table.compare-table');
+    tables.forEach((table, index) => {
+        const tableId = table.getAttribute('data-table-id') || `table-${index}`;
+        table.setAttribute('data-table-id', tableId);
+
+        // Avoid double wrapping
+        if (table.parentNode.classList.contains('compare-table-wrap')) return;
+
+        // Wrap the table in a wrapper
+        const wrapper = document.createElement('div');
+        wrapper.className = 'compare-table-wrap';
+        if (table.style.margin) {
+            wrapper.style.margin = table.style.margin;
+            table.style.margin = '';
+        }
+        table.parentNode.insertBefore(wrapper, table);
+        wrapper.appendChild(table);
+
+        // Create language badge
+        const badge = document.createElement('div');
+        badge.className = 'table-lang-badge';
+        badge.textContent = 'EN';
+        wrapper.appendChild(badge);
+
+        // Create timer ring
+        const timerRing = document.createElement('div');
+        timerRing.className = 'table-timer-ring';
+        timerRing.innerHTML = `<svg viewBox="0 0 22 22"><circle cx="11" cy="11" r="9"></circle></svg>`;
+        wrapper.appendChild(timerRing);
+
+        let hoverTimer = null;
+        let isTranslated = false;
+
+        wrapper.addEventListener('mouseenter', () => {
+            if (isTranslated) return;
+            table.classList.add('hover-active');
+            timerRing.classList.add('active');
+
+            hoverTimer = setTimeout(() => {
+                // Trigger translation flip
+                table.classList.add('translating');
+                
+                // Halfway through rotation (300ms)
+                setTimeout(() => {
+                    const translation = TABLE_TRANSLATIONS[tableId];
+                    if (translation && translation.jp) {
+                        table.innerHTML = translation.jp;
+                    }
+                    badge.textContent = 'JP';
+                    badge.classList.add('visible');
+                }, 300);
+
+                // After animation completes (600ms)
+                setTimeout(() => {
+                    table.classList.remove('translating');
+                    table.classList.add('translated');
+                    isTranslated = true;
+                }, 600);
+            }, 3000);
+        });
+
+        wrapper.addEventListener('mouseleave', () => {
+            if (hoverTimer) {
+                clearTimeout(hoverTimer);
+                hoverTimer = null;
+            }
+            timerRing.classList.remove('active');
+            table.classList.remove('hover-active');
+
+            // Reset the stroke-dashoffset transition immediately
+            const circle = timerRing.querySelector('circle');
+            if (circle) {
+                circle.style.transition = 'none';
+                circle.style.strokeDashoffset = '56.5';
+                // Trigger reflow
+                circle.getBoundingClientRect();
+                circle.style.transition = '';
+            }
+
+            if (isTranslated) {
+                // Flip back to English
+                table.classList.add('translating');
+                
+                setTimeout(() => {
+                    const translation = TABLE_TRANSLATIONS[tableId];
+                    if (translation && translation.en) {
+                        table.innerHTML = translation.en;
+                    }
+                    badge.textContent = 'EN';
+                    badge.classList.remove('visible');
+                }, 300);
+
+                setTimeout(() => {
+                    table.classList.remove('translating', 'translated');
+                    isTranslated = false;
+                }, 600);
+            }
+        });
+    });
+}
 
 
 /* ==========================================================
@@ -600,6 +843,7 @@ function openLesson(chapterId) {
     });
 
     updateLessonNav();
+    setupTableTranslations();
 
     fadeOverlay.classList.add('active');
     setTimeout(() => {
