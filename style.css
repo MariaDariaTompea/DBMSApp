@@ -303,13 +303,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     .h3-tip-trigger .h3-tooltip{display:none}
 }
 
-/* ===== H3 RIGHT TOOLTIP ===== */
+/* ===== H3 BELOW TOOLTIP ===== */
 .h3-tip-trigger{position:relative;display:inline-block;cursor:help}
-.h3-tip-trigger:hover .h3-tooltip{opacity:1;transform:translateY(-50%) translateX(0) scale(1);pointer-events:all}
+.h3-tip-trigger:hover .h3-tooltip{opacity:1;transform:translateY(8px) scale(1);pointer-events:all}
 
 .h3-tooltip{
     position:absolute;
-    left:calc(100% + 14px);top:50%;transform:translateY(-50%) translateX(-10px) scale(.92);
+    left:0;top:100%;transform:translateY(18px) scale(.95);
     width:280px;padding:16px 18px;
     background:rgba(20,16,30,.97);
     border:1.5px solid rgba(244,114,182,.35);
@@ -322,11 +322,11 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 }
 .h3-tooltip::after{
     content:'';position:absolute;
-    left:-7px;top:50%;transform:translateY(-50%) rotate(45deg);
+    top:-7px;left:24px;transform:rotate(45deg);
     width:12px;height:12px;
     background:rgba(20,16,30,.97);
     border-left:1.5px solid rgba(244,114,182,.35);
-    border-bottom:1.5px solid rgba(244,114,182,.35);
+    border-top:1.5px solid rgba(244,114,182,.35);
 }
 .h3-tooltip-badge{
     font-size:.6rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
