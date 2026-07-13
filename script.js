@@ -1400,7 +1400,6 @@ OrderDate + <span class="sql-type">INTERVAL</span> '30 days'
             <tr><td>Triggers</td><td>Fires (DELETE triggers)</td><td>Does NOT fire triggers</td><td>Does NOT fire triggers</td></tr>
             <tr><td>Rollback</td><td>Fully supported</td><td>Supported (Postgres only)</td><td>Supported (Postgres only)</td></tr>
          </table>`,
-
         // Page 5 — Soft Deletes
         `<div class="page-chapter-label">Chapter 15 — Safety</div>
          <h2>Soft Deletes &amp; Safe Deleting</h2>
@@ -1411,6 +1410,183 @@ OrderDate + <span class="sql-type">INTERVAL</span> '30 days'
 <span class="sql-kw">SET</span> IsDeleted = 1, DeletedAt = NOW()
 <span class="sql-kw">WHERE</span> StudentID = 10;</code></div>
          <p>This preserves historical audit trails, avoids breaking child table referential integrity constraints, and makes recovery from accidental deletion simple.</p>`
+    ],
+
+    ch16: [
+        // Page 1 — What is Supabase
+        `<div class="page-chapter-label">Chapter 16</div>
+         <h2>What is Supabase?</h2>
+         <hr class="page-divider">
+         <p>**Supabase** is an open-source Firebase alternative. It provides developers with all the backend services needed to build modern applications, built entirely on top of a standard **PostgreSQL** database.</p>
+         <div class="diagram-box">
+            <div class="diagram-title">Supabase Core Services</div>
+            <div class="type-cards">
+                <div class="type-card"><div class="type-card-name">Database</div><div class="type-card-info">Full Postgres database.</div><span class="type-card-tag numeric">SQL</span></div>
+                <div class="type-card"><div class="type-card-name">Auth</div><div class="type-card-info">JWT tokens, user sessions.</div><span class="type-card-tag text">Security</span></div>
+                <div class="type-card"><div class="type-card-name">Storage</div><div class="type-card-info">File buckets management.</div><span class="type-card-tag other">Files</span></div>
+                <div class="type-card"><div class="type-card-name">Realtime</div><div class="type-card-info">Websockets listener.</div><span class="type-card-tag numeric">Reactivity</span></div>
+            </div>
+         </div>`,
+
+        // Page 2 — Architecture
+        `<div class="page-chapter-label">Chapter 16 — Architecture</div>
+         <h2>Supabase &amp; Postgres Architecture</h2>
+         <hr class="page-divider">
+         <p>Unlike Firebase which uses a NoSQL document database, Supabase provides you with a full, dedicated **PostgreSQL** database instance.</p>
+         <p>Supabase acts as an orchestration layer. It exposes your Postgres database directly via REST and GraphQL APIs using **PostgREST**, a tool that compiles SQL schema layouts into HTTP endpoints. This allows you to query your database safely straight from the frontend client.</p>
+         <p style="text-align:center;color:#a8346e;font-weight:600;font-size:0.8rem;">Note: You retain direct SQL access to Postgres, so there is zero vendor lock-in!</p>`,
+
+        // Page 3 — Table Editor
+        `<div class="page-chapter-label">Chapter 16 — Table Editor</div>
+         <h2>The Visual Table Editor</h2>
+         <hr class="page-divider">
+         <p>Supabase provides a visual dashboard to manage database schemas. It allows you to:</p>
+         <p style="font-size:0.8rem; line-height:1.6; text-align:left; color:#4a3558; margin-left:16px;">
+            &bull; **Design Tables:** Visually add tables, set column types, and toggles for primary/foreign keys.<br>
+            &bull; **Spreadsheet View:** Direct inline cell editing, adding rows manually, and CSV imports.<br>
+            &bull; **Relationships:** Establish relationships via a graphical user interface.
+         </p>
+         <p>This lowers the barrier to entry while maintaining a strict relational schema database under the hood.</p>`,
+
+        // Page 4 — SQL Editor
+        `<div class="page-chapter-label">Chapter 16 — SQL Editor</div>
+         <h2>The Built-in SQL Editor</h2>
+         <hr class="page-divider">
+         <p>For advanced database administration, Supabase includes a web-based **SQL Editor** where you can execute queries directly on your database.</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Run migrations or custom scripts directly</span>
+<span class="sql-kw">CREATE TABLE</span> profiles (
+    id <span class="sql-type">UUID</span> <span class="sql-kw">PRIMARY KEY</span>,
+    username <span class="sql-type">TEXT</span> <span class="sql-kw">UNIQUE</span>
+);</code></div>
+         <p>Supabase also provides pre-built SQL templates (e.g. settings up user profiles, encrypting secrets, full-text search) which you can install with a single click.</p>`,
+
+        // Page 5 — Local Development
+        `<div class="page-chapter-label">Chapter 16 — Local Dev</div>
+         <h2>Local Development &amp; CLI</h2>
+         <hr class="page-divider">
+         <p>You can run the entire Supabase stack locally on your computer using the **Supabase CLI** and **Docker**.</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Initialize supabase in your project folder</span>
+supabase init
+<span class="sql-comment">-- Start local database, auth, and storage services</span>
+supabase start</code></div>
+         <p>This allows you to write schema migrations locally, commit them to Git, and run testing environments without incurring cloud costs.</p>`
+    ],
+
+    ch17: [
+        // Page 1 — Auth Architecture
+        `<div class="page-chapter-label">Chapter 17</div>
+         <h2>Supabase Authentication</h2>
+         <hr class="page-divider">
+         <p>Supabase provides built-in user authentication. When a user logs in, Supabase generates a **JSON Web Token (JWT)** that securely identifies the user on subsequent database calls.</p>
+         <p>All user accounts are automatically stored in a separate, secure Postgres database namespace schema called <strong>auth</strong>, inside the <code>auth.users</code> table. The main application database schema (<code>public</code>) can reference these users via foreign keys.</p>`,
+
+        // Page 2 — Sign up & Sign in
+        `<div class="page-chapter-label">Chapter 17 — Auth APIs</div>
+         <h2>Sign Up &amp; Sign In Workflows</h2>
+         <hr class="page-divider">
+         <p>Supabase Auth supports multiple sign-in methods, including Email &amp; Password, Magic Links, and Third-Party OAuth providers (Google, GitHub, Apple).</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Client-side signup code flow</span>
+const { data, error } = await supabase.auth.signUp({
+  email: 'user@example.com',
+  password: 'securePassword123'
+});</code></div>
+         <p>Upon successful authentication, the Supabase client library automatically stores the session token in the browser's local storage and attaches it to subsequent database queries.</p>`,
+
+        // Page 3 — RLS Basics
+        `<div class="page-chapter-label">Chapter 17 — RLS Basics</div>
+         <h2>Row Level Security (RLS)</h2>
+         <hr class="page-divider">
+         <p>Because clients query the database directly, protecting data is crucial. Postgres achieves this using **Row Level Security (RLS)**.</p>
+         <p>When RLS is enabled on a table, all direct queries from the client will return **zero rows** unless explicit **Security Policies** are defined to grant access.</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Enable RLS on public profiles table</span>
+<span class="sql-kw">ALTER TABLE</span> profiles <span class="sql-kw">ENABLE ROW LEVEL SECURITY</span>;</code></div>`,
+
+        // Page 4 — Writing Policies
+        `<div class="page-chapter-label">Chapter 17 — RLS Policies</div>
+         <h2>Writing RLS Policies</h2>
+         <hr class="page-divider">
+         <p>Security policies act as dynamic SQL <code>WHERE</code> clauses appended automatically to queries. We use the helper function <code>auth.uid()</code> to identify the current logged-in user.</p>
+         <table class="compare-table" data-table-id="ch17-rls-policies">
+            <tr><th>Action</th><th>Target Policy Constraint</th><th>Access Level</th></tr>
+            <tr><td><strong>SELECT</strong></td><td><code>true</code> (anyone can view profiles)</td><td>Public Read</td></tr>
+            <tr><td><strong>UPDATE</strong></td><td><code>auth.uid() = id</code> (only account owner edits)</td><td>Owner Write</td></tr>
+            <tr><td><strong>INSERT</strong></td><td><code>auth.uid() = id</code> (only logged in user creates)</td><td>Owner Create</td></tr>
+         </table>
+         <div class="sql-block"><code><span class="sql-comment">-- SQL policy for profile updates</span>
+<span class="sql-kw">CREATE POLICY</span> "Users can update own profile"
+    <span class="sql-kw">ON</span> profiles <span class="sql-kw">FOR UPDATE</span>
+    <span class="sql-kw">USING</span> (auth.uid() = id);</code></div>`,
+
+        // Page 5 — Profiles Trigger
+        `<div class="page-chapter-label">Chapter 17 — User Sync</div>
+         <h2>Syncing Users with Triggers</h2>
+         <hr class="page-divider">
+         <p>To link users in the secure <code>auth.users</code> table with tables in your `public` schema, use a **Postgres Trigger** to copy user records automatically upon signup.</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Auto-run function on user creation</span>
+<span class="sql-kw">CREATE FUNCTION</span> public.handle_new_user()
+<span class="sql-kw">RETURNS TRIGGER AS</span> $$
+<span class="sql-kw">BEGIN</span>
+    <span class="sql-kw">INSERT INTO</span> public.profiles (id, email)
+    <span class="sql-kw">VALUES</span> (new.id, new.email);
+    <span class="sql-kw">RETURN</span> NEW;
+<span class="sql-kw">END</span>;
+$$ <span class="sql-kw">LANGUAGE</span> plpgsql SECURITY DEFINER;</code></div>`
+    ],
+
+    ch18: [
+        // Page 1 — Storage Buckets
+        `<div class="page-chapter-label">Chapter 18</div>
+         <h2>Supabase Storage</h2>
+         <hr class="page-divider">
+         <p>Applications often need to store binary assets like images, videos, and PDFs. **Supabase Storage** organizes files into **Buckets**.</p>
+         <p style="font-size:0.8rem; line-height:1.6; text-align:left; color:#4a3558; margin-left:16px;">
+            &bull; **Public Buckets:** Anyone can download files directly via a URL. Good for avatar icons and product images.<br>
+            &bull; **Private Buckets:** Downloads require a temporary signed URL or JWT token authentication header. Good for invoices and private data.
+         </p>
+         <p>Under the hood, files are stored on object storage systems (S3 compatible), while file metadata is tracked in PostgreSQL tables.</p>`,
+
+        // Page 2 — Uploading Files
+        `<div class="page-chapter-label">Chapter 18 — Uploading</div>
+         <h2>Uploading Files via Client SDK</h2>
+         <hr class="page-divider">
+         <p>The Supabase Javascript client provides a simple API to create buckets and upload files directly from files or blobs in the browser.</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Upload file to 'avatars' bucket</span>
+const { data, error } = await supabase.storage
+  .from('avatars')
+  .upload('folder/avatar.png', fileObject);</code></div>
+         <p>The client library returns a reference path that you can store in your PostgreSQL profiles database table to associate the file with a specific database record.</p>`,
+
+        // Page 3 — Storage Security
+        `<div class="page-chapter-label">Chapter 18 — Storage Policies</div>
+         <h2>Securing File Buckets</h2>
+         <hr class="page-divider">
+         <p>Just like tables, file buckets are secured using RLS policies. The metadata is tracked in the <code>storage.objects</code> table, and policies can be written on it.</p>
+         <div class="sql-block"><code><span class="sql-comment">-- RLS policy to restrict uploads to logged in users</span>
+<span class="sql-kw">CREATE POLICY</span> "Upload restriction"
+    <span class="sql-kw">ON</span> storage.objects <span class="sql-kw">FOR INSERT</span>
+    <span class="sql-kw">WITH CHECK</span> (bucket_id = 'avatars' <span class="sql-kw">AND</span> auth.role() = 'authenticated');</code></div>
+         <p>You can also define constraints on file dimensions, sizes, and MIME types directly in the policy checklist.</p>`,
+
+        // Page 4 — Realtime Engine
+        `<div class="page-chapter-label">Chapter 18 — Realtime</div>
+         <h2>The Realtime Engine</h2>
+         <hr class="page-divider">
+         <p>Supabase provides **Realtime Databases** by listening to PostgreSQL's **Write-Ahead Log (WAL)**. When insert, update, or delete commands alter database tables, Supabase captures this stream.</p>
+         <p>Supabase then broadcasts these events via **Websockets** to all connected client nodes that have subscribed to changes on that specific table.</p>
+         <p style="text-align:center;color:#a8346e;font-weight:600;font-size:0.8rem;">Useful for building live chatrooms, real-time bidding apps, and live dashboards!</p>`,
+
+        // Page 5 — Subscribing to Channels
+        `<div class="page-chapter-label">Chapter 18 — Channels</div>
+         <h2>Subscribing to Realtime Changes</h2>
+         <hr class="page-divider">
+         <p>To subscribe to changes, initialize a channel and specify which database events to listen to on the client side:</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Listen to all modifications on 'messages' table</span>
+const channel = supabase.channel('db-changes')
+  .on('postgres_changes', 
+      { event: '*', schema: 'public', table: 'messages' }, 
+      (payload) => console.log('Database modified:', payload))
+  .subscribe();</code></div>
+         <p>This eliminates the need for applications to run expensive database polling intervals, reducing server resource consumption.</p>`
     ]
 };
 
@@ -1678,6 +1854,20 @@ const TABLE_TRANSLATIONS = {
             <tr><td>処理速度</td><td>低速（行ごとのログ記録）</td><td>非常に高速</td><td>即時（カタログの更新のみ）</td></tr>
             <tr><td>トリガー</td><td>実行される (DELETEトリガー)</td><td>実行されない</td><td>実行されない</td></tr>
             <tr><td>ロールバック</td><td>完全サポート</td><td>サポート（Postgresのみ）</td><td>サポート（Postgresのみ）</td></tr>
+        `
+    },
+    'ch17-rls-policies': {
+        en: `
+            <tr><th>Action</th><th>Target Policy Constraint</th><th>Access Level</th></tr>
+            <tr><td><strong>SELECT</strong></td><td><code>true</code> (anyone can view profiles)</td><td>Public Read</td></tr>
+            <tr><td><strong>UPDATE</strong></td><td><code>auth.uid() = id</code> (only account owner edits)</td><td>Owner Write</td></tr>
+            <tr><td><strong>INSERT</strong></td><td><code>auth.uid() = id</code> (only logged in user creates)</td><td>Owner Create</td></tr>
+        `,
+        jp: `
+            <tr><th>操作 (Action)</th><th>対象ポリシー制約 (Target Policy)</th><th>アクセスレベル</th></tr>
+            <tr><td><strong>SELECT</strong></td><td><code>true</code>（誰でもプロフィールを閲覧可能）</td><td>パブリック読込</td></tr>
+            <tr><td><strong>UPDATE</strong></td><td><code>auth.uid() = id</code>（アカウント所有者のみ編集可能）</td><td>所有者書込</td></tr>
+            <tr><td><strong>INSERT</strong></td><td><code>auth.uid() = id</code>（ログイン済みのユーザー自身のみ作成可能）</td><td>所有者作成</td></tr>
         `
     }
 };
