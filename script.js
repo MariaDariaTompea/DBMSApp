@@ -958,7 +958,223 @@ FROM Students;</code></div>
     <span class="sql-kw">FROM</span> Employees E
     <span class="sql-kw">INNER JOIN</span> OrgChart O <span class="sql-kw">ON</span> E.ManagerID = O.EmployeeID
 )
+)
 <span class="sql-kw">SELECT</span> * <span class="sql-kw">FROM</span> OrgChart;</code></div>`
+    ],
+
+    ch10: [
+        // Page 1 — Intro to SQL Functions
+        `<div class="page-chapter-label">Chapter 10</div>
+         <h2>Built-in SQL Functions</h2>
+         <hr class="page-divider">
+         <p>SQL databases provide a rich set of built-in **Scalar Functions** to manipulate data values. Unlike aggregate functions, scalar functions operate on a single input value and return a single output value for each row.</p>
+         <div class="diagram-box">
+            <div class="diagram-title">Built-in Function Categories</div>
+            <p style="font-size:0.8rem; line-height:1.6; text-align:left; color:#4a3558; margin-bottom:8px;">
+               &bull; <strong>String Functions:</strong> For parsing, joining, and transforming text.<br>
+               &bull; <strong>Numeric Functions:</strong> For rounding and running mathematical operations.<br>
+               &bull; <strong>Date &amp; Time Functions:</strong> For date arithmetic and time calculations.<br>
+               &bull; <strong>Conditional Functions:</strong> For logical flow control and handling nulls.
+            </p>
+         </div>
+         <p>In this chapter, we will learn the most essential SQL functions that every database developer and analyst uses daily.</p>`,
+
+        // Page 2 — String Functions 1
+        `<div class="page-chapter-label">Chapter 10 — String Functions 1</div>
+         <h2>String Manipulation (Part 1)</h2>
+         <hr class="page-divider">
+         <h3>CONCAT()</h3>
+         <p>Combines two or more text strings. In PostgreSQL, you can also use the <code>||</code> operator.</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Merge first name and last name</span>
+<span class="sql-kw">SELECT</span> CONCAT(FirstName, ' ', LastName) <span class="sql-kw">AS</span> FullName <span class="sql-kw">FROM</span> Users;</code></div>
+         <h3>LOWER() &amp; UPPER()</h3>
+         <p>Converts all letters in a string to lowercase or uppercase.</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Standardize emails to lowercase</span>
+<span class="sql-kw">SELECT</span> LOWER(Email) <span class="sql-kw">FROM</span> Users;</code></div>
+         <h3>LENGTH()</h3>
+         <p>Returns the number of characters in a string. (In SQL Server, this is <code>LEN()</code>).</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Find users with short passwords</span>
+<span class="sql-kw">SELECT</span> Name <span class="sql-kw">FROM</span> Users <span class="sql-kw">WHERE</span> LENGTH(Password) &lt; 8;</code></div>`,
+
+        // Page 3 — String Functions 2
+        `<div class="page-chapter-label">Chapter 10 — String Functions 2</div>
+         <h2>String Manipulation (Part 2)</h2>
+         <hr class="page-divider">
+         <h3>SUBSTRING()</h3>
+         <p>Extracts a portion of a string. Syntax: <code>SUBSTRING(string, start_index, length)</code>. Indices are 1-based.</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Extract first 3 letters of name</span>
+<span class="sql-kw">SELECT</span> SUBSTRING(Name, 1, 3) <span class="sql-kw">FROM</span> Users;</code></div>
+         <h3>TRIM()</h3>
+         <p>Removes leading and trailing spaces. You can also use <code>LTRIM()</code> or <code>RTRIM()</code> for single-sided trims.</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Clean up user input whitespace</span>
+<span class="sql-kw">SELECT</span> TRIM(Username) <span class="sql-kw">FROM</span> Users;</code></div>
+         <h3>REPLACE()</h3>
+         <p>Replaces all occurrences of a substring within a string with a new substring.</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Replace old domain name with new one</span>
+<span class="sql-kw">SELECT</span> REPLACE(Email, '@old.com', '@new.com') <span class="sql-kw">FROM</span> Users;</code></div>`,
+
+        // Page 4 — Math Functions
+        `<div class="page-chapter-label">Chapter 10 — Math Functions</div>
+         <h2>Numeric &amp; Math Functions</h2>
+         <hr class="page-divider">
+         <h3>ROUND()</h3>
+         <p>Rounds a numeric value to a specified number of decimal places.</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Round average score to 2 decimal places</span>
+<span class="sql-kw">SELECT</span> ROUND(AVG(Score), 2) <span class="sql-kw">FROM</span> Submissions;</code></div>
+         <h3>ABS()</h3>
+         <p>Returns the absolute (positive) value of a number.</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Find deviation from target</span>
+<span class="sql-kw">SELECT</span> ABS(Score - 100) <span class="sql-kw">FROM</span> Submissions;</code></div>
+         <h3>CEILING() &amp; FLOOR()</h3>
+         <p><code>CEILING()</code> rounds a number UP to the nearest integer. <code>FLOOR()</code> rounds a number DOWN to the nearest integer.</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Floor division helper</span>
+<span class="sql-kw">SELECT</span> FLOOR(Points / 10) <span class="sql-kw">FROM</span> Questions;</code></div>`,
+
+        // Page 5 — Date Functions 1
+        `<div class="page-chapter-label">Chapter 10 — Date Functions 1</div>
+         <h2>Date &amp; Time (Part 1)</h2>
+         <hr class="page-divider">
+         <h3>Getting Current Time</h3>
+         <p>To get the current timestamp, database engines use standard keyword functions like <code>NOW()</code>, <code>CURRENT_TIMESTAMP</code>, or <code>GETDATE()</code>.</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Insert current time into logs</span>
+<span class="sql-kw">INSERT INTO</span> Logs (ActionTime) <span class="sql-kw">VALUES</span> (NOW());</code></div>
+         <h3>Extracting Parts</h3>
+         <p>You can extract the year, month, or day from a date using functions like <code>YEAR()</code>, <code>MONTH()</code>, <code>DAY()</code> (or <code>EXTRACT()</code> in PostgreSQL).</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Group orders by year</span>
+<span class="sql-kw">SELECT</span> YEAR(OrderDate), COUNT(*) <span class="sql-kw">FROM</span> Orders <span class="sql-kw">GROUP BY</span> YEAR(OrderDate);</code></div>`,
+
+        // Page 6 — Date Functions 2
+        `<div class="page-chapter-label">Chapter 10 — Date Functions 2</div>
+         <h2>Date Arithmetic (Part 2)</h2>
+         <hr class="page-divider">
+         <h3>DATEADD() / INTERVAL</h3>
+         <p>Adds or subtracts a time interval to a date (e.g. adding 30 days to check a deadline expiration).</p>
+         <div class="sql-block"><code><span class="sql-comment">-- PostgreSQL: Add 30 days interval</span>
+OrderDate + <span class="sql-type">INTERVAL</span> '30 days'
+<span class="sql-comment">-- SQL Server: DATEADD(day, 30, OrderDate)</span></code></div>
+         <h3>DATEDIFF()</h3>
+         <p>Returns the difference between two dates in days, months, or years.</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Find age of a student in years</span>
+<span class="sql-kw">SELECT</span> DATEDIFF(YEAR, BirthDate, NOW()) <span class="sql-kw">FROM</span> Students;</code></div>`,
+
+        // Page 7 — Conditional Functions
+        `<div class="page-chapter-label">Chapter 10 — Conditional Functions</div>
+         <h2>Logical Control &amp; Handling Nulls</h2>
+         <hr class="page-divider">
+         <h3>COALESCE()</h3>
+         <p>Returns the **first non-null value** in a list. This is highly useful for providing default fallback values for null columns.</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Display 'No Group' if GroupID is NULL</span>
+<span class="sql-kw">SELECT</span> Name, COALESCE(GroupName, 'No Group') <span class="sql-kw">FROM</span> Students;</code></div>
+         <h3>CASE WHEN</h3>
+         <p>The standard SQL conditional control statement. Evaluates conditions and returns a value.</p>
+         <div class="sql-block"><code><span class="sql-kw">SELECT</span> Name, Score,
+    <span class="sql-kw">CASE WHEN</span> Score >= 50 <span class="sql-kw">THEN</span> 'Pass'
+         <span class="sql-kw">ELSE</span> 'Fail' <span class="sql-kw">END</span> <span class="sql-kw">AS</span> Status
+<span class="sql-kw">FROM</span> Submissions;</code></div>`
+    ],
+
+    ch11: [
+        // Page 1 — Intro to Set Operations
+        `<div class="page-chapter-label">Chapter 11</div>
+         <h2>Set Operations &amp; Window Functions</h2>
+         <hr class="page-divider">
+         <p>This chapter covers two advanced SQL topics: **Set Operations** (combining result sets horizontally) and **Window Functions** (calculating running analytics without collapsing rows).</p>
+         <div class="diagram-box">
+            <div class="diagram-title">Syllabus Overview</div>
+            <p style="font-size:0.8rem; line-height:1.6; text-align:left; color:#4a3558; margin-bottom:8px;">
+               &bull; <strong>Set Operators:</strong> <code>UNION</code>, <code>INTERSECT</code>, and <code>EXCEPT</code>.<br>
+               &bull; <strong>Window Analytics:</strong> <code>OVER()</code>, <code>PARTITION BY</code>, and ordering.<br>
+               &bull; <strong>Ranking &amp; Value offsets:</strong> <code>ROW_NUMBER</code>, <code>RANK</code>, <code>LAG</code>, and <code>LEAD</code>.
+            </p>
+         </div>
+         <p>These advanced tools allow database developers to perform complex calculations directly in SQL rather than in application code.</p>`,
+
+        // Page 2 — UNION vs UNION ALL
+        `<div class="page-chapter-label">Chapter 11 — UNION</div>
+         <h2>UNION vs UNION ALL</h2>
+         <hr class="page-divider">
+         <p>Set operators combine results from two SELECT queries. The queries must be union-compatible (same number of columns, matching types).</p>
+         <table class="compare-table" data-table-id="ch11-union-all">
+            <tr><th>Operator</th><th>Duplicates?</th><th>Performance</th><th>Goal</th></tr>
+            <tr><td><strong>UNION</strong></td><td>Eliminated (runs a costly distinct sort)</td><td>Slower</td><td>Distinct combination of sets</td></tr>
+            <tr><td><strong>UNION ALL</strong></td><td>Kept (simply appends rows)</td><td>Very Fast</td><td>Simple concatenation of sets</td></tr>
+         </table>
+         <div class="sql-block"><code><span class="sql-comment">-- Fast union of students and teachers contacts</span>
+<span class="sql-kw">SELECT</span> Name, Email <span class="sql-kw">FROM</span> Students
+<span class="sql-kw">UNION ALL</span>
+<span class="sql-kw">SELECT</span> Name, Email <span class="sql-kw">FROM</span> Teachers;</code></div>`,
+
+        // Page 3 — INTERSECT & EXCEPT
+        `<div class="page-chapter-label">Chapter 11 — Set Operators</div>
+         <h2>INTERSECT &amp; EXCEPT</h2>
+         <hr class="page-divider">
+         <h3>INTERSECT</h3>
+         <p>Returns only rows that are present in the results of **both** SELECT queries.</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Find customers who are also suppliers</span>
+<span class="sql-kw">SELECT</span> Email <span class="sql-kw">FROM</span> Customers
+<span class="sql-kw">INTERSECT</span>
+<span class="sql-kw">SELECT</span> Email <span class="sql-kw">FROM</span> Suppliers;</code></div>
+         <h3>EXCEPT</h3>
+         <p>Returns rows present in the first SELECT query but **not** in the second query (subtraction). In Oracle, this is called <code>MINUS</code>.</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Students who have never submitted any labs</span>
+<span class="sql-kw">SELECT</span> StudentID <span class="sql-kw">FROM</span> Students
+<span class="sql-kw">EXCEPT</span>
+<span class="sql-kw">SELECT</span> StudentID <span class="sql-kw">FROM</span> Submissions;</code></div>`,
+
+        // Page 4 — Intro to Window Functions
+        `<div class="page-chapter-label">Chapter 11 — Window Functions</div>
+         <h2>Introduction to Window Functions</h2>
+         <hr class="page-divider">
+         <p>A **Window Function** performs calculations across a set of table rows that are related to the current row. Unlike a `GROUP BY` aggregation, a window function **does not collapse** rows. The output has the same number of rows as the input.</p>
+         <p>We declare a window function using the <strong>OVER()</strong> clause. Inside, we specify:</p>
+         <p style="font-size:0.8rem; line-height:1.6; text-align:left; color:#4a3558; margin-left:16px;">
+            &bull; <strong>PARTITION BY:</strong> Splits rows into groups (like GROUP BY).<br>
+            &bull; <strong>ORDER BY:</strong> Sorts rows within each partition.<br>
+            &bull; <strong>ROWS/RANGE:</strong> Restricts the subset of rows (e.g. running average).
+         </p>
+         <div class="sql-block"><code><span class="sql-comment">-- Calculate running total price per category</span>
+<span class="sql-kw">SELECT</span> Name, Category, Price,
+       SUM(Price) <span class="sql-kw">OVER</span> (PARTITION BY Category ORDER BY Price) <span class="sql-kw">AS</span> RunningTotal
+<span class="sql-kw">FROM</span> Products;</code></div>`,
+
+        // Page 5 — Ranking Functions
+        `<div class="page-chapter-label">Chapter 11 — Rankings</div>
+         <h2>ROW_NUMBER, RANK, &amp; DENSE_RANK</h2>
+         <hr class="page-divider">
+         <p>Ranking window functions assign an integer sequence to each row within a partition, based on the sorting criteria.</p>
+         <table class="compare-table" data-table-id="ch11-window-ranks">
+            <tr><th>Function</th><th>Duplicates?</th><th>Skips Numbers?</th><th>Example Sequence</th></tr>
+            <tr><td><code>ROW_NUMBER()</code></td><td>Unique index</td><td>No</td><td>1, 2, 3, 4, 5</td></tr>
+            <tr><td><code>RANK()</code></td><td>Same rank</td><td>Yes (skips ahead)</td><td>1, 2, 2, 4, 5</td></tr>
+            <tr><td><code>DENSE_RANK()</code></td><td>Same rank</td><td>No (dense sequence)</td><td>1, 2, 2, 3, 4</td></tr>
+         </table>
+         <div class="sql-block"><code><span class="sql-comment">-- Get rank order of students by grade</span>
+<span class="sql-kw">SELECT</span> Name, Score,
+       DENSE_RANK() <span class="sql-kw">OVER</span> (ORDER BY Score DESC) <span class="sql-kw">AS</span> ClassRank
+<span class="sql-kw">FROM</span> Submissions;</code></div>`,
+
+        // Page 6 — Value Functions
+        `<div class="page-chapter-label">Chapter 11 — Value Functions</div>
+         <h2>LAG and LEAD Offset Functions</h2>
+         <hr class="page-divider">
+         <p>Value window functions access values from other rows in the partition relative to the current row.</p>
+         <p><code>LAG()</code> accesses data from a **previous** row (offset defaults to 1). <code>LEAD()</code> accesses data from a **following** row.</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Compare current score with previous student's score</span>
+<span class="sql-kw">SELECT</span> Name, Score,
+       LAG(Score) <span class="sql-kw">OVER</span> (ORDER BY Score DESC) <span class="sql-kw">AS</span> PreviousScore
+<span class="sql-kw">FROM</span> Submissions;</code></div>
+         <p>This is extremely useful for running period-over-period financial audits or calculating changes over time without manual self-joins.</p>`,
+
+        // Page 7 — Aggregate Window Functions
+        `<div class="page-chapter-label">Chapter 11 — Window Aggregates</div>
+         <h2>Aggregate Window Functions</h2>
+         <hr class="page-divider">
+         <p>You can use standard aggregate functions (`SUM`, `AVG`, `COUNT`, `MIN`, `MAX`) as window functions simply by appending the `OVER` clause.</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Compare employee salary with their department average</span>
+<span class="sql-kw">SELECT</span> Name, DeptID, Salary,
+       AVG(Salary) <span class="sql-kw">OVER</span> (PARTITION BY DeptID) <span class="sql-kw">AS</span> DeptAvgSalary
+<span class="sql-kw">FROM</span> Employees;</code></div>
+         <p>This retains the full list of employees while showing the summary, which is perfect for building financial dashboard views.</p>`
     ]
 };
 
@@ -1182,6 +1398,32 @@ const TABLE_TRANSLATIONS = {
             <tr><th>句 (Clause)</th><th>実行順序 (Executed…)</th><th>集計関数は使えるか？</th><th>目的</th></tr>
             <tr><td><strong>WHERE</strong></td><td>グループ化 (GROUP BY) の前</td><td>いいえ</td><td>生データの行をフィルタリング</td></tr>
             <tr><td><strong>HAVING</strong></td><td>グループ化 (GROUP BY) の後</td><td>はい</td><td>集約されたグループをフィルタリング</td></tr>
+        `
+    },
+    'ch11-union-all': {
+        en: `
+            <tr><th>Operator</th><th>Duplicates?</th><th>Performance</th><th>Goal</th></tr>
+            <tr><td><strong>UNION</strong></td><td>Eliminated (runs a costly distinct sort)</td><td>Slower</td><td>Distinct combination of sets</td></tr>
+            <tr><td><strong>UNION ALL</strong></td><td>Kept (simply appends rows)</td><td>Very Fast</td><td>Simple concatenation of sets</td></tr>
+        `,
+        jp: `
+            <tr><th>演算子 (Operator)</th><th>重複行 (Duplicates?)</th><th>処理速度 (Performance)</th><th>目的</th></tr>
+            <tr><td><strong>UNION</strong></td><td>排除する（コストの高い重複排除ソートを実行）</td><td>遅い</td><td>一意な行のみの和集合</td></tr>
+            <tr><td><strong>UNION ALL</strong></td><td>保持する（単に行を結合）</td><td>非常に高速</td><td>単純な結果セットの結合</td></tr>
+        `
+    },
+    'ch11-window-ranks': {
+        en: `
+            <tr><th>Function</th><th>Duplicates?</th><th>Skips Numbers?</th><th>Example Sequence</th></tr>
+            <tr><td><code>ROW_NUMBER()</code></td><td>Unique index</td><td>No</td><td>1, 2, 3, 4, 5</td></tr>
+            <tr><td><code>RANK()</code></td><td>Same rank</td><td>Yes (skips ahead)</td><td>1, 2, 2, 4, 5</td></tr>
+            <tr><td><code>DENSE_RANK()</code></td><td>Same rank</td><td>No (dense sequence)</td><td>1, 2, 2, 3, 4</td></tr>
+        `,
+        jp: `
+            <tr><th>関数 (Function)</th><th>重複値の扱い</th><th>順位の飛び</th><th>順序の例</th></tr>
+            <tr><td><code>ROW_NUMBER()</code></td><td>一意のインデックス</td><td>いいえ</td><td>1, 2, 3, 4, 5</td></tr>
+            <tr><td><code>RANK()</code></td><td>同じ順位</td><td>はい（間を空ける）</td><td>1, 2, 2, 4, 5</td></tr>
+            <tr><td><code>DENSE_RANK()</code></td><td>同じ順位</td><td>いいえ（間を空けない）</td><td>1, 2, 2, 3, 4</td></tr>
         `
     }
 };
