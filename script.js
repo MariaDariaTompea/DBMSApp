@@ -56,7 +56,8 @@ const TIMELINE_DATA = {
             { id:'ch2', num:'CH.2', label:'Creating Tables', popupTitle:'Chapter 2 — Creating Tables', popupDesc:'The CREATE TABLE statement, column definitions, constraints, and best practices.', hasLesson: true },
             { id:'ch3', num:'CH.3', label:'Keys & Relations', popupTitle:'Chapter 3 — Keys & Relationships', popupDesc:'Primary vs Foreign keys, parent and child tables, referential integrity.', hasLesson: true },
             { id:'ch4', num:'CH.4', label:'Normal Forms', popupTitle:'Chapter 4 — Normalization', popupDesc:'Schema refinement, functional dependencies, 1NF, 2NF, 3NF, BCNF, and decompositions.', hasLesson: true },
-            { id:'ch5', num:'CH.5', label:'Relational Algebra', popupTitle:'Chapter 5 — Relational Algebra', popupDesc:'Fundamental operators: Select, Project, Join, Set Operations, and query execution plans.', hasLesson: true }
+            { id:'ch5', num:'CH.5', label:'Relational Algebra', popupTitle:'Chapter 5 — Relational Algebra', popupDesc:'Fundamental operators: Select, Project, Join, Set Operations, and query execution plans.', hasLesson: true },
+            { id:'ch6', num:'CH.6', label:'Class Mapping', popupTitle:'Chapter 6 — Class Mapping', popupDesc:'Mapping classes, relationships, multiplicities, inheritance, and compositions to tables.', hasLesson: true }
         ]
     },
     'seminar-labs': {
@@ -566,9 +567,106 @@ CourseID  &rarr; CourseName, Credits</code></div>
                 <span class="type-card-tag other">/ Division</span>
             </div>
          </div>`
+    ],
+
+    ch6: [
+        // Page 1 — Title
+        `<div class="page-chapter-label">Chapter 6</div>
+         <h2>Conceptual Design &amp; Class Mapping</h2>
+         <hr class="page-divider">
+         <p>In software development, we work with Object-Oriented classes. In databases, we work with Relational tables. <strong>Conceptual Database Design</strong> focuses on how to translate persistent classes and their relationships into relational schemas.</p>
+         <p>A naive one-to-one mapping (creating one table for each class) has significant drawbacks:</p>
+         <div class="diagram-box">
+            <div class="diagram-title">Naive Mapping Drawbacks</div>
+            <p style="font-size:0.8rem; line-height:1.6; text-align:left; color:#4a3558; margin-bottom:8px;">
+               &bull; <strong>Too many tables:</strong> Creates redundant DBMS objects.<br>
+               &bull; <strong>Too many joins:</strong> Degrades performance due to constant JOIN queries.<br>
+               &bull; <strong>Missed tables:</strong> Many-to-many associations require a third relational table.<br>
+               &bull; <strong>Inheritance issues:</strong> Relational databases do not support subclassing natively.
+            </p>
+         </div>
+         <p><strong>Basic Mapping Rules:</strong> Table names should be plural variants of class names (e.g. <code>Students</code> for class <code>Student</code>), simple attributes map directly to table columns, and surrogate keys are added as primary keys.</p>`,
+
+        // Page 2 — Simple Associations
+        `<div class="page-chapter-label">Chapter 6 — Simple Associations</div>
+         <h2>Mapping Multiplicities (1:1 &amp; 1:N)</h2>
+         <hr class="page-divider">
+         <p>Multiplicity defines how many instances of one class can be associated with an instance of another class:</p>
+         <div class="type-cards">
+            <div class="type-card">
+                <div class="type-card-name">1 : 0..1 Multiplicity</div>
+                <div class="type-card-info">Create a table for each class. The primary key of the "1" table becomes a <strong>Foreign Key</strong> in the related table (e.g. <code>Person &rarr; IdentityCard</code>).</div>
+                <span class="type-card-tag text">1 : 0..1</span>
+            </div>
+            <div class="type-card">
+                <div class="type-card-name">1 : 1 Multiplicity</div>
+                <div class="type-card-info">Optimize by creating a <strong>single table</strong> containing attributes of both classes. This eliminates joins and improves performance.</div>
+                <span class="type-card-tag other">1 : 1</span>
+            </div>
+            <div class="type-card">
+                <div class="type-card-name">1 : N Multiplicity</div>
+                <div class="type-card-info">Create a table for each class. The primary key of the "1" table becomes a <strong>Foreign Key</strong> in the "N" table (e.g. <code>Group &rarr; Student</code>, where Student table has GroupID).</div>
+                <span class="type-card-tag numeric">1 : N</span>
+            </div>
+         </div>`,
+
+        // Page 3 — M:N Associations
+        `<div class="page-chapter-label">Chapter 6 — M:N Associations</div>
+         <h2>Mapping Many-to-Many</h2>
+         <hr class="page-divider">
+         <p>Many-to-many (<code>M : N</code>) relationships cannot be modeled directly with a foreign key in either table. It requires an intermediate junction table.</p>
+         <table class="compare-table" data-table-id="ch6-association-mapping">
+            <tr><th>Multiplicity</th><th>Implementation Strategy</th><th>Primary Key Choice</th></tr>
+            <tr><td><strong>1 : 0..1</strong> or <strong>1 : N</strong></td><td>Foreign Key in child/dependent table.</td><td>Separate primary key in each table.</td></tr>
+            <tr><td><strong>M : N</strong> (Many-to-Many)</td><td>Create an additional <strong>intersection/junction table</strong>.</td><td>Composite primary key made of both foreign keys.</td></tr>
+            <tr><td><strong>Association Class</strong></td><td>Intersection table includes columns for all attributes of the association class.</td><td>Composite of the two foreign keys, or a new surrogate key.</td></tr>
+         </table>
+         <div class="sql-block"><code><span class="sql-comment">-- Example: Authors (PersonID, BookID) cross table</span>
+<span class="sql-kw">CREATE TABLE</span> Authors (
+    PersonID  <span class="sql-type">INT</span> <span class="sql-kw">REFERENCES</span> Persons(ID),
+    BookID    <span class="sql-type">INT</span> <span class="sql-kw">REFERENCES</span> Books(ID),
+    <span class="sql-kw">PRIMARY KEY</span> (PersonID, BookID)
+);</code></div>`,
+
+        // Page 4 — Inheritance
+        `<div class="page-chapter-label">Chapter 6 — Inheritance</div>
+         <h2>Mapping Inheritance</h2>
+         <hr class="page-divider">
+         <p>There are three standard alternatives to map inheritance hierarchy (e.g. <code>Student</code> and <code>Teacher</code> inheriting from <code>Person</code>):</p>
+         <div class="type-cards">
+            <div class="type-card">
+                <div class="type-card-name">Alt 1: Table per Class</div>
+                <div class="type-card-info">Create a table for each class (Persons, Students, Teachers) linked by primary keys, and define SQL VIEWS to reconstruct full objects. High flexibility, lower join performance.</div>
+                <span class="type-card-tag text">Joined</span>
+            </div>
+            <div class="type-card">
+                <div class="type-card-name">Alt 2: Single Table</div>
+                <div class="type-card-info">De-normalize all attributes from all subclasses into one single table (Persons). Subclass columns must allow <code>NULL</code> values. Best performance, wastes space (dead space).</div>
+                <span class="type-card-tag other">Single Table</span>
+            </div>
+            <div class="type-card">
+                <div class="type-card-name">Alt 3: Concrete Class</div>
+                <div class="type-card-info">Create separate tables for concrete subclasses (Students, Teachers) containing all superclass fields. No Persons table. Good performance, schema changes are difficult.</div>
+                <span class="type-card-tag numeric">Concrete</span>
+            </div>
+         </div>`,
+
+        // Page 5 — Special Mappings
+        `<div class="page-chapter-label">Chapter 6 — Special Mappings</div>
+         <h2>Composition &amp; Recursive Mapping</h2>
+         <hr class="page-divider">
+         <h3><span class="h3-icon">&bull;</span> Composition &amp; Aggregation</h3>
+         <p>Composition (strong whole-part relationship where parts cannot exist without the whole) requires enforcing **ON DELETE CASCADE** in the parts table so that deleting the whole deletes all constituent parts.</p>
+         <h3><span class="h3-icon">&bull;</span> Reflexive Associations</h3>
+         <p>A reflexive association (recursive relationship where a class relates to itself, like a <code>Node</code> pointing to a parent <code>Node</code>) is mapped by adding a foreign key that references the primary key of the same table.</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Reflexive relationship example</span>
+<span class="sql-kw">CREATE TABLE</span> Nodes (
+    NodeID    <span class="sql-type">INT</span> <span class="sql-kw">PRIMARY KEY</span>,
+    Info      <span class="sql-type">VARCHAR</span>(100),
+    ParentID  <span class="sql-type">INT</span> <span class="sql-kw">REFERENCES</span> Nodes(NodeID) <span class="sql-comment">-- Self-reference</span>
+);</code></div>`
     ]
 };
-
 
 /* ==========================================================
    TABLE TRANSLATIONS (English & Japanese)
@@ -750,6 +848,20 @@ const TABLE_TRANSLATIONS = {
             <tr><td><strong>シータ結合</strong></td><td>R &bowtie;<sub>c</sub> S</td><td>INNER JOIN ON c</td><td>結合された関係を条件 c でフィルタリング: <code>&sigma;<sub>c</sub>(R &times; S)</code></td></tr>
             <tr><td><strong>等価結合</strong></td><td>R &bowtie;<sub>A=B</sub> S</td><td>INNER JOIN ON A=B</td><td>結合条件が等価比較のみで構成されるシータ結合</td></tr>
             <tr><td><strong>自然結合</strong></td><td>R &bowtie; S</td><td>NATURAL JOIN</td><td>名前が一致するすべての列での等価結合（重複する列は1つのみ投影）</td></tr>
+        `
+    },
+    'ch6-association-mapping': {
+        en: `
+            <tr><th>Multiplicity</th><th>Implementation Strategy</th><th>Primary Key Choice</th></tr>
+            <tr><td><strong>1 : 0..1</strong> or <strong>1 : N</strong></td><td>Foreign Key in child/dependent table.</td><td>Separate primary key in each table.</td></tr>
+            <tr><td><strong>M : N</strong> (Many-to-Many)</td><td>Create an additional <strong>intersection/junction table</strong>.</td><td>Composite primary key made of both foreign keys.</td></tr>
+            <tr><td><strong>Association Class</strong></td><td>Intersection table includes columns for all attributes of the association class.</td><td>Composite of the two foreign keys, or a new surrogate key.</td></tr>
+        `,
+        jp: `
+            <tr><th>多重度</th><th>実装戦略</th><th>主キーの選択</th></tr>
+            <tr><td><strong>1 : 0..1</strong> または <strong>1 : N</strong></td><td>子（依存する）テーブルに外部キーを配置。</td><td>各テーブルに個別の主キー。</td></tr>
+            <tr><td><strong>M : N</strong> (多重度)</td><td>別の中間（交差/結合）テーブルを作成。</td><td>両方の外部キーから成る複合主キー。</td></tr>
+            <tr><td><strong>関連クラス</strong></td><td>中間テーブルに関連クラスのすべての属性列を含める。</td><td>2つの外部キーの複合主キー、又は新しいサロゲートキー。</td></tr>
         `
     }
 };
