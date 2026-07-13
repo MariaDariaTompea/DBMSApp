@@ -57,7 +57,22 @@ const TIMELINE_DATA = {
             { id:'ch3', num:'CH.3', label:'Keys & Relations', popupTitle:'Chapter 3 — Keys & Relationships', popupDesc:'Primary vs Foreign keys, parent and child tables, referential integrity.', hasLesson: true },
             { id:'ch4', num:'CH.4', label:'Normal Forms', popupTitle:'Chapter 4 — Normalization', popupDesc:'Schema refinement, functional dependencies, 1NF, 2NF, 3NF, BCNF, and decompositions.', hasLesson: true },
             { id:'ch5', num:'CH.5', label:'Relational Algebra', popupTitle:'Chapter 5 — Relational Algebra', popupDesc:'Fundamental operators: Select, Project, Join, Set Operations, and query execution plans.', hasLesson: true },
-            { id:'ch6', num:'CH.6', label:'Class Mapping', popupTitle:'Chapter 6 — Class Mapping', popupDesc:'Mapping classes, relationships, multiplicities, inheritance, and compositions to tables.', hasLesson: true }
+            { id:'ch6', num:'CH.6', label:'Class Mapping', popupTitle:'Chapter 6 — Class Mapping', popupDesc:'Mapping classes, relationships, multiplicities, inheritance, and compositions to tables.', hasLesson: true },
+            { id:'ch7', num:'CH.7', label:'SQL Joins', popupTitle:'Chapter 7 — SQL Joins in Detail', popupDesc:'Inner Joins, Left/Right/Full Outer Joins, Cross Joins, and Self Joins.', hasLesson: true },
+            { id:'ch8', num:'CH.8', label:'Grouping & Agg', popupTitle:'Chapter 8 — Grouping & Aggregations', popupDesc:'COUNT, SUM, AVG, MIN, MAX, GROUP BY, and HAVING filters.', hasLesson: true },
+            { id:'ch9', num:'CH.9', label:'Subqueries & CTEs', popupTitle:'Chapter 9 — Subqueries & CTEs', popupDesc:'Subqueries in SELECT/WHERE, and Common Table Expressions (WITH queries).', hasLesson: true },
+            { id:'ch10', num:'CH.10', label:'SQL Functions', popupTitle:'Chapter 10 — Built-in SQL Functions', popupDesc:'String manipulation, Math operations, and Date-time functions.', hasLesson: true },
+            { id:'ch11', num:'CH.11', label:'Set & Window', popupTitle:'Chapter 11 — Set & Window Functions', popupDesc:'UNION, INTERSECT, EXCEPT, and Windowing (ROW_NUMBER, RANK, partition).', hasLesson: true },
+            { id:'ch12', num:'CH.12', label:'DB Creation', popupTitle:'Chapter 12 — Creating Databases', popupDesc:'Database creation, deletion, schemas, collations, and character sets.', hasLesson: true },
+            { id:'ch13', num:'CH.13', label:'DDL Altering', popupTitle:'Chapter 13 — DDL Altering', popupDesc:'Modifying columns, dropping columns, adding constraints.', hasLesson: true },
+            { id:'ch14', num:'CH.14', label:'DML Write', popupTitle:'Chapter 14 — DML Write Queries', popupDesc:'Row insertions, parameterized updates, and bulk queries.', hasLesson: true },
+            { id:'ch15', num:'CH.15', label:'DML Delete', popupTitle:'Chapter 15 — DML Delete Queries', popupDesc:'DELETE FROM vs. TRUNCATE TABLE vs. DROP TABLE differences.', hasLesson: true },
+            { id:'ch16', num:'CH.16', label:'Intro Supabase', popupTitle:'Chapter 16 — Intro to Supabase', popupDesc:'Postgres-based Firebase alternative, project setup, and table editor.', hasLesson: true },
+            { id:'ch17', num:'CH.17', label:'Supabase Auth', popupTitle:'Chapter 17 — Supabase Auth & RLS', popupDesc:'Email/Password signup, sessions, and Row Level Security (RLS) policies.', hasLesson: true },
+            { id:'ch18', num:'CH.18', label:'Supabase Storage', popupTitle:'Chapter 18 — Supabase Storage & RT', popupDesc:'File storage buckets, policy configs, and realtime database listeners.', hasLesson: true },
+            { id:'ch19', num:'CH.19', label:'Supabase JS Client', popupTitle:'Chapter 19 — Supabase JS Connection', popupDesc:'Initializing @supabase/supabase-js, client keys, and basic CRUD commands.', hasLesson: true },
+            { id:'ch20', num:'CH.20', label:'Web Connection', popupTitle:'Chapter 20 — Database in Web Apps', popupDesc:'Node/Express API backend, PostgreSQL pool clients, and React frontend hooks.', hasLesson: true },
+            { id:'ch21', num:'CH.21', label:'App Integration', popupTitle:'Chapter 21 — Python & C# Integration', popupDesc:'Connecting databases via Python (SQLAlchemy) and C# (.NET Entity Framework).', hasLesson: true }
         ]
     },
     'seminar-labs': {
@@ -665,6 +680,285 @@ CourseID  &rarr; CourseName, Credits</code></div>
     Info      <span class="sql-type">VARCHAR</span>(100),
     ParentID  <span class="sql-type">INT</span> <span class="sql-kw">REFERENCES</span> Nodes(NodeID) <span class="sql-comment">-- Self-reference</span>
 );</code></div>`
+    ],
+
+    ch7: [
+        // Page 1 — Intro to Joins
+        `<div class="page-chapter-label">Chapter 7</div>
+         <h2>SQL Joins in Detail</h2>
+         <hr class="page-divider">
+         <p>In relational databases, data is split across multiple tables to avoid redundancy (normalization). **Joins** allow us to reconstruct complete records by linking rows that share matching values.</p>
+         <div class="diagram-box">
+            <div class="diagram-title">Visualizing Join Logic</div>
+            <p style="font-size:0.8rem; line-height:1.6; text-align:left; color:#4a3558; margin-bottom:8px;">
+               &bull; <strong>Normal form normalization</strong> separates Student details from Class details.<br>
+               &bull; <strong>Matching keys</strong> (e.g. Student's <code>ClassID</code> linking to Class's <code>ClassID</code>) link them.<br>
+               &bull; <strong>The JOIN query</strong> runs on the database server to combine columns matching our criteria.
+            </p>
+         </div>
+         <p>There are several types of SQL joins, each determining how unmatched rows are handled. In this chapter, we will explore: <code>INNER JOIN</code>, <code>LEFT JOIN</code>, <code>RIGHT JOIN</code>, <code>FULL JOIN</code>, <code>CROSS JOIN</code>, and <code>SELF JOIN</code>.</p>`,
+
+        // Page 2 — INNER JOIN
+        `<div class="page-chapter-label">Chapter 7 — INNER JOIN</div>
+         <h2>INNER JOIN (Matches Only)</h2>
+         <hr class="page-divider">
+         <p>The **INNER JOIN** is the most common join type. It returns rows only when there is a match in **both** tables. If a row in the left table doesn't have a matching key in the right table, it is excluded from the result set.</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Select matching rows only</span>
+<span class="sql-kw">SELECT</span> Students.Name, Groups.GroupName
+<span class="sql-kw">FROM</span> Students
+<span class="sql-kw">INNER JOIN</span> Groups <span class="sql-kw">ON</span> Students.GroupID = Groups.GroupID;</code></div>
+         <p>If a student has a <code>NULL</code> GroupID, or a group has no students enrolled, they will **not** appear in the output. This represents the intersection of the two sets.</p>`,
+
+        // Page 3 — LEFT JOIN
+        `<div class="page-chapter-label">Chapter 7 — LEFT JOIN</div>
+         <h2>LEFT OUTER JOIN</h2>
+         <hr class="page-divider">
+         <p>A **LEFT OUTER JOIN** (or simply LEFT JOIN) returns **all** rows from the left table, and the matched rows from the right table. If there is no match, the columns from the right table will contain <strong>NULL</strong>.</p>
+         <table class="compare-table" data-table-id="ch7-left-join">
+            <tr><th>StudentID</th><th>Student Name</th><th>GroupID</th><th>GroupName</th></tr>
+            <tr><td>1</td><td>Alice</td><td>101</td><td>Group A</td></tr>
+            <tr><td>2</td><td>Bob</td><td>102</td><td>Group B</td></tr>
+            <tr><td>3</td><td>Charlie</td><td>NULL</td><td><strong>NULL</strong></td></tr>
+         </table>
+         <div class="sql-block"><code><span class="sql-comment">-- Charlie has no group, but is still listed</span>
+<span class="sql-kw">SELECT</span> Students.Name, Groups.GroupName
+<span class="sql-kw">FROM</span> Students
+<span class="sql-kw">LEFT JOIN</span> Groups <span class="sql-kw">ON</span> Students.GroupID = Groups.GroupID;</code></div>`,
+
+        // Page 4 — RIGHT JOIN
+        `<div class="page-chapter-label">Chapter 7 — RIGHT JOIN</div>
+         <h2>RIGHT OUTER JOIN</h2>
+         <hr class="page-divider">
+         <p>A **RIGHT OUTER JOIN** is the inverse of a LEFT JOIN. It returns **all** rows from the right table, and matched rows from the left table. Unmatched left-side rows are padded with <strong>NULL</strong>.</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Returns all groups, even those with no students</span>
+<span class="sql-kw">SELECT</span> Students.Name, Groups.GroupName
+<span class="sql-kw">FROM</span> Students
+<span class="sql-kw">RIGHT JOIN</span> Groups <span class="sql-kw">ON</span> Students.GroupID = Groups.GroupID;</code></div>
+         <p>Right Joins are less common in practice because queries can usually be rewritten as Left Joins simply by swapping the table order in the <code>FROM</code> clause (which improves readability).</p>`,
+
+        // Page 5 — FULL JOIN
+        `<div class="page-chapter-label">Chapter 7 — FULL JOIN</div>
+         <h2>FULL OUTER JOIN</h2>
+         <hr class="page-divider">
+         <p>A **FULL OUTER JOIN** returns all rows when there is a match in either the left or right table. It combines the behaviors of both LEFT JOIN and RIGHT JOIN.</p>
+         <p>Any row that has no match on the opposing side is padded with <code>NULL</code> values in the empty fields.</p>
+         <div class="sql-block"><code><span class="sql-comment">-- All students and all groups are returned</span>
+<span class="sql-kw">SELECT</span> Students.Name, Groups.GroupName
+<span class="sql-kw">FROM</span> Students
+<span class="sql-kw">FULL JOIN</span> Groups <span class="sql-kw">ON</span> Students.GroupID = Groups.GroupID;</code></div>
+         <p>Full Joins are useful for auditing data or finding orphaned rows in both tables simultaneously.</p>`,
+
+        // Page 6 — CROSS JOIN
+        `<div class="page-chapter-label">Chapter 7 — CROSS JOIN</div>
+         <h2>CROSS JOIN (Cartesian Product)</h2>
+         <hr class="page-divider">
+         <p>A **CROSS JOIN** returns the Cartesian product of the two tables. Every row from the first table is joined with every row from the second table.</p>
+         <p>No <code>ON</code> clause is used because no keys are matched. If Table A has <code>M</code> rows and Table B has <code>N</code> rows, the output will have <code>M &times; N</code> rows.</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Generate every combination of student and group</span>
+<span class="sql-kw">SELECT</span> Students.Name, Groups.GroupName
+<span class="sql-kw">FROM</span> Students
+<span class="sql-kw">CROSS JOIN</span> Groups;</code></div>`,
+
+        // Page 7 — SELF JOIN
+        `<div class="page-chapter-label">Chapter 7 — SELF JOIN</div>
+         <h2>SELF JOIN</h2>
+         <hr class="page-divider">
+         <p>A **SELF JOIN** is a regular join, but the table is joined with itself. This is useful for querying hierarchical data stored in a single table, such as employees and their managers.</p>
+         <p>Since the table is repeated, you **must use aliases** to distinguish between the two instances of the table.</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Join Employees table to itself</span>
+<span class="sql-kw">SELECT</span> E.Name <span class="sql-kw">AS</span> Employee, M.Name <span class="sql-kw">AS</span> Manager
+<span class="sql-kw">FROM</span> Employees E
+<span class="sql-kw">INNER JOIN</span> Employees M <span class="sql-kw">ON</span> E.ManagerID = M.EmployeeID;</code></div>`
+    ],
+
+    ch8: [
+        // Page 1 — Intro to Aggregation
+        `<div class="page-chapter-label">Chapter 8</div>
+         <h2>SQL Grouping &amp; Aggregations</h2>
+         <hr class="page-divider">
+         <p>Database queries often need to summarize large sets of rows rather than listing them individually. SQL provides **Aggregate Functions** to perform mathematical summaries on columns.</p>
+         <p>The five standard aggregate functions supported by almost all SQL databases are:</p>
+         <div class="type-cards">
+            <div class="type-card"><div class="type-card-name">COUNT()</div><div class="type-card-info">Counts the number of rows or values.</div><span class="type-card-tag numeric">Count</span></div>
+            <div class="type-card"><div class="type-card-name">SUM()</div><div class="type-card-info">Adds up numeric values.</div><span class="type-card-tag text">Math</span></div>
+            <div class="type-card"><div class="type-card-name">AVG()</div><div class="type-card-info">Calculates the mean average of values.</div><span class="type-card-tag other">Mean</span></div>
+            <div class="type-card"><div class="type-card-name">MIN() / MAX()</div><div class="type-card-info">Finds lowest or highest values.</div><span class="type-card-tag numeric">Extreme</span></div>
+         </div>`,
+
+        // Page 2 — COUNT & SUM
+        `<div class="page-chapter-label">Chapter 8 — COUNT &amp; SUM</div>
+         <h2>COUNT &amp; SUM Functions</h2>
+         <hr class="page-divider">
+         <h3>COUNT()</h3>
+         <p>Counts matching rows. <code>COUNT(*)</code> counts all rows, while <code>COUNT(column)</code> counts only rows where the column is **not NULL**.</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Count total students, and unique group IDs</span>
+<span class="sql-kw">SELECT</span> COUNT(*), COUNT(DISTINCT GroupID) <span class="sql-kw">FROM</span> Students;</code></div>
+         <h3>SUM()</h3>
+         <p>Adds all values in a numeric column. Null values are ignored.</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Total cost of all products</span>
+<span class="sql-kw">SELECT</span> SUM(Price) <span class="sql-kw">FROM</span> Products;</code></div>`,
+
+        // Page 3 — AVG, MIN, MAX
+        `<div class="page-chapter-label">Chapter 8 — Averages &amp; Extremes</div>
+         <h2>AVG, MIN, and MAX</h2>
+         <hr class="page-divider">
+         <h3>AVG()</h3>
+         <p>Calculates the average of a numeric column. Ignores NULL values completely (it does not count them as 0).</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Average price of products</span>
+<span class="sql-kw">SELECT</span> AVG(Price) <span class="sql-kw">FROM</span> Products;</code></div>
+         <h3>MIN() &amp; MAX()</h3>
+         <p>Finds the smallest and largest values. These functions work on numbers, dates, and even alphabetical text.</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Cheapest and most expensive products</span>
+<span class="sql-kw">SELECT</span> MIN(Price), MAX(Price) <span class="sql-kw">FROM</span> Products;</code></div>`,
+
+        // Page 4 — GROUP BY
+        `<div class="page-chapter-label">Chapter 8 — GROUP BY</div>
+         <h2>The GROUP BY Clause</h2>
+         <hr class="page-divider">
+         <p>The **GROUP BY** clause groups rows that have the same values into summary rows. It is used in conjunction with aggregate functions to compute summaries for each group.</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Find average salary for each department</span>
+<span class="sql-kw">SELECT</span> DepartmentID, AVG(Salary)
+<span class="sql-kw">FROM</span> Employees
+<span class="sql-kw">GROUP BY</span> DepartmentID;</code></div>
+         <p><strong>Golden Rule:</strong> Any column in your <code>SELECT</code> clause that is **not** inside an aggregate function **must** be listed in the <code>GROUP BY</code> clause!</p>`,
+
+        // Page 5 — HAVING
+        `<div class="page-chapter-label">Chapter 8 — HAVING</div>
+         <h2>HAVING vs WHERE</h2>
+         <hr class="page-divider">
+         <p>The <strong>HAVING</strong> clause filters groups, while the <strong>WHERE</strong> clause filters individual rows. Because WHERE executes before grouping, it cannot be used with aggregate functions.</p>
+         <table class="compare-table" data-table-id="ch8-having-vs-where">
+            <tr><th>Clause</th><th>Executed…</th><th>Can Use Aggregates?</th><th>Purpose</th></tr>
+            <tr><td><strong>WHERE</strong></td><td>Before grouping (GROUP BY)</td><td>No</td><td>Filters raw input rows</td></tr>
+            <tr><td><strong>HAVING</strong></td><td>After grouping (GROUP BY)</td><td>Yes</td><td>Filters aggregated groups</td></tr>
+         </table>
+         <div class="sql-block"><code><span class="sql-comment">-- Find departments with average salary over 50,000</span>
+<span class="sql-kw">SELECT</span> DeptID, AVG(Salary) <span class="sql-kw">FROM</span> Employees
+<span class="sql-kw">GROUP BY</span> DeptID <span class="sql-kw">HAVING</span> AVG(Salary) > 50000;</code></div>`,
+
+        // Page 6 — Multiple Groupings
+        `<div class="page-chapter-label">Chapter 8 — Multiple Groupings</div>
+         <h2>Grouping by Multiple Columns</h2>
+         <hr class="page-divider">
+         <p>You can group rows by more than one column. This creates a nested sub-grouping hierarchy (e.g. counting employees per department **and** per job title).</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Department-Job hierarchy count</span>
+<span class="sql-kw">SELECT</span> DeptID, JobTitle, COUNT(*)
+<span class="sql-kw">FROM</span> Employees
+<span class="sql-kw">GROUP BY</span> DeptID, JobTitle;</code></div>
+         <p>The database will create a unique summary row for every distinct combination of <code>DeptID</code> and <code>JobTitle</code>.</p>`,
+
+        // Page 7 — Advanced Aggregations
+        `<div class="page-chapter-label">Chapter 8 — Advanced summaries</div>
+         <h2>Conditional Aggregations</h2>
+         <hr class="page-divider">
+         <p>Sometimes you need to aggregate values based on conditions. You can achieve this by nesting **CASE WHEN** expressions inside aggregate functions.</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Count active vs inactive students in one scan</span>
+<span class="sql-kw">SELECT</span>
+    COUNT(CASE WHEN IsActive = 1 THEN 1 END) AS ActiveCount,
+    COUNT(CASE WHEN IsActive = 0 THEN 1 END) AS InactiveCount
+FROM Students;</code></div>
+         <p>This is highly optimized because the database evaluates conditions row-by-row and runs summaries in a single pass over the table.</p>`
+    ],
+
+    ch9: [
+        // Page 1 — Intro to Nested Queries
+        `<div class="page-chapter-label">Chapter 9</div>
+         <h2>SQL Subqueries &amp; CTEs</h2>
+         <hr class="page-divider">
+         <p>A **Subquery** (or nested query) is an SQL query nested inside another query. The results of the inner query are evaluated and used by the outer query to compute its final results.</p>
+         <div class="diagram-box">
+            <div class="diagram-title">Subquery Execution Flow</div>
+            <p style="font-family:'Fira Code',monospace; font-size:0.8rem; color:#a8346e; font-weight:700;">
+               Inner Query (computes average) &rarr; Average Value &rarr; Outer Query (filters rows above average)
+            </p>
+         </div>
+         <p>Subqueries can return single values (scalar), single columns (lists), or whole tables. In this chapter, we will learn how to write subqueries in the <code>WHERE</code>, <code>FROM</code>, and <code>SELECT</code> clauses, use CTEs, and write correlated queries.</p>`,
+
+        // Page 2 — Subqueries in WHERE
+        `<div class="page-chapter-label">Chapter 9 — WHERE Subqueries</div>
+         <h2>Subqueries in the WHERE Clause</h2>
+         <hr class="page-divider">
+         <p>Subqueries in the <code>WHERE</code> clause are commonly used to filter records against dynamic criteria computed on the fly.</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Find employees earning more than the company average</span>
+<span class="sql-kw">SELECT</span> Name, Salary <span class="sql-kw">FROM</span> Employees
+<span class="sql-kw">WHERE</span> Salary > (
+    <span class="sql-kw">SELECT</span> AVG(Salary) <span class="sql-kw">FROM</span> Employees
+);</code></div>
+         <p>If the subquery returns multiple values, you must use operators like **IN**, **ANY**, or **ALL** instead of standard comparisons (<code>=</code>, <code>&gt;</code>).</p>`,
+
+        // Page 3 — Correlated Subqueries
+        `<div class="page-chapter-label">Chapter 9 — Correlated</div>
+         <h2>Correlated Subqueries</h2>
+         <hr class="page-divider">
+         <p>A **Correlated Subquery** is an inner query that references columns from the outer query. Unlike a standard subquery, it is executed repeatedly—once for each row candidate in the outer query.</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Employees earning more than their department's average</span>
+<span class="sql-kw">SELECT</span> E.Name, E.Salary, E.DeptID
+<span class="sql-kw">FROM</span> Employees E
+<span class="sql-kw">WHERE</span> E.Salary > (
+    <span class="sql-kw">SELECT</span> AVG(Salary) <span class="sql-kw">FROM</span> Employees
+    <span class="sql-kw">WHERE</span> DeptID = E.DeptID <span class="sql-comment">-- Reference to outer E</span>
+);</code></div>
+         <p>Correlated subqueries can be slow on very large tables, so rewrite them as joins where possible.</p>`,
+
+        // Page 4 — EXISTS & NOT EXISTS
+        `<div class="page-chapter-label">Chapter 9 — EXISTS</div>
+         <h2>EXISTS &amp; NOT EXISTS</h2>
+         <hr class="page-divider">
+         <p>The **EXISTS** operator is used to test for the existence of any record in a subquery. It returns TRUE if the subquery returns one or more rows.</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Find students who have made at least one lab submission</span>
+<span class="sql-kw">SELECT</span> S.Name <span class="sql-kw">FROM</span> Students S
+<span class="sql-kw">WHERE EXISTS</span> (
+    <span class="sql-kw">SELECT</span> 1 <span class="sql-kw">FROM</span> Submissions SUB
+    <span class="sql-kw">WHERE</span> SUB.StudentID = S.StudentID
+);</code></div>
+         <p><strong>Performance Tip:</strong> <code>EXISTS</code> halts evaluation immediately when the first match is found, making it faster than aggregate counts or large <code>IN</code> subqueries.</p>`,
+
+        // Page 5 — Subqueries in FROM & SELECT
+        `<div class="page-chapter-label">Chapter 9 — SELECT &amp; FROM</div>
+         <h2>Subqueries in SELECT &amp; FROM</h2>
+         <hr class="page-divider">
+         <h3>Subqueries in FROM (Derived Tables)</h3>
+         <p>You can use a subquery as a temporary table in your FROM clause. You **must** give it a table alias.</p>
+         <div class="sql-block"><code><span class="sql-kw">SELECT</span> Temp.DeptID, Temp.MaxSal
+<span class="sql-kw">FROM</span> (
+    <span class="sql-kw">SELECT</span> DeptID, MAX(Salary) <span class="sql-kw">AS</span> MaxSal <span class="sql-kw">FROM</span> Employees <span class="sql-kw">GROUP BY</span> DeptID
+) <span class="sql-kw">AS</span> Temp;</code></div>
+         <h3>Subqueries in SELECT</h3>
+         <p>Returns a scalar value to project alongside columns in the select list.</p>
+         <div class="sql-block"><code><span class="sql-kw">SELECT</span> Name, (SELECT COUNT(*) FROM Tasks WHERE WorkerID = E.ID) <span class="sql-kw">FROM</span> Employees E;</code></div>`,
+
+        // Page 6 — CTEs
+        `<div class="page-chapter-label">Chapter 9 — CTEs</div>
+         <h2>Common Table Expressions (CTEs)</h2>
+         <hr class="page-divider">
+         <p>A **Common Table Expression (CTE)** is a temporary result set defined using the <strong>WITH</strong> clause. CTEs make complex queries much cleaner, readable, and easier to maintain than nested subqueries.</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Defining a CTE named DeptSalaries</span>
+<span class="sql-kw">WITH</span> DeptSalaries <span class="sql-kw">AS</span> (
+    <span class="sql-kw">SELECT</span> DeptID, AVG(Salary) <span class="sql-kw">AS</span> AvgSalary
+    <span class="sql-kw">FROM</span> Employees
+    <span class="sql-kw">GROUP BY</span> DeptID
+)
+<span class="sql-kw">SELECT</span> E.Name, E.Salary, D.AvgSalary
+<span class="sql-kw">FROM</span> Employees E
+<span class="sql-kw">INNER JOIN</span> DeptSalaries D <span class="sql-kw">ON</span> E.DeptID = D.DeptID;</code></div>`,
+
+        // Page 7 — Recursive CTEs
+        `<div class="page-chapter-label">Chapter 9 — Recursive CTEs</div>
+         <h2>Recursive CTEs &amp; Hierarchy</h2>
+         <hr class="page-divider">
+         <p>A **Recursive CTE** references itself. It is composed of two parts: an **anchor member** (initial row) and a **recursive member** (joins back to the CTE to retrieve sub-elements) combined with <code>UNION ALL</code>.</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Traverse an organizational tree</span>
+<span class="sql-kw">WITH RECURSIVE</span> OrgChart <span class="sql-kw">AS</span> (
+    <span class="sql-comment">-- Anchor: Top manager</span>
+    <span class="sql-kw">SELECT</span> EmployeeID, Name, ManagerID, 1 <span class="sql-kw">AS</span> Level
+    <span class="sql-kw">FROM</span> Employees <span class="sql-kw">WHERE</span> ManagerID <span class="sql-kw">IS NULL</span>
+    <span class="sql-kw">UNION ALL</span>
+    <span class="sql-comment">-- Recursive: Children rows</span>
+    <span class="sql-kw">SELECT</span> E.EmployeeID, E.Name, E.ManagerID, O.Level + 1
+    <span class="sql-kw">FROM</span> Employees E
+    <span class="sql-kw">INNER JOIN</span> OrgChart O <span class="sql-kw">ON</span> E.ManagerID = O.EmployeeID
+)
+<span class="sql-kw">SELECT</span> * <span class="sql-kw">FROM</span> OrgChart;</code></div>`
     ]
 };
 
@@ -862,6 +1156,32 @@ const TABLE_TRANSLATIONS = {
             <tr><td><strong>1 : 0..1</strong> または <strong>1 : N</strong></td><td>子（依存する）テーブルに外部キーを配置。</td><td>各テーブルに個別の主キー。</td></tr>
             <tr><td><strong>M : N</strong> (多重度)</td><td>別の中間（交差/結合）テーブルを作成。</td><td>両方の外部キーから成る複合主キー。</td></tr>
             <tr><td><strong>関連クラス</strong></td><td>中間テーブルに関連クラスのすべての属性列を含める。</td><td>2つの外部キーの複合主キー、又は新しいサロゲートキー。</td></tr>
+        `
+    },
+    'ch7-left-join': {
+        en: `
+            <tr><th>StudentID</th><th>Student Name</th><th>GroupID</th><th>GroupName</th></tr>
+            <tr><td>1</td><td>Alice</td><td>101</td><td>Group A</td></tr>
+            <tr><td>2</td><td>Bob</td><td>102</td><td>Group B</td></tr>
+            <tr><td>3</td><td>Charlie</td><td>NULL</td><td><strong>NULL</strong></td></tr>
+        `,
+        jp: `
+            <tr><th>学生ID (StudentID)</th><th>学生名 (Student Name)</th><th>グループID (GroupID)</th><th>グループ名 (GroupName)</th></tr>
+            <tr><td>1</td><td>アリス (Alice)</td><td>101</td><td>グループA (Group A)</td></tr>
+            <tr><td>2</td><td>ボブ (Bob)</td><td>102</td><td>グループB (Group B)</td></tr>
+            <tr><td>3</td><td>チャーリー (Charlie)</td><td>NULL</td><td><strong>NULL</strong></td></tr>
+        `
+    },
+    'ch8-having-vs-where': {
+        en: `
+            <tr><th>Clause</th><th>Executed…</th><th>Can Use Aggregates?</th><th>Purpose</th></tr>
+            <tr><td><strong>WHERE</strong></td><td>Before grouping (GROUP BY)</td><td>No</td><td>Filters raw input rows</td></tr>
+            <tr><td><strong>HAVING</strong></td><td>After grouping (GROUP BY)</td><td>Yes</td><td>Filters aggregated groups</td></tr>
+        `,
+        jp: `
+            <tr><th>句 (Clause)</th><th>実行順序 (Executed…)</th><th>集計関数は使えるか？</th><th>目的</th></tr>
+            <tr><td><strong>WHERE</strong></td><td>グループ化 (GROUP BY) の前</td><td>いいえ</td><td>生データの行をフィルタリング</td></tr>
+            <tr><td><strong>HAVING</strong></td><td>グループ化 (GROUP BY) の後</td><td>はい</td><td>集約されたグループをフィルタリング</td></tr>
         `
     }
 };
