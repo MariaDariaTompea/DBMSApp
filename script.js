@@ -55,6 +55,8 @@ const TIMELINE_DATA = {
             { id:'ch1', num:'CH.1', label:'Data Types', popupTitle:'Chapter 1 — Data Types', popupDesc:'Exploring SQL data types: INT, VARCHAR, BOOL, FLOAT, DATE, TEXT and when to use each one.', hasLesson: true },
             { id:'ch2', num:'CH.2', label:'Creating Tables', popupTitle:'Chapter 2 — Creating Tables', popupDesc:'The CREATE TABLE statement, column definitions, constraints, and best practices.', hasLesson: true },
             { id:'ch3', num:'CH.3', label:'Keys & Relations', popupTitle:'Chapter 3 — Keys & Relationships', popupDesc:'Primary vs Foreign keys, parent and child tables, referential integrity.', hasLesson: true },
+            { id:'ch4', num:'CH.4', label:'Normal Forms', popupTitle:'Chapter 4 — Normalization', popupDesc:'Schema refinement, functional dependencies, 1NF, 2NF, 3NF, BCNF, and decompositions.', hasLesson: true },
+            { id:'ch5', num:'CH.5', label:'Relational Algebra', popupTitle:'Chapter 5 — Relational Algebra', popupDesc:'Fundamental operators: Select, Project, Join, Set Operations, and query execution plans.', hasLesson: true }
         ]
     },
     'seminar-labs': {
@@ -393,6 +395,177 @@ const LESSON_PAGES = {
             </div>
          </div>
          <p style="text-align:center;margin-top:12px;color:#a8346e;font-weight:600;">Remember: The table with the Foreign Key is always the <em>child!</em></p>`
+    ],
+
+    ch4: [
+        // Page 1 — Title
+        `<div class="page-chapter-label">Chapter 4</div>
+         <h2>Schema Refinement &amp; Normalization</h2>
+         <hr class="page-divider">
+         <p>Database design is not just about creating tables; it is also about refining them to avoid <strong>redundancy</strong> and <strong>anomalies</strong>.</p>
+         <p>Redundancy (storing the same data multiple times) causes several major problems in a database:</p>
+         <div class="diagram-box">
+            <div class="diagram-title">Anomalies Caused by Redundancy</div>
+            <div class="type-cards">
+                <div class="type-card">
+                    <div class="type-card-name">Insert Anomaly</div>
+                    <div class="type-card-info">Being unable to insert certain facts without introducing unrelated facts (e.g. unable to add a new course unless at least one student enrolls).</div>
+                    <span class="type-card-tag text">Insert</span>
+                </div>
+                <div class="type-card">
+                    <div class="type-card-name">Delete Anomaly</div>
+                    <div class="type-card-info">Losing clean facts automatically when other unrelated facts are deleted (e.g. deleting a student enrollment inadvertently deletes the teacher's profile).</div>
+                    <span class="type-card-tag other">Delete</span>
+                </div>
+                <div class="type-card">
+                    <div class="type-card-name">Update Anomaly</div>
+                    <div class="type-card-info">Changing a fact requires updating multiple rows (e.g. changing course name requires editing every single student's enrollment record).</div>
+                    <span class="type-card-tag numeric">Update</span>
+                </div>
+            </div>
+         </div>`,
+
+        // Page 2 — FDs
+        `<div class="page-chapter-label">Chapter 4 — Functional Dependencies</div>
+         <h2>Functional Dependencies (FDs)</h2>
+         <hr class="page-divider">
+         <p>A <strong>Functional Dependency</strong> is an integrity constraint that generalizes keys. We write <code>X &rarr; Y</code>, which means "X uniquely determines Y" (if two rows have the same value for X, they must have the same value for Y).</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Example: StudentID determines Name, but NOT vice-versa</span>
+StudentID &rarr; StudentName
+CourseID  &rarr; CourseName, Credits</code></div>
+         <h3><span class="h3-icon">K</span> Finding Candidate Keys</h3>
+         <p>We use FDs to find the **Candidate Keys** of a table. A candidate key is a minimal set of columns that functionally determines all other columns in the table.</p>
+         <p>To find keys, we compute the <strong>closure</strong> of a set of attributes (written as <code>X<sup>+</sup></code>), which is the set of all attributes determined by X under the given FDs.</p>`,
+
+        // Page 3 — Normal Forms
+        `<div class="page-chapter-label">Chapter 4 — Normal Forms</div>
+         <h2>1NF, 2NF, and 3NF</h2>
+         <hr class="page-divider">
+         <p>Normalization organizes database columns to reduce redundancy. Normal Forms (NFs) define strict compliance states:</p>
+         <table class="compare-table" data-table-id="ch4-normal-forms">
+            <tr><th>Normal Form</th><th>Rule / Constraint</th><th>Goal</th></tr>
+            <tr><td><strong>1NF</strong> (First)</td><td>All attributes must contain atomic (single) values. No lists or sets.</td><td>Eliminate repeating groups</td></tr>
+            <tr><td><strong>2NF</strong> (Second)</td><td>Must be in 1NF, and no non-key attribute can depend on a <em>part</em> of a candidate key (no partial dependencies).</td><td>Eliminate partial key dependencies</td></tr>
+            <tr><td><strong>3NF</strong> (Third)</td><td>Must be in 2NF, and all non-key attributes must depend <em>only</em> on the key (no transitive dependencies: X &rarr; Y &rarr; Z).</td><td>Eliminate transitive dependencies</td></tr>
+         </table>
+         <div class="sql-block"><code><span class="sql-comment">-- 3NF Rule for X &rarr; A:</span>
+-- Either X &rarr; A is trivial (A &isin; X),
+-- or X is a superkey,
+-- or A is a prime attribute (part of some candidate key).</code></div>`,
+
+        // Page 4 — BCNF
+        `<div class="page-chapter-label">Chapter 4 — Boyce-Codd NF</div>
+         <h2>Boyce-Codd Normal Form (BCNF)</h2>
+         <hr class="page-divider">
+         <p><strong>BCNF</strong> is a stronger version of 3NF. A table is in BCNF if and only if for every non-trivial functional dependency <code>X &rarr; A</code>, <strong>X is a superkey</strong>.</p>
+         <p>In other words, BCNF ensures that the *only* non-trivial FDs that hold over a table are key constraints.</p>
+         <div class="diagram-box">
+            <div class="diagram-title">Normal Forms Hierarchy</div>
+            <p style="font-family:'Fira Code',monospace; font-size:1.1rem; color:#a8346e; font-weight:700;">BCNF &sub; 3NF &sub; 2NF &sub; 1NF</p>
+            <p style="font-size:0.75rem; margin-top:8px; color:#7a6580;">If a relation is in BCNF, it is guaranteed to be in 3NF, 2NF, and 1NF.</p>
+         </div>
+         <p>While 3NF decomposition is always dependency-preserving, BCNF decomposition is not always guaranteed to preserve functional dependencies.</p>`,
+
+        // Page 5 — Decomposition
+        `<div class="page-chapter-label">Chapter 4 — Refinement</div>
+         <h2>Decomposition &amp; Synthesis</h2>
+         <hr class="page-divider">
+         <p>If a table violates a normal form, we refine it by **decomposing** it (splitting it into smaller tables). Any decomposition must satisfy two critical properties:</p>
+         <div class="type-cards">
+            <div class="type-card">
+                <div class="type-card-name">Lossless Join</div>
+                <div class="type-card-info">We must be able to reconstruct the original table exactly by joining the decomposed tables (no spurious tuples). <strong>Mandatory!</strong></div>
+                <span class="type-card-tag text">Lossless</span>
+            </div>
+            <div class="type-card">
+                <div class="type-card-name">Dependency Preserving</div>
+                <div class="type-card-info">All functional dependencies can be checked by looking at individual tables (no need to perform joins to check constraints). <strong>Highly Desirable!</strong></div>
+                <span class="type-card-tag other">Preservation</span>
+            </div>
+         </div>
+         <p style="text-align:center;color:#a8346e;font-weight:600;font-size:0.8rem;">Tip: Use 3NF Synthesis (using a Minimal Cover) to guarantee both Lossless Join and Dependency Preservation!</p>`
+    ],
+
+    ch5: [
+        // Page 1 — Title
+        `<div class="page-chapter-label">Chapter 5</div>
+         <h2>Relational Algebra</h2>
+         <hr class="page-divider">
+         <p><strong>Relational Algebra</strong> is a procedural query language that defines a set of operations on relations (tables). It provides the mathematical foundation for SQL query execution and optimization.</p>
+         <p>Every operation in relational algebra takes one or more relations as input and returns a new relation as output. This property is called <strong>closure</strong>, which allows operations to be nested (composed).</p>
+         <div class="diagram-box">
+            <div class="diagram-title">Relational Algebra Operations</div>
+            <div class="type-cards">
+                <div class="type-card"><div class="type-card-name">Selection (&sigma;)</div><div class="type-card-info">Filter rows matching condition</div><span class="type-card-tag numeric">&sigma; Row filter</span></div>
+                <div class="type-card"><div class="type-card-name">Projection (&pi;)</div><div class="type-card-info">Filter columns (removes duplicates)</div><span class="type-card-tag text">&pi; Column filter</span></div>
+                <div class="type-card"><div class="type-card-name">Cross Product (X)</div><div class="type-card-info">Cartesian product of tuples</div><span class="type-card-tag other">X Combinations</span></div>
+                <div class="type-card"><div class="type-card-name">Join (&bowtie;)</div><div class="type-card-info">Combine related tables</div><span class="type-card-tag numeric">&bowtie; Linking</span></div>
+            </div>
+         </div>`,
+
+        // Page 2 — Select and Project
+        `<div class="page-chapter-label">Chapter 5 — Selection &amp; Projection</div>
+         <h2>Selection (&sigma;) &amp; Projection (&pi;)</h2>
+         <hr class="page-divider">
+         <h3><span class="h3-icon">&sigma;</span> Selection</h3>
+         <p>Selects a subset of rows from a relation that satisfy a given selection condition.</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Relational Algebra: &sigma; age > 21 (Students)</span>
+<span class="sql-kw">SELECT DISTINCT</span> * <span class="sql-kw">FROM</span> Students <span class="sql-kw">WHERE</span> age > 21;</code></div>
+         <h3><span class="h3-icon">&pi;</span> Projection</h3>
+         <p>Keeps specified columns and deletes the rest. <strong>Note:</strong> Relational algebra operates on sets, so duplicate rows are automatically eliminated!</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Relational Algebra: &pi; name, email (Students)</span>
+<span class="sql-kw">SELECT DISTINCT</span> name, email <span class="sql-kw">FROM</span> Students;</code></div>`,
+
+        // Page 3 — Set Operations
+        `<div class="page-chapter-label">Chapter 5 — Set Operations</div>
+         <h2>Set Operations</h2>
+         <hr class="page-divider">
+         <p>Relations are sets of tuples, so we can apply standard set operations. To perform Union, Intersection, or Set-Difference, relations must be <strong>union-compatible</strong> (same number of columns, with matching data types).</p>
+         <table class="compare-table" data-table-id="ch5-set-ops">
+            <tr><th>Operation</th><th>Notation</th><th>SQL Equivalent</th><th>Description</th></tr>
+            <tr><td><strong>Union</strong></td><td>R &cup; S</td><td>UNION</td><td>All tuples in R or S (no duplicates)</td></tr>
+            <tr><td><strong>Intersection</strong></td><td>R &cap; S</td><td>INTERSECT</td><td>Tuples present in both R and S</td></tr>
+            <tr><td><strong>Set-Difference</strong></td><td>R &minus; S</td><td>EXCEPT / MINUS</td><td>Tuples in R but not in S</td></tr>
+            <tr><td><strong>Cross-Product</strong></td><td>R &times; S</td><td>CROSS JOIN</td><td>All combinations of tuples from R and S</td></tr>
+         </table>`,
+
+        // Page 4 — Joins
+        `<div class="page-chapter-label">Chapter 5 — Joins</div>
+         <h2>Joining Relations</h2>
+         <hr class="page-divider">
+         <p>Joins allow us to combine related information from different tables. They are shortcuts for combining a Cross-Product and a Selection.</p>
+         <table class="compare-table" data-table-id="ch5-joins">
+            <tr><th>Join Type</th><th>Notation</th><th>SQL Equivalent</th><th>Definition / Meaning</th></tr>
+            <tr><td><strong>Theta-Join</strong></td><td>R &bowtie;<sub>c</sub> S</td><td>INNER JOIN ON c</td><td>Combined relations filtered by condition c: <code>&sigma;<sub>c</sub>(R &times; S)</code></td></tr>
+            <tr><td><strong>Equi-Join</strong></td><td>R &bowtie;<sub>A=B</sub> S</td><td>INNER JOIN ON A=B</td><td>A Theta-Join where the join condition consists only of equalities</td></tr>
+            <tr><td><strong>Natural Join</strong></td><td>R &bowtie; S</td><td>NATURAL JOIN</td><td>Equi-join on all columns with matching names, projecting out redundant columns</td></tr>
+         </table>
+         <div class="sql-block"><code><span class="sql-comment">-- Natural Join Example: Enrolled &bowtie; Students</span>
+<span class="sql-kw">SELECT DISTINCT</span> Students.sid, Students.name, Enrolled.cid, Enrolled.grade
+<span class="sql-kw">FROM</span> Students <span class="sql-kw">INNER JOIN</span> Enrolled <span class="sql-kw">ON</span> Students.sid = Enrolled.sid;</code></div>`,
+
+        // Page 5 — Extended Algebra
+        `<div class="page-chapter-label">Chapter 5 — Extended Operations</div>
+         <h2>Extended Relational Algebra</h2>
+         <hr class="page-divider">
+         <p>Commercial database queries require capabilities beyond basic set algebra. Extended operations include:</p>
+         <div class="type-cards">
+            <div class="type-card">
+                <div class="type-card-name">Aggregation (&vartheta; / &mathcal{G})</div>
+                <div class="type-card-info">Applies functions like <code>SUM</code>, <code>AVG</code>, <code>COUNT</code>, <code>MIN</code>, <code>MAX</code>. Can also perform grouping (SQL <code>GROUP BY</code>).</div>
+                <span class="type-card-tag numeric">&vartheta; Grouping</span>
+            </div>
+            <div class="type-card">
+                <div class="type-card-name">Outer Join (&thinsp;&bowtie;&thinsp;)</div>
+                <div class="type-card-info">Left, Right, or Full Outer Join. Prevents information loss by keeping unmatched tuples and padding missing columns with <code>NULL</code>.</div>
+                <span class="type-card-tag text">&bowtie; Outer</span>
+            </div>
+            <div class="type-card">
+                <div class="type-card-name">Division (/)</div>
+                <div class="type-card-info">Finds values in one relation that are paired with <em>all</em> values of another relation (e.g. students enrolled in <em>all</em> courses).</div>
+                <span class="type-card-tag other">/ Division</span>
+            </div>
+         </div>`
     ]
 };
 
@@ -533,6 +706,50 @@ const TABLE_TRANSLATIONS = {
             <tr><td>作成順序</td><td>先（子テーブルより前）</td><td>後（親テーブルの存在後）</td></tr>
             <tr><td>削除順序</td><td>子テーブルの後（又はCASCADE）</td><td>自由（参照を破損しない）</td></tr>
             <tr><td>例</td><td>Departments</td><td>Students (DeptID 外部キーを保持)</td></tr>
+        `
+    },
+    'ch4-normal-forms': {
+        en: `
+            <tr><th>Normal Form</th><th>Rule / Constraint</th><th>Goal</th></tr>
+            <tr><td><strong>1NF</strong> (First)</td><td>All attributes must contain atomic (single) values. No lists or sets.</td><td>Eliminate repeating groups</td></tr>
+            <tr><td><strong>2NF</strong> (Second)</td><td>Must be in 1NF, and no non-key attribute can depend on a <em>part</em> of a candidate key (no partial dependencies).</td><td>Eliminate partial key dependencies</td></tr>
+            <tr><td><strong>3NF</strong> (Third)</td><td>Must be in 2NF, and all non-key attributes must depend <em>only</em> on the key (no transitive dependencies: X &rarr; Y &rarr; Z).</td><td>Eliminate transitive dependencies</td></tr>
+        `,
+        jp: `
+            <tr><th>正規形</th><th>ルール / 制約</th><th>目的</th></tr>
+            <tr><td><strong>第1正規形</strong> (1NF)</td><td>すべての属性が一意（単一値）でなければならない。リストやセットは不可。</td><td>繰り返しグループの排除</td></tr>
+            <tr><td><strong>第2正規形</strong> (2NF)</td><td>第1正規形を満たし、すべての非キー属性が候補キーの<em>一部</em>に依存しない（部分関数依存の排除）。</td><td>部分依存の排除</td></tr>
+            <tr><td><strong>第3正規形</strong> (3NF)</td><td>第2正規形を満たし、すべての非キー属性が候補キー<em>のみ</em>に直接依存する（推移的関数依存の排除: X &rarr; Y &rarr; Z）。</td><td>推移的依存の排除</td></tr>
+        `
+    },
+    'ch5-set-ops': {
+        en: `
+            <tr><th>Operation</th><th>Notation</th><th>SQL Equivalent</th><th>Description</th></tr>
+            <tr><td><strong>Union</strong></td><td>R &cup; S</td><td>UNION</td><td>All tuples in R or S (no duplicates)</td></tr>
+            <tr><td><strong>Intersection</strong></td><td>R &cap; S</td><td>INTERSECT</td><td>Tuples present in both R and S</td></tr>
+            <tr><td><strong>Set-Difference</strong></td><td>R &minus; S</td><td>EXCEPT / MINUS</td><td>Tuples in R but not in S</td></tr>
+            <tr><td><strong>Cross-Product</strong></td><td>R &times; S</td><td>CROSS JOIN</td><td>All combinations of tuples from R and S</td></tr>
+        `,
+        jp: `
+            <tr><th>演算</th><th>記法</th><th>SQLの同等記述</th><th>説明</th></tr>
+            <tr><td><strong>和集合 (Union)</strong></td><td>R &cup; S</td><td>UNION</td><td>RまたはSのすべてのタプル（重複なし）</td></tr>
+            <tr><td><strong>積集合 (Intersection)</strong></td><td>R &cap; S</td><td>INTERSECT</td><td>RとSの両方に存在するタプル</td></tr>
+            <tr><td><strong>差集合 (Difference)</strong></td><td>R &minus; S</td><td>EXCEPT / MINUS</td><td>Rには存在するがSには存在しないタプル</td></tr>
+            <tr><td><strong>直積 (Cross-Product)</strong></td><td>R &times; S</td><td>CROSS JOIN</td><td>RとSのタプルのすべての組み合わせ</td></tr>
+        `
+    },
+    'ch5-joins': {
+        en: `
+            <tr><th>Join Type</th><th>Notation</th><th>SQL Equivalent</th><th>Definition / Meaning</th></tr>
+            <tr><td><strong>Theta-Join</strong></td><td>R &bowtie;<sub>c</sub> S</td><td>INNER JOIN ON c</td><td>Combined relations filtered by condition c: <code>&sigma;<sub>c</sub>(R &times; S)</code></td></tr>
+            <tr><td><strong>Equi-Join</strong></td><td>R &bowtie;<sub>A=B</sub> S</td><td>INNER JOIN ON A=B</td><td>A Theta-Join where the join condition consists only of equalities</td></tr>
+            <tr><td><strong>Natural Join</strong></td><td>R &bowtie; S</td><td>NATURAL JOIN</td><td>Equi-join on all columns with matching names, projecting out redundant columns</td></tr>
+        `,
+        jp: `
+            <tr><th>結合の種類</th><th>記法</th><th>SQLの同等記述</th><th>定義 / 意味</th></tr>
+            <tr><td><strong>シータ結合</strong></td><td>R &bowtie;<sub>c</sub> S</td><td>INNER JOIN ON c</td><td>結合された関係を条件 c でフィルタリング: <code>&sigma;<sub>c</sub>(R &times; S)</code></td></tr>
+            <tr><td><strong>等価結合</strong></td><td>R &bowtie;<sub>A=B</sub> S</td><td>INNER JOIN ON A=B</td><td>結合条件が等価比較のみで構成されるシータ結合</td></tr>
+            <tr><td><strong>自然結合</strong></td><td>R &bowtie; S</td><td>NATURAL JOIN</td><td>名前が一致するすべての列での等価結合（重複する列は1つのみ投影）</td></tr>
         `
     }
 };
