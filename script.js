@@ -1174,7 +1174,243 @@ OrderDate + <span class="sql-type">INTERVAL</span> '30 days'
 <span class="sql-kw">SELECT</span> Name, DeptID, Salary,
        AVG(Salary) <span class="sql-kw">OVER</span> (PARTITION BY DeptID) <span class="sql-kw">AS</span> DeptAvgSalary
 <span class="sql-kw">FROM</span> Employees;</code></div>
-         <p>This retains the full list of employees while showing the summary, which is perfect for building financial dashboard views.</p>`
+          <p>This retains the full list of employees while showing the summary, which is perfect for building financial dashboard views.</p>`
+    ],
+
+    ch12: [
+        // Page 1 — Database Creation
+        `<div class="page-chapter-label">Chapter 12</div>
+         <h2>Creating Databases</h2>
+         <hr class="page-divider">
+         <p>Before creating tables or query views, you must initialize the database container itself. SQL provides the <strong>CREATE DATABASE</strong> statement to set up a new empty database instance.</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Basic database creation statement</span>
+<span class="sql-kw">CREATE DATABASE</span> SalesDB;</code></div>
+         <p>Depending on the database engine (PostgreSQL, SQL Server, MySQL), you can configure physical log files size, growth limits, and specific filepaths at the creation stage to optimize disk write speeds.</p>`,
+
+        // Page 2 — Dropping Databases
+        `<div class="page-chapter-label">Chapter 12 — Dropping Databases</div>
+         <h2>Dropping Databases</h2>
+         <hr class="page-divider">
+         <p>The <strong>DROP DATABASE</strong> statement deletes the database along with all its tables, indexes, data rows, and schemas. **This action is irreversible.**</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Irreversible database deletion</span>
+<span class="sql-kw">DROP DATABASE</span> SalesDB;</code></div>
+         <p>Most engines require that **no active connections** exist on the target database to prevent data corruption during dropping. In PostgreSQL, you must run <code>TERMINATE ACTIONS</code> or disconnect clients first.</p>`,
+
+        // Page 3 — Working with Schemas
+        `<div class="page-chapter-label">Chapter 12 — Schemas</div>
+         <h2>Working with Schemas</h2>
+         <hr class="page-divider">
+         <p>A **Schema** is a logical namespace partition inside a database. It groups related tables, views, and procedures, separating them from other departments in the same database (e.g. <code>sales</code> vs. <code>hr</code>).</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Create a logical schema namespace</span>
+<span class="sql-kw">CREATE SCHEMA</span> HumanResources;
+<span class="sql-kw">CREATE TABLE</span> HumanResources.Employees ( ID <span class="sql-type">INT</span> );</code></div>
+         <p>Using schemas makes security management easier because you can grant user permissions on entire namespaces rather than individual tables.</p>`,
+
+        // Page 4 — Character Sets & Collations
+        `<div class="page-chapter-label">Chapter 12 — Collations</div>
+         <h2>Character Sets &amp; Collations</h2>
+         <hr class="page-divider">
+         <p>When creating a database, setting the correct character encoding is vital for storing international data:</p>
+         <p style="font-size:0.8rem; line-height:1.6; text-align:left; color:#4a3558; margin-left:16px;">
+            &bull; <strong>Character Set (Encoding):</strong> Determines how characters are mapped to bytes (e.g. <code>UTF8</code> support for Japanese, emoji, etc.).<br>
+            &bull; <strong>Collation:</strong> Defines sorting and comparison sequences (e.g. Case-Sensitive vs. Case-Insensitive, Accent-Sensitive).
+         </p>
+         <div class="sql-block"><code><span class="sql-comment">-- Create database with UTF-8 encoding in MySQL</span>
+<span class="sql-kw">CREATE DATABASE</span> IntlDB
+    <span class="sql-kw">CHARACTER SET</span> utf8mb4
+    <span class="sql-kw">COLLATE</span> utf8mb4_unicode_ci;</code></div>`,
+
+        // Page 5 — DB Config Best Practices
+        `<div class="page-chapter-label">Chapter 12 — Best Practices</div>
+         <h2>Configuration &amp; Administration</h2>
+         <hr class="page-divider">
+         <p>Once created, database maintenance is key to long-term performance stability:</p>
+         <p style="font-size:0.8rem; line-height:1.6; text-align:left; color:#4a3558; margin-bottom:8px;">
+            &bull; <strong>Pre-allocate Size:</strong> Avoid letting the database grow by 1MB increments, which fragments files on disk.<br>
+            &bull; <strong>Separate Storage:</strong> Place physical log files (write-ahead logging) on faster SSDs separate from actual data files.<br>
+            &bull; <strong>Scheduled Backups:</strong> Set up transaction log backups regularly to prevent disk space overflows.
+         </p>
+         <p style="text-align:center;color:#a8346e;font-weight:600;font-size:0.8rem;">Rule of Thumb: Maintain separate physical drives for Operating System, Database Data, and Transaction Logs!</p>`
+    ],
+
+    ch13: [
+        // Page 1 — Alter Table Basics
+        `<div class="page-chapter-label">Chapter 13</div>
+         <h2>Altering Table Structures (DDL)</h2>
+         <hr class="page-divider">
+         <p>Requirements change, which means database schemas must adapt. SQL provides the **ALTER TABLE** statement to modify existing table definitions without losing existing data rows.</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Alter table template structure</span>
+<span class="sql-kw">ALTER TABLE</span> Employees ADD ColumnDefinition;</code></div>
+         <p>ALTER TABLE is a Data Definition Language (DDL) command. It operates on database metadata and locks the target table during execution.</p>`,
+
+        // Page 2 — Column Modification
+        `<div class="page-chapter-label">Chapter 13 — Column Modifications</div>
+         <h2>Adding &amp; Modifying Columns</h2>
+         <hr class="page-divider">
+         <p>You can add new columns, remove obsolete columns, or modify data types of existing columns in a table:</p>
+         <div class="sql-block"><code><span class="sql-comment">-- 1. Add a new column</span>
+<span class="sql-kw">ALTER TABLE</span> Employees <span class="sql-kw">ADD</span> Phone <span class="sql-type">VARCHAR</span>(20);
+
+<span class="sql-comment">-- 2. Drop an existing column</span>
+<span class="sql-kw">ALTER TABLE</span> Employees <span class="sql-kw">DROP COLUMN</span> Phone;
+
+<span class="sql-comment">-- 3. Modify data type (PostgreSQL syntax)</span>
+<span class="sql-kw">ALTER TABLE</span> Employees <span class="sql-kw">ALTER COLUMN</span> Salary <span class="sql-kw">TYPE</span> <span class="sql-type">DECIMAL</span>(12,2);</code></div>`,
+
+        // Page 3 — Constraints Modification
+        `<div class="page-chapter-label">Chapter 13 — Constraints</div>
+         <h2>Adding &amp; Dropping Constraints</h2>
+         <hr class="page-divider">
+         <p>You can add or drop key constraints, check constraints, or defaults after the table has been populated:</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Add a CHECK constraint</span>
+<span class="sql-kw">ALTER TABLE</span> Employees
+    <span class="sql-kw">ADD CONSTRAINT</span> chk_Salary <span class="sql-kw">CHECK</span> (Salary >= 0);
+
+<span class="sql-comment">-- Drop a constraint</span>
+<span class="sql-kw">ALTER TABLE</span> Employees
+    <span class="sql-kw">DROP CONSTRAINT</span> chk_Salary;</code></div>
+         <p>If you add a constraint on a populated table, the database checks existing rows first. If any row violates the new constraint, the ALTER operation fails.</p>`,
+
+        // Page 4 — Renaming Entities
+        `<div class="page-chapter-label">Chapter 13 — Renaming</div>
+         <h2>Renaming Tables &amp; Columns</h2>
+         <hr class="page-divider">
+         <p>Renaming table structures differs slightly across database engines. Most modern databases support renaming to preserve query references:</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Rename a column (PostgreSQL)</span>
+<span class="sql-kw">ALTER TABLE</span> Employees <span class="sql-kw">RENAME COLUMN</span> OldName <span class="sql-kw">TO</span> NewName;
+
+<span class="sql-comment">-- Rename a table (PostgreSQL)</span>
+<span class="sql-kw">ALTER TABLE</span> Employees <span class="sql-kw">RENAME TO</span> Staff;</code></div>
+         <p style="font-size:0.75rem; color:#7a6580;">Note: Renaming tables will break external application code, SQL views, and stored procedures that reference the old names, so use caution!</p>`,
+
+        // Page 5 — DDL Altering Dangers
+        `<div class="page-chapter-label">Chapter 13 — DDL Dangers</div>
+         <h2>DDL Altering Hazards</h2>
+         <hr class="page-divider">
+         <p>Running DDL alter operations on large production tables is high-risk:</p>
+         <p style="font-size:0.8rem; line-height:1.6; text-align:left; color:#4a3558; margin-bottom:8px;">
+            &bull; <strong>Table Locks:</strong> Operations like adding a NOT NULL column with a default value can lock the table (reads &amp; writes blocked) for hours on millions of rows.<br>
+            &bull; <strong>Downtime:</strong> Lock contentions can cascade, causing application API timeouts.<br>
+            &bull; <strong>Safe Pattern:</strong> Add nullable columns first, populate data in batches, then alter column constraints to NOT NULL.
+         </p>
+         <p style="text-align:center;color:#a8346e;font-weight:600;font-size:0.8rem;">Best Practice: Run schema alterations during off-peak maintenance hours!</p>`
+    ],
+
+    ch14: [
+        // Page 1 — Inserting Data
+        `<div class="page-chapter-label">Chapter 14</div>
+         <h2>Data Manipulation: Inserting</h2>
+         <hr class="page-divider">
+         <p>Data Manipulation Language (DML) manages table content. To add new rows, we use the **INSERT INTO** statement.</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Basic column-specific insert</span>
+<span class="sql-kw">INSERT INTO</span> Students (StudentID, Name, GroupID)
+<span class="sql-kw">VALUES</span> (10, 'David', 101);</code></div>
+         <p>Always specify the column list in your insert queries. This prevents queries from breaking if someone alters the table structure by adding or reordering columns later.</p>`,
+
+        // Page 2 — Bulk Insertion
+        `<div class="page-chapter-label">Chapter 14 — Bulk Insertion</div>
+         <h2>Bulk Insert &amp; Select Inserter</h2>
+         <hr class="page-divider">
+         <p>You can insert multiple rows in a single SQL statement by comma-separating values lists, or by copying results directly from another SELECT query:</p>
+         <div class="sql-block"><code><span class="sql-comment">-- 1. Multi-row insertion</span>
+<span class="sql-kw">INSERT INTO</span> Students (StudentID, Name)
+<span class="sql-kw">VALUES</span> (11, 'Eva'), (12, 'Frank');
+
+<span class="sql-comment">-- 2. Insert from SELECT query</span>
+<span class="sql-kw">INSERT INTO</span> ArchiveStudents
+<span class="sql-kw">SELECT</span> * <span class="sql-kw">FROM</span> Students <span class="sql-kw">WHERE</span> GraduationYear &lt; 2026;</code></div>`,
+
+        // Page 3 — Updating Rows
+        `<div class="page-chapter-label">Chapter 14 — Updates</div>
+         <h2>Updating Rows</h2>
+         <hr class="page-divider">
+         <p>The **UPDATE** statement modifies values in existing table rows. You must define which rows to modify using a <code>WHERE</code> clause.</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Update student Group ID</span>
+<span class="sql-kw">UPDATE</span> Students
+<span class="sql-kw">SET</span> GroupID = 105, Status = 'Active'
+<span class="sql-kw">WHERE</span> StudentID = 10;</code></div>
+         <p style="color:#a8346e; font-weight:700; font-size:0.8rem; text-align:center;">WARNING: If you omit the WHERE clause in an UPDATE statement, every single row in the table will be overwritten!</p>`,
+
+        // Page 4 — Upsert Operations
+        `<div class="page-chapter-label">Chapter 14 — Upserts</div>
+         <h2>Upsert Operations (ON CONFLICT)</h2>
+         <hr class="page-divider">
+         <p>An **Upsert** updates a row if it already exists (key collision), or inserts a new row if it doesn't. In PostgreSQL, this uses the <code>ON CONFLICT</code> clause.</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Insert user, update score on primary key conflict</span>
+<span class="sql-kw">INSERT INTO</span> Leaderboard (UserID, Score)
+<span class="sql-kw">VALUES</span> (12, 150)
+<span class="sql-kw">ON CONFLICT</span> (UserID)
+<span class="sql-kw">DO UPDATE SET</span> Score = EXCLUDED.Score;</code></div>
+         <p>In standard SQL, this logic can also be written using the more complex <code>MERGE</code> statement, commonly used in SQL Server and Oracle.</p>`,
+
+        // Page 5 — DML Safety
+        `<div class="page-chapter-label">Chapter 14 — DML Safety</div>
+         <h2>DML Safekeeping &amp; Transactions</h2>
+         <hr class="page-divider">
+         <p>Data modifications can cause accidental data loss if not run safely:</p>
+         <p style="font-size:0.8rem; line-height:1.6; text-align:left; color:#4a3558; margin-bottom:8px;">
+            &bull; <strong>Always Wrap in Transactions:</strong> Run write queries inside <code>BEGIN TRANSACTION</code>. Verify counts, then type <code>COMMIT</code>. If an error is spotted, type <code>ROLLBACK</code>.<br>
+            &bull; <strong>Safe Mode:</strong> Some IDEs prevent updates or deletes that lack a WHERE clause. Keep this feature enabled.
+         </p>
+         <div class="sql-block"><code><span class="sql-kw">BEGIN TRANSACTION</span>;
+<span class="sql-kw">UPDATE</span> Products <span class="sql-kw">SET</span> Price = Price * 1.1 <span class="sql-kw">WHERE</span> Category = 'Books';
+<span class="sql-comment">-- Verify first, then commit</span>
+<span class="sql-kw">COMMIT</span>;</code></div>`
+    ],
+
+    ch15: [
+        // Page 1 — Deleting Rows
+        `<div class="page-chapter-label">Chapter 15</div>
+         <h2>Data Manipulation: Deleting</h2>
+         <hr class="page-divider">
+         <p>To remove records from a table, SQL provides DML and DDL commands. The standard DML command is <strong>DELETE FROM</strong>.</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Delete specific student</span>
+<span class="sql-kw">DELETE FROM</span> Students
+<span class="sql-kw">WHERE</span> StudentID = 12;</code></div>
+         <p>DELETE removes rows one-by-one, evaluates constraints, triggers row-level actions (database triggers), and writes details for each deleted row to the transaction log, allowing rollbacks.</p>`,
+
+        // Page 2 — Truncating Tables
+        `<div class="page-chapter-label">Chapter 15 — Truncate</div>
+         <h2>TRUNCATE TABLE Mechanics</h2>
+         <hr class="page-divider">
+         <p>The <strong>TRUNCATE TABLE</strong> command removes all rows from a table. It is a DDL operation that works by de-allocating the physical data pages storing the table data.</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Instantly empty table data</span>
+<span class="sql-kw">TRUNCATE TABLE</span> TempLogs;</code></div>
+         <p>TRUNCATE is extremely fast because it bypasses triggers, doesn't scan rows, and writes minimal details to transaction logs. However, it cannot be run if the table is referenced by foreign keys.</p>`,
+
+        // Page 3 — Dropping Tables
+        `<div class="page-chapter-label">Chapter 15 — Dropping Tables</div>
+         <h2>Dropping Tables (DROP TABLE)</h2>
+         <hr class="page-divider">
+         <p>The <strong>DROP TABLE</strong> statement completely deletes the table structure, metadata, indexes, permissions, and data rows from the database catalog.</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Drop table and remove references</span>
+<span class="sql-kw">DROP TABLE</span> Students <span class="sql-kw">CASCADE</span>;</code></div>
+         <p>Using the <code>CASCADE</code> option automatically drops any foreign key constraints or views that reference this table, preventing broken schema dependency paths.</p>`,
+
+        // Page 4 — Comparison Table
+        `<div class="page-chapter-label">Chapter 15 — Deletion Methods</div>
+         <h2>DELETE vs. TRUNCATE vs. DROP</h2>
+         <hr class="page-divider">
+         <p>Choosing the correct table removal command is vital for speed and database safety:</p>
+         <table class="compare-table" data-table-id="ch15-delete-comparison">
+            <tr><th>Criteria</th><th>DELETE FROM</th><th>TRUNCATE TABLE</th><th>DROP TABLE</th></tr>
+            <tr><td>Category</td><td>DML (Data Manipulation)</td><td>DDL (Data Definition)</td><td>DDL (Data Definition)</td></tr>
+            <tr><td>Removes...</td><td>Selected rows (via WHERE)</td><td>All rows (empties table)</td><td>Entire table &amp; structure</td></tr>
+            <tr><td>Speed</td><td>Slower (row-by-row log)</td><td>Extremely fast</td><td>Instant (catalog update)</td></tr>
+            <tr><td>Triggers</td><td>Fires (DELETE triggers)</td><td>Does NOT fire triggers</td><td>Does NOT fire triggers</td></tr>
+            <tr><td>Rollback</td><td>Fully supported</td><td>Supported (Postgres only)</td><td>Supported (Postgres only)</td></tr>
+         </table>`,
+
+        // Page 5 — Soft Deletes
+        `<div class="page-chapter-label">Chapter 15 — Safety</div>
+         <h2>Soft Deletes &amp; Safe Deleting</h2>
+         <hr class="page-divider">
+         <p>In production applications, we rarely delete data physically from tables. We use **Soft Deletes** by adding a status column (e.g. <code>is_deleted</code> or <code>deleted_at</code>).</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Soft delete: set status flag only</span>
+<span class="sql-kw">UPDATE</span> Students
+<span class="sql-kw">SET</span> IsDeleted = 1, DeletedAt = NOW()
+<span class="sql-kw">WHERE</span> StudentID = 10;</code></div>
+         <p>This preserves historical audit trails, avoids breaking child table referential integrity constraints, and makes recovery from accidental deletion simple.</p>`
     ]
 };
 
@@ -1424,6 +1660,24 @@ const TABLE_TRANSLATIONS = {
             <tr><td><code>ROW_NUMBER()</code></td><td>一意のインデックス</td><td>いいえ</td><td>1, 2, 3, 4, 5</td></tr>
             <tr><td><code>RANK()</code></td><td>同じ順位</td><td>はい（間を空ける）</td><td>1, 2, 2, 4, 5</td></tr>
             <tr><td><code>DENSE_RANK()</code></td><td>同じ順位</td><td>いいえ（間を空けない）</td><td>1, 2, 2, 3, 4</td></tr>
+        `
+    },
+    'ch15-delete-comparison': {
+        en: `
+            <tr><th>Criteria</th><th>DELETE FROM</th><th>TRUNCATE TABLE</th><th>DROP TABLE</th></tr>
+            <tr><td>Category</td><td>DML (Data Manipulation)</td><td>DDL (Data Definition)</td><td>DDL (Data Definition)</td></tr>
+            <tr><td>Removes...</td><td>Selected rows (via WHERE)</td><td>All rows (empties table)</td><td>Entire table &amp; structure</td></tr>
+            <tr><td>Speed</td><td>Slower (row-by-row log)</td><td>Extremely fast</td><td>Instant (catalog update)</td></tr>
+            <tr><td>Triggers</td><td>Fires (DELETE triggers)</td><td>Does NOT fire triggers</td><td>Does NOT fire triggers</td></tr>
+            <tr><td>Rollback</td><td>Fully supported</td><td>Supported (Postgres only)</td><td>Supported (Postgres only)</td></tr>
+        `,
+        jp: `
+            <tr><th>項目</th><th>DELETE FROM</th><th>TRUNCATE TABLE</th><th>DROP TABLE</th></tr>
+            <tr><td>分類</td><td>DML (データ操作言語)</td><td>DDL (データ定義言語)</td><td>DDL (データ定義言語)</td></tr>
+            <tr><td>削除対象</td><td>選択された行（WHERE句による）</td><td>すべての行（テーブルを空にする）</td><td>テーブル全体およびその構造</td></tr>
+            <tr><td>処理速度</td><td>低速（行ごとのログ記録）</td><td>非常に高速</td><td>即時（カタログの更新のみ）</td></tr>
+            <tr><td>トリガー</td><td>実行される (DELETEトリガー)</td><td>実行されない</td><td>実行されない</td></tr>
+            <tr><td>ロールバック</td><td>完全サポート</td><td>サポート（Postgresのみ）</td><td>サポート（Postgresのみ）</td></tr>
         `
     }
 };
