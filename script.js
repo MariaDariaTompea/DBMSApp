@@ -1587,6 +1587,244 @@ const channel = supabase.channel('db-changes')
       (payload) => console.log('Database modified:', payload))
   .subscribe();</code></div>
          <p>This eliminates the need for applications to run expensive database polling intervals, reducing server resource consumption.</p>`
+    ],
+
+    ch19: [
+        // Page 1 — Client Setup
+        `<div class="page-chapter-label">Chapter 19</div>
+         <h2>Supabase JS Client Setup</h2>
+         <hr class="page-divider">
+         <p>To connect a Javascript frontend or Node.js backend to Supabase, you use the official SDK. Install the package using npm:</p>
+         <div class="sql-block"><code>npm install @supabase/supabase-js</code></div>
+         <p>Initialize the client using your unique project **API URL** and **Anon Key** (retrieved from your Supabase Dashboard settings):</p>
+         <div class="sql-block"><code>import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = 'https://your-project.supabase.co';
+const supabaseKey = 'your-anon-key';
+export const supabase = createClient(supabaseUrl, supabaseKey);</code></div>`,
+
+        // Page 2 — Fetching Data
+        `<div class="page-chapter-label">Chapter 19 — Fetching</div>
+         <h2>Querying Data (Read)</h2>
+         <hr class="page-divider">
+         <p>The SDK compiles Javascript query builder calls into REST API queries. The syntax is chained, mimicking SQL commands:</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Get active students in Group 101</span>
+const { data: students, error } = await supabase
+  .from('students')
+  .select('StudentID, Name')
+  .eq('GroupID', 101)
+  .eq('IsActive', true)
+  .order('Name', { ascending: true });</code></div>
+         <p>Under the hood, this makes a secure HTTPS GET request to PostgREST, returning the records as a standard JSON array.</p>`,
+
+        // Page 3 — Inserting & Updating
+        `<div class="page-chapter-label">Chapter 19 — Write Queries</div>
+         <h2>Inserting &amp; Updating Data</h2>
+         <hr class="page-divider">
+         <p>Adding and editing database records via the SDK is simple. RLS policies will automatically check the session token to verify user permission.</p>
+         <div class="sql-block"><code><span class="sql-comment">-- 1. Insert a new student row</span>
+const { data, error } = await supabase
+  .from('students')
+  .insert([{ Name: 'Grace', GroupID: 102 }]);
+
+<span class="sql-comment">-- 2. Update existing student status</span>
+const { data, error } = await supabase
+  .from('students')
+  .update({ IsActive: false })
+  .eq('StudentID', 11);</code></div>`,
+
+        // Page 4 — Deleting
+        `<div class="page-chapter-label">Chapter 19 — Deleting</div>
+         <h2>Deleting Data</h2>
+         <hr class="page-divider">
+         <p>To delete records, use the `.delete()` method chained with specific target filter criteria:</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Delete student with ID 12</span>
+const { data, error } = await supabase
+  .from('students')
+  .delete()
+  .eq('StudentID', 12);</code></div>
+         <p style="color:#a8346e; font-weight:700; font-size:0.8rem; text-align:center;">WARNING: Chaining .delete() without filters will delete all records in the table if your RLS policy allows it!</p>`,
+
+        // Page 5 — Best Practices
+        `<div class="page-chapter-label">Chapter 19 — Best Practices</div>
+         <h2>SDK Error Handling &amp; Best Practices</h2>
+         <hr class="page-divider">
+         <p>Write robust code by handling errors returned by the Supabase APIs:</p>
+         <div class="sql-block"><code>const { data, error } = await supabase.from('students').select('*');
+if (error) {
+  console.error('Database query failed:', error.message);
+  // Trigger user notification alert
+}</code></div>
+         <p style="font-size:0.8rem; line-height:1.6; text-align:left; color:#4a3558;">
+            &bull; **Limit Projections:** Never use <code>select('*')</code> in production. Select only the columns needed to save network bandwidth.<br>
+            &bull; **Client Singleton:** Keep a single client instance across your app module files to reuse TCP connection websockets.
+         </p>`
+    ],
+
+    ch20: [
+        // Page 1 — Full-stack Connections
+        `<div class="page-chapter-label">Chapter 20</div>
+         <h2>Full-stack Web Connections</h2>
+         <hr class="page-divider">
+         <p>In full-stack architectures, client apps communicate with a backend server, which in turn establishes persistent TCP connections directly with the SQL database engine.</p>
+         <p>Opening database connections is resource-intensive. Servers solve this by creating a **Connection Pool**—a cache of open database connections that are shared and reused across concurrent user API requests.</p>
+         <p style="text-align:center;color:#a8346e;font-weight:600;font-size:0.8rem;">Let's explore connecting to PostgreSQL using a Node.js Express server backend and a React frontend!</p>`,
+
+        // Page 2 — Node.js Setup
+        `<div class="page-chapter-label">Chapter 20 — Node.js Setup</div>
+         <h2>Node.js Express Server Setup</h2>
+         <hr class="page-divider">
+         <p>Install the official PostgreSQL client library <code>pg</code> in your Node.js application:</p>
+         <div class="sql-block"><code>npm install pg express cors dotenv</code></div>
+         <p>Create a connection pool manager using your database connection URI string:</p>
+         <div class="sql-block"><code>const { Pool } = require('pg');
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false } // Required for cloud databases
+});
+module.exports = pool;</code></div>`,
+
+        // Page 3 — Express API
+        `<div class="page-chapter-label">Chapter 20 — Express APIs</div>
+         <h2>Creating REST API Endpoints</h2>
+         <hr class="page-divider">
+         <p>Write an Express route that queries the connection pool and returns database rows as a JSON response to frontend clients:</p>
+         <div class="sql-block"><code>const express = require('express');
+const pool = require('./db');
+const app = express();
+
+app.get('/api/students', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM students');
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});</code></div>`,
+
+        // Page 4 — React Integration
+        `<div class="page-chapter-label">Chapter 20 — React Fetch</div>
+         <h2>React Frontend Fetch Integration</h2>
+         <hr class="page-divider">
+         <p>In your React client, use the `fetch` API inside a `useEffect` hook to retrieve the database records from your Node.js backend:</p>
+         <div class="sql-block"><code>import { useEffect, useState } from 'react';
+
+function StudentList() {
+  const [students, setStudents] = useState([]);
+  useEffect(() => {
+    fetch('http://localhost:5000/api/students')
+      .then(res => res.json())
+      .then(data => setStudents(data));
+  }, []);
+  return (
+    &lt;ul&gt;{students.map(s => &lt;li key={s.StudentID}&gt;{s.Name}&lt;/li&gt;)}&lt;/ul&gt;
+  );
+}</code></div>`,
+
+        // Page 5 — Secrets Config
+        `<div class="page-chapter-label">Chapter 20 — Security</div>
+         <h2>Safe Configuration &amp; Secrets</h2>
+         <hr class="page-divider">
+         <p>**Security Warning:** Never hardcode your database passwords, connection URIs, or admin API keys in frontend code or check them into GitHub.</p>
+         <p>Always use **Environment Variables** loaded via a `.env` file, and append it to your `.gitignore` configuration.</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Content of .env file (secret)</span>
+DATABASE_URL=postgresql://postgres:myPassword123@db.supabase.co:5432/postgres
+PORT=5000</code></div>
+         <p style="text-align:center;color:#a8346e;font-weight:600;font-size:0.8rem;">Remember: Frontend clients only query APIs; the database connection stays secure on the server!</p>`
+    ],
+
+    ch21: [
+        // Page 1 — Python psycopg2
+        `<div class="page-chapter-label">Chapter 21</div>
+         <h2>Connecting Python to Database</h2>
+         <hr class="page-divider">
+         <p>Python connects to PostgreSQL databases using the popular <strong>psycopg2</strong> library. Install the package using pip:</p>
+         <div class="sql-block"><code>pip install psycopg2-binary</code></div>
+         <p>Establish a connection, open a database cursor, run SQL statements, and retrieve rows:</p>
+         <div class="sql-block"><code>import psycopg2
+
+conn = psycopg2.connect("dbname=postgres user=postgres password=myPass host=db.co")
+cur = conn.cursor()
+cur.execute("SELECT * FROM students")
+rows = cur.fetchall()
+for row in rows:
+    print(row)
+cur.close()
+conn.close()</code></div>`,
+
+        // Page 2 — Python SQLAlchemy
+        `<div class="page-chapter-label">Chapter 21 — Python ORM</div>
+         <h2>Python Object Relational Mapper (ORM)</h2>
+         <hr class="page-divider">
+         <p>Rather than writing raw SQL statements, Python developers use **SQLAlchemy** to interact with database tables as Python class objects.</p>
+         <div class="sql-block"><code>from sqlalchemy import create_engine, Column, Integer, String
+from sqlalchemy.orm import declarative_base, sessionmaker
+
+Base = declarative_base()
+class Student(Base):
+    __tablename__ = 'students'
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+
+engine = create_engine('postgresql://user:pass@host/db')
+Session = sessionmaker(bind=engine)
+session = Session()
+
+# Query students simply
+students = session.query(Student).all()</code></div>`,
+
+        // Page 3 — C# ADO.NET
+        `<div class="page-chapter-label">Chapter 21 — C# ADO.NET</div>
+         <h2>C# direct SQL connections</h2>
+         <hr class="page-divider">
+         <p>In .NET applications, you connect to databases using ADO.NET components, commonly utilizing the <code>Npgsql</code> package for PostgreSQL.</p>
+         <div class="sql-block"><code>using Npgsql;
+
+string connString = "Host=db.co;Username=postgres;Password=pass;Database=postgres";
+using (var conn = new NpgsqlConnection(connString))
+{
+    conn.Open();
+    using (var cmd = new NpgsqlCommand("SELECT Name FROM Students", conn))
+    using (var reader = cmd.ExecuteReader())
+    {
+        while (reader.Read()) {
+            Console.WriteLine(reader.GetString(0));
+        }
+    }
+}</code></div>`,
+
+        // Page 4 — C# Entity Framework
+        `<div class="page-chapter-label">Chapter 21 — C# ORM</div>
+         <h2>C# Entity Framework Core</h2>
+         <hr class="page-divider">
+         <p>In .NET, the standard ORM is **Entity Framework Core (EF Core)**. It handles table creation (migrations) and queries using LINQ code syntax.</p>
+         <div class="sql-block"><code>public class Student {
+    public int StudentID { get; set; }
+    public string Name { get; set; }
+}
+
+public class SchoolContext : DbContext {
+    public DbSet&lt;Student&gt; Students { get; set; }
+}
+
+// Querying database using LINQ
+using (var db = new SchoolContext()) {
+    var list = db.Students.Where(s => s.Name.StartsWith("A")).ToList();
+}</code></div>`,
+
+        // Page 5 — Connection Checklist
+        `<div class="page-chapter-label">Chapter 21 — Connection Methods</div>
+         <h2>Database Connection Methods Comparison</h2>
+         <hr class="page-divider">
+         <p>Choosing the correct integration style depends on your technology stack and security needs:</p>
+         <table class="compare-table" data-table-id="ch21-connection-methods">
+            <tr><th>Method</th><th>Direct TCP Connection</th><th>REST API (PostgREST / Supabase)</th></tr>
+            <tr><td>Protocol</td><td>Binary TCP Socket Protocol</td><td>HTTPS (JSON payload over port 443)</td></tr>
+            <tr><td>Security</td><td>Firewall rules, secure IP whitelist</td><td>JWT Token authorization, RLS policies</td></tr>
+            <tr><td>Usage</td><td>Backend Server (Node, Python, C#)</td><td>Frontend Clients (Browser, Mobile App)</td></tr>
+            <tr><td>Performance</td><td>Very high (persistent pools)</td><td>Medium (HTTP request overhead)</td></tr>
+            <tr><td>Setup</td><td>Manual connection pool manager</td><td>Instant setup via client SDKs</td></tr>
+         </table>`
     ]
 };
 
@@ -1868,6 +2106,24 @@ const TABLE_TRANSLATIONS = {
             <tr><td><strong>SELECT</strong></td><td><code>true</code>（誰でもプロフィールを閲覧可能）</td><td>パブリック読込</td></tr>
             <tr><td><strong>UPDATE</strong></td><td><code>auth.uid() = id</code>（アカウント所有者のみ編集可能）</td><td>所有者書込</td></tr>
             <tr><td><strong>INSERT</strong></td><td><code>auth.uid() = id</code>（ログイン済みのユーザー自身のみ作成可能）</td><td>所有者作成</td></tr>
+        `
+    },
+    'ch21-connection-methods': {
+        en: `
+            <tr><th>Method</th><th>Direct TCP Connection</th><th>REST API (PostgREST / Supabase)</th></tr>
+            <tr><td>Protocol</td><td>Binary TCP Socket Protocol</td><td>HTTPS (JSON payload over port 443)</td></tr>
+            <tr><td>Security</td><td>Firewall rules, secure IP whitelist</td><td>JWT Token authorization, RLS policies</td></tr>
+            <tr><td>Usage</td><td>Backend Server (Node, Python, C#)</td><td>Frontend Clients (Browser, Mobile App)</td></tr>
+            <tr><td>Performance</td><td>Very high (persistent pools)</td><td>Medium (HTTP request overhead)</td></tr>
+            <tr><td>Setup</td><td>Manual connection pool manager</td><td>Instant setup via client SDKs</td></tr>
+        `,
+        jp: `
+            <tr><th>接続方式</th><th>直接 TCP 接続 (Direct TCP)</th><th>REST API (PostgREST / Supabase)</th></tr>
+            <tr><td>プロトコル</td><td>バイナリ TCP ソケットプロトコル</td><td>HTTPS (ポート 443 経由の JSON ペイロード)</td></tr>
+            <tr><td>セキュリティ</td><td>ファイアウォール規則、安全な IP ホワイトリスト</td><td>JWT トークン認証、行レベルセキュリティ (RLS)</td></tr>
+            <tr><td>主な用途</td><td>バックエンドサーバー (Node, Python, C#)</td><td>フロントエンドクライアント (ブラウザ、モバイル)</td></tr>
+            <tr><td>パフォーマンス</td><td>非常に高い (持続的なコネクションプール)</td><td>中程度 (HTTP リクエストのオーバーヘッド)</td></tr>
+            <tr><td>構成設定</td><td>手動でのコネクションプール管理が必要</td><td>クライアント SDK 経由での即時セットアップ</td></tr>
         `
     }
 };
