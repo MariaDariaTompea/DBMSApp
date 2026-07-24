@@ -714,3 +714,153 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     color: #fcd34d;
 }
 
+/* ===== BANK CODE PUZZLE GAME ===== */
+.bank-game-workbench {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 16px;
+    margin-top: 10px;
+}
+@media (max-width: 850px) {
+    .bank-game-workbench {
+        grid-template-columns: 1fr;
+    }
+}
+.bank-code-editor {
+    background: #0f172a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+}
+.editor-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px;
+    background: rgba(255, 255, 255, 0.04);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    font-family: 'Fira Code', monospace;
+    font-size: 0.8rem;
+}
+.editor-title {
+    color: #e2e8f0;
+    font-weight: 600;
+}
+.editor-lang {
+    color: #a78bfa;
+    background: rgba(167, 139, 250, 0.15);
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+.bank-code-content {
+    padding: 16px;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.82rem;
+    line-height: 1.8;
+    color: #cbd5e1;
+    overflow-x: auto;
+}
+.bank-code-content pre {
+    margin: 0;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+.bank-slot {
+    display: inline-block;
+    min-width: 105px;
+    padding: 2px 10px;
+    margin: 0 4px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px dashed rgba(167, 139, 250, 0.5);
+    border-radius: 6px;
+    color: #f472b6;
+    font-weight: 700;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    vertical-align: middle;
+}
+.bank-slot:hover, .bank-slot.active-slot {
+    background: rgba(167, 139, 250, 0.15);
+    border-color: #a78bfa;
+    box-shadow: 0 0 10px rgba(167, 139, 250, 0.4);
+}
+.bank-slot.filled {
+    border-style: solid;
+    border-color: #38bdf8;
+    color: #38bdf8;
+    background: rgba(56, 189, 248, 0.1);
+}
+.bank-slot.valid {
+    border-style: solid;
+    border-color: #10b981;
+    color: #34d399;
+    background: rgba(16, 185, 129, 0.15);
+}
+.bank-slot.invalid {
+    border-style: solid;
+    border-color: #f87171;
+    color: #f87171;
+    background: rgba(239, 68, 68, 0.15);
+    animation: erShake 0.4s ease;
+}
+
+.bank-pieces-pool {
+    background: rgba(20, 15, 30, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.pool-header {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding-bottom: 8px;
+}
+.pool-header span:first-child {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: #fff;
+}
+.pool-sub {
+    font-size: 0.75rem;
+    color: #94a3b8;
+}
+.bank-tiles-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.bank-tile {
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #e2e8f0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+.bank-tile:hover {
+    background: rgba(244, 114, 182, 0.15);
+    border-color: var(--sakura-400);
+    transform: translateY(-2px);
+}
+.bank-tile.used {
+    opacity: 0.3;
+    pointer-events: none;
+    text-decoration: line-through;
+}
+.bank-tile.distractor {
+    border-color: rgba(255, 255, 255, 0.06);
+}
+
+

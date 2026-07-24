@@ -3266,16 +3266,96 @@ using (var db = new SchoolContext()) {
     ],
 
     'bank-overview': [
-        `<div class="page-chapter-label">Building Project 2 — Banking</div>
-         <h2>Bank Management Schema</h2>
+        // Page 1 — Interactive Bank Code Assembly Workbench
+        `<div class="page-chapter-label">Building Project 2 — Bank Management Code Puzzle</div>
+         <h2>Interactive Bank SQL &amp; Server Connection Game</h2>
          <hr class="page-divider">
-         <p>Schema design for managing bank accounts, customer profiles, and ledger transactions:</p>
-         <div class="sql-block"><code><span class="sql-kw">CREATE TABLE</span> Accounts (
-    AccountID <span class="sql-kw">INT PRIMARY KEY IDENTITY</span>(1000,1),
-    CustomerID <span class="sql-kw">INT NOT NULL</span>,
-    AccountType <span class="sql-kw">VARCHAR</span>(20) <span class="sql-kw">CHECK</span> (AccountType <span class="sql-kw">IN</span> ('SAVINGS','CHECKING')),
-    Balance <span class="sql-kw">DECIMAL</span>(15,2) <span class="sql-kw">DEFAULT</span> 0.00
-);</code></div>`
+         <p style="font-size:0.88rem; line-height:1.5; color:#cbd5e1; margin-bottom:14px;">
+            <strong>Instructions:</strong> The banking code on the left has missing syntax and server connection pieces. Click an empty blank in the code, then click a code tile from the <strong>Code Piece Bank</strong> on the right to fill it in! Click <strong>Validate Bank Script</strong> when done.
+         </p>
+
+         <div class="bank-game-toolbar">
+             <div class="er-toolbar-actions">
+                 <button class="er-btn er-validate-btn" id="bank-validate-btn">✓ Validate Bank Script</button>
+                 <button class="er-btn er-reset-btn" id="bank-reset-btn">↺ Reset Blanks</button>
+                 <button class="er-btn er-hint-btn" id="bank-hint-btn">💡 Show Hint</button>
+             </div>
+             <div class="er-score-badge" id="bank-score-badge">0 / 6 Blanks Filled</div>
+         </div>
+
+         <div class="bank-game-workbench" id="bank-game-workbench">
+             <!-- LEFT SIDE: CODE EDITOR / CODE SCRIPT -->
+             <div class="bank-code-editor">
+                 <div class="editor-header">
+                     <span class="editor-title">📄 bank_server_and_db.sql</span>
+                     <span class="editor-lang">Node.js + Express + SQL</span>
+                 </div>
+                 <div class="bank-code-content">
+<pre><code><span class="sql-comment">-- 1. Create Bank Accounts Table with Constraints</span>
+<span class="sql-kw">CREATE TABLE</span> Accounts (
+    AccountID <span class="sql-kw">INT PRIMARY KEY IDENTITY</span>(1000, 1),
+    Balance <span class="sql-kw">DECIMAL</span>(15,2) <span class="sql-kw">DEFAULT</span> 0.00 <div class="bank-slot active-slot" data-slot="1" data-correct="CHECK">[ Blank 1 ]</div> (Balance &gt;= 0),
+    AccountType <span class="sql-kw">VARCHAR</span>(20) <div class="bank-slot" data-slot="2" data-correct="IN">[ Blank 2 ]</div> ('SAVINGS', 'CHECKING')
+);
+
+<span class="sql-comment">-- 2. Define Foreign Key Link to Customer Table</span>
+<span class="sql-kw">ALTER TABLE</span> Accounts <span class="sql-kw">ADD CONSTRAINT</span> FK_BankCust
+    <div class="bank-slot" data-slot="3" data-correct="FOREIGN KEY">[ Blank 3 ]</div> (CustomerID) <span class="sql-kw">REFERENCES</span> Customers(CustomerID);
+
+<span class="sql-comment">-- 3. Initialize Supabase Backend Client Connection</span>
+<span class="sql-kw">const</span> { createClient } = require('<div class="bank-slot" data-slot="4" data-correct="@supabase/supabase-js">[ Blank 4 ]</div>');
+<span class="sql-kw">const</span> supabase = createClient(
+    process.env.SUPABASE_URL,
+    process.env.<div class="bank-slot" data-slot="5" data-correct="SUPABASE_ANON_KEY">[ Blank 5 ]</div>
+);
+
+<span class="sql-comment">-- 4. Execute Secure Funds Transfer Transaction Query</span>
+<span class="sql-kw">await</span> supabase.rpc('<div class="bank-slot" data-slot="6" data-correct="transfer_funds">[ Blank 6 ]</div>', {
+    sender_account: 1001,
+    receiver_account: 1002,
+    amount: 250.00
+});</code></pre>
+                 </div>
+             </div>
+
+             <!-- RIGHT SIDE: CODE PIECES POOL -->
+             <div class="bank-pieces-pool">
+                 <div class="pool-header">
+                     <span>🧩 Code Piece Bank</span>
+                     <span class="pool-sub">Click a piece to insert into active blank</span>
+                 </div>
+                 <div class="bank-tiles-grid" id="bank-tiles-grid">
+                     <div class="bank-tile" data-val="CHECK">CHECK</div>
+                     <div class="bank-tile" data-val="IN">IN</div>
+                     <div class="bank-tile" data-val="FOREIGN KEY">FOREIGN KEY</div>
+                     <div class="bank-tile" data-val="@supabase/supabase-js">@supabase/supabase-js</div>
+                     <div class="bank-tile" data-val="SUPABASE_ANON_KEY">SUPABASE_ANON_KEY</div>
+                     <div class="bank-tile" data-val="transfer_funds">transfer_funds</div>
+                     <!-- Distractors -->
+                     <div class="bank-tile distractor" data-val="WHERE">WHERE</div>
+                     <div class="bank-tile distractor" data-val="PRIMARY KEY">PRIMARY KEY</div>
+                     <div class="bank-tile distractor" data-val="axios">axios</div>
+                     <div class="bank-tile distractor" data-val="execute_query">execute_query</div>
+                 </div>
+             </div>
+         </div>
+
+         <div class="er-feedback-toast" id="bank-feedback-toast" style="display:none;"></div>`,
+
+        // Page 2 — Bank Solution Overview
+        `<div class="page-chapter-label">Bank System — Solution &amp; Architecture</div>
+         <h2>Bank Database &amp; Server Connection Solution</h2>
+         <hr class="page-divider">
+         <p>Here is the complete annotated solution for the Bank Management System setup script:</p>
+         <table class="compare-table" data-table-id="bank-solution-table">
+            <tr><th>Blank #</th><th>Target Slot</th><th>Correct Piece</th><th>Concept / Explanation</th></tr>
+            <tr><td>Blank 1</td><td>Balance Constraint</td><td><code>CHECK</code></td><td>Enforces non-negative account balances: <code>CHECK (Balance &gt;= 0)</code>.</td></tr>
+            <tr><td>Blank 2</td><td>Account Type Domain</td><td><code>IN</code></td><td>Restricts allowed account values: <code>IN ('SAVINGS', 'CHECKING')</code>.</td></tr>
+            <tr><td>Blank 3</td><td>Customer Link</td><td><code>FOREIGN KEY</code></td><td>Sets referential integrity linking accounts to customer records.</td></tr>
+            <tr><td>Blank 4</td><td>Supabase SDK Package</td><td><code>@supabase/supabase-js</code></td><td>The official npm client package for Supabase backend connection.</td></tr>
+            <tr><td>Blank 5</td><td>Client Key Env Var</td><td><code>SUPABASE_ANON_KEY</code></td><td>Loaded from environment variables to authenticate client API requests.</td></tr>
+            <tr><td>Blank 6</td><td>RPC Transaction Call</td><td><code>transfer_funds</code></td><td>Calls the database atomic stored procedure for safe fund transfers.</td></tr>
+         </table>`
     ],
 
     'student-overview': [
@@ -3913,6 +3993,9 @@ function openLesson(chapterId) {
     if (chapterId === 'restaurant-puzzle') {
         setTimeout(initErGame, 700);
     }
+    if (chapterId === 'bank-overview') {
+        setTimeout(initBankCodeGame, 700);
+    }
 
     fadeOverlay.classList.add('active');
     setTimeout(() => {
@@ -4490,6 +4573,175 @@ function updateErScoreBadge() {
 
 function showErToast(msg, type) {
     const toast = document.getElementById('er-feedback-toast');
+    if (!toast) return;
+    toast.textContent = msg;
+    toast.className = `er-feedback-toast ${type} active`;
+    toast.style.display = 'block';
+    setTimeout(() => {
+        toast.classList.remove('active');
+        setTimeout(() => toast.style.display = 'none', 300);
+    }, 4500);
+}
+
+/* ==========================================================
+   INTERACTIVE BANK CODE ASSEMBLY PUZZLE ENGINE
+   ========================================================== */
+let bankSlotValues = { 1: null, 2: null, 3: null, 4: null, 5: null, 6: null };
+let activeBankSlot = 1;
+
+function initBankCodeGame() {
+    const workbench = document.getElementById('bank-game-workbench');
+    if (!workbench) return;
+
+    bankSlotValues = { 1: null, 2: null, 3: null, 4: null, 5: null, 6: null };
+    activeBankSlot = 1;
+
+    // Attach button handlers
+    const validateBtn = document.getElementById('bank-validate-btn');
+    const resetBtn = document.getElementById('bank-reset-btn');
+    const hintBtn = document.getElementById('bank-hint-btn');
+
+    if (validateBtn) validateBtn.onclick = validateBankCode;
+    if (resetBtn) resetBtn.onclick = resetBankCode;
+    if (hintBtn) hintBtn.onclick = showBankHint;
+
+    // Slots handlers
+    const slots = workbench.querySelectorAll('.bank-slot');
+    slots.forEach(slot => {
+        const slotNum = parseInt(slot.dataset.slot);
+        slot.onclick = () => handleBankSlotClick(slotNum);
+    });
+
+    // Tiles handlers
+    const tiles = workbench.querySelectorAll('.bank-tile');
+    tiles.forEach(tile => {
+        tile.onclick = () => handleBankTileClick(tile, tile.dataset.val);
+    });
+
+    updateBankUI();
+}
+
+function handleBankSlotClick(slotNum) {
+    if (bankSlotValues[slotNum]) {
+        bankSlotValues[slotNum] = null;
+        activeBankSlot = slotNum;
+        showBankToast(`Cleared Blank ${slotNum}.`, 'info');
+    } else {
+        activeBankSlot = slotNum;
+        showBankToast(`Selected Blank ${slotNum}. Click a code tile on the right to insert!`, 'info');
+    }
+    updateBankUI();
+}
+
+function handleBankTileClick(tileEl, val) {
+    if (tileEl.classList.contains('used')) return;
+
+    if (!activeBankSlot || bankSlotValues[activeBankSlot]) {
+        const emptySlot = Object.keys(bankSlotValues).find(k => bankSlotValues[k] === null);
+        if (emptySlot) {
+            activeBankSlot = parseInt(emptySlot);
+        } else {
+            showBankToast(`All blanks are filled! Click a blank to clear it or click Validate.`, 'warning');
+            return;
+        }
+    }
+
+    bankSlotValues[activeBankSlot] = val;
+    showBankToast(`Inserted '${val}' into Blank ${activeBankSlot}!`, 'success');
+
+    const nextEmpty = Object.keys(bankSlotValues).find(k => bankSlotValues[k] === null);
+    if (nextEmpty) activeBankSlot = parseInt(nextEmpty);
+    else activeBankSlot = null;
+
+    updateBankUI();
+}
+
+function updateBankUI() {
+    const workbench = document.getElementById('bank-game-workbench');
+    if (!workbench) return;
+
+    const usedValues = Object.values(bankSlotValues).filter(Boolean);
+
+    workbench.querySelectorAll('.bank-tile').forEach(tile => {
+        const val = tile.dataset.val;
+        tile.classList.toggle('used', usedValues.includes(val));
+    });
+
+    workbench.querySelectorAll('.bank-slot').forEach(slot => {
+        const slotNum = parseInt(slot.dataset.slot);
+        const val = bankSlotValues[slotNum];
+
+        slot.classList.toggle('active-slot', slotNum === activeBankSlot);
+        slot.classList.toggle('filled', !!val);
+
+        if (val) {
+            slot.textContent = val;
+        } else {
+            slot.textContent = `[ Blank ${slotNum} ]`;
+            slot.classList.remove('valid', 'invalid');
+        }
+    });
+
+    updateBankScoreBadge();
+}
+
+function validateBankCode() {
+    const workbench = document.getElementById('bank-game-workbench');
+    if (!workbench) return;
+
+    let validCount = 0;
+    const slots = workbench.querySelectorAll('.bank-slot');
+
+    slots.forEach(slot => {
+        const slotNum = parseInt(slot.dataset.slot);
+        const userVal = bankSlotValues[slotNum];
+        const correctVal = slot.dataset.correct;
+
+        if (userVal === correctVal) {
+            slot.classList.add('valid');
+            slot.classList.remove('invalid');
+            validCount++;
+        } else {
+            slot.classList.add('invalid');
+            slot.classList.remove('valid');
+        }
+    });
+
+    if (validCount === 6) {
+        showBankToast(`🎉 BANK SCRIPT VALIDATED! All 6 SQL & Express/Supabase connection code pieces are correct!`, 'success');
+    } else {
+        showBankToast(`Validation Complete: ${validCount} / 6 correct. Red blanks are incorrect or empty! Click them to try another code piece.`, 'warning');
+    }
+
+    updateBankScoreBadge();
+}
+
+function resetBankCode() {
+    bankSlotValues = { 1: null, 2: null, 3: null, 4: null, 5: null, 6: null };
+    activeBankSlot = 1;
+    const workbench = document.getElementById('bank-game-workbench');
+    if (workbench) {
+        workbench.querySelectorAll('.bank-slot').forEach(s => s.classList.remove('valid', 'invalid'));
+    }
+    updateBankUI();
+    showBankToast('Blanks reset.', 'info');
+}
+
+function showBankHint() {
+    showBankToast('💡 Hint: 1: CHECK(Balance >= 0), 2: IN(\'SAVINGS\',\'CHECKING\'), 3: FOREIGN KEY, 4: @supabase/supabase-js, 5: SUPABASE_ANON_KEY, 6: transfer_funds.', 'info');
+}
+
+function updateBankScoreBadge() {
+    const badge = document.getElementById('bank-score-badge');
+    if (!badge) return;
+    const filledCount = Object.values(bankSlotValues).filter(Boolean).length;
+    badge.textContent = `${filledCount} / 6 Blanks Filled`;
+    if (filledCount === 6) badge.classList.add('perfect');
+    else badge.classList.remove('perfect');
+}
+
+function showBankToast(msg, type) {
+    const toast = document.getElementById('bank-feedback-toast');
     if (!toast) return;
     toast.textContent = msg;
     toast.className = `er-feedback-toast ${type} active`;
