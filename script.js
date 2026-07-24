@@ -85,13 +85,16 @@ const TIMELINE_DATA = {
         }))
     },
     'exam-papers': {
-        title: 'Exam Papers & Solutions',
-        subtitle: 'Drag to scroll through the exam parts',
-        bubbles: [
-            { id:'exam1', num:'E1', label:'Exam Part 1', popupTitle:'Exam Part 1', popupDesc:'First section of the exam focusing on fundamental SQL queries and schema design.', hasLesson: false },
-            { id:'exam2', num:'E2', label:'Exam Part 2', popupTitle:'Exam Part 2', popupDesc:'Advanced queries, joins, subqueries, and aggregate functions.', hasLesson: false },
-            { id:'exam3', num:'E3', label:'Exam Part 3', popupTitle:'Exam Part 3', popupDesc:'Complex scenarios — stored procedures, triggers, and optimization challenges.', hasLesson: false },
-        ]
+        title: 'Exam Models & Practice',
+        subtitle: 'Drag to scroll through the exam models',
+        bubbles: Array.from({length: 10}, (_, i) => ({
+            id: `exam${i+1}`,
+            num: `M.${i+1}`,
+            label: `Model ${i+1}`,
+            popupTitle: `Exam Model ${i+1} — Practice`,
+            popupDesc: `Test your skills with multiple choice questions on database internals, theory, security, and joins.`,
+            hasLesson: true
+        }))
     }
 };
 
@@ -1825,6 +1828,1249 @@ using (var db = new SchoolContext()) {
             <tr><td>Performance</td><td>Very high (persistent pools)</td><td>Medium (HTTP request overhead)</td></tr>
             <tr><td>Setup</td><td>Manual connection pool manager</td><td>Instant setup via client SDKs</td></tr>
          </table>`
+    ],
+
+    exam1: [
+        // Page 1 — Welcome
+        `<div class="page-chapter-label">Exam Model 1</div>
+         <h2>Exam Model 1: Concurrency &amp; Locks</h2>
+         <hr class="page-divider">
+         <p>Welcome to **Exam Model 1**! This practice set focuses on transactions, locking protocols, deadlock policies, and ACID properties.</p>
+         <div class="quiz-question-container">
+             <h3>Rules &amp; Instructions</h3>
+             <p style="font-size:0.9rem; line-height:1.6; color:#e2d8e8; margin-bottom:0;">
+                &bull; There are <strong>5 multiple-choice questions</strong> in this model.<br>
+                &bull; Click <strong>Check Answer</strong> on each page to verify your selection and read the explanation.<br>
+                &bull; Navigate using the <strong>Next</strong> and <strong>Previous</strong> buttons below.<br>
+                &bull; Your final score will be computed on the last page.
+             </p>
+         </div>
+         <p style="text-align:center;color:var(--sakura-400);font-weight:600;">Good luck!</p>`,
+
+        // Page 2 — Q1: ACID (Image 1, Q1)
+        `<div class="page-chapter-label">Model 1 — Question 1</div>
+         <h2>ACID Definition</h2>
+         <hr class="page-divider">
+         <div class="quiz-question-container" data-q-index="0" data-correct-answer="a">
+             <h3>In the context of transaction processing, the acronym ACID stands for:</h3>
+             <div class="quiz-options">
+                 <label class="quiz-option-label"><input type="radio" name="e1q1" value="a"> A. atomicity, consistency, isolation, durability</label>
+                 <label class="quiz-option-label"><input type="radio" name="e1q1" value="b"> B. atomicity, consistency, integrity, derivability</label>
+                 <label class="quiz-option-label"><input type="radio" name="e1q1" value="c"> C. atomicity, currency, isolation, durability</label>
+                 <label class="quiz-option-label"><input type="radio" name="e1q1" value="d"> D. acidity, consistency, integrity, derivability</label>
+                 <label class="quiz-option-label"><input type="radio" name="e1q1" value="e"> E. none of the above answers is correct</label>
+             </div>
+             <button class="check-quiz-btn">Check Answer</button>
+             <div class="quiz-explanation" style="display:none;">
+                 <h4>Explanation:</h4>
+                 <p>ACID represents: <strong>Atomicity</strong> (all or nothing), <strong>Consistency</strong> (preserves database rules), <strong>Isolation</strong> (independent concurrent execution), and <strong>Durability</strong> (changes survive crashes).</p>
+             </div>
+         </div>`,
+
+        // Page 3 — Q2: Read Uncommitted Locks (Image 2, Q1)
+        `<div class="page-chapter-label">Model 1 — Question 2</div>
+         <h2>READ UNCOMMITTED Locking</h2>
+         <hr class="page-divider">
+         <div class="quiz-question-container" data-q-index="1" data-correct-answer="d">
+             <h3>Let T be a transaction executing on a SQL Server database D and O a data row in D. Under READ UNCOMMITTED:</h3>
+             <div class="quiz-options">
+                 <label class="quiz-option-label"><input type="radio" name="e1q2" value="a"> A. T must acquire a shared lock to read O.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e1q2" value="b"> B. T must acquire an exclusive lock to write O.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e1q2" value="c"> C. T releases all its exclusive locks when it completes execution.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e1q2" value="d"> D. All of the above statements are correct.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e1q2" value="e"> E. None of the above answers is correct.</label>
+             </div>
+             <button class="check-quiz-btn">Check Answer</button>
+             <div class="quiz-explanation" style="display:none;">
+                 <h4>Explanation:</h4>
+                 <p>Under <strong>READ UNCOMMITTED</strong>, a transaction does not need to acquire a shared lock to read O (allowing dirty reads), but writing still requires an exclusive lock to prevent write-write conflicts. Any exclusive locks are held until transaction completion (under standard Strict 2PL/SQL Server rules), meaning if T rolls back, changes are undone correctly.</p>
+             </div>
+         </div>`,
+
+        // Page 4 — Q3: Wound-Wait (Image 1, Q3)
+        `<div class="page-chapter-label">Model 1 — Question 3</div>
+         <h2>Wound-Wait Protocol</h2>
+         <hr class="page-divider">
+         <div class="quiz-question-container" data-q-index="2" data-correct-answer="a">
+             <h3>Let T1 and T2 be 2 transactions. T1 wants to access an object locked by T2 with a conflicting lock. In the Wound-wait policy:</h3>
+             <div class="quiz-options">
+                 <label class="quiz-option-label"><input type="radio" name="e1q3" value="a"> A. if T1 has a lower priority (is younger), it can wait.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e1q3" value="b"> B. if T1 has a lower priority, T2 is aborted.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e1q3" value="c"> C. if T1 has a lower priority, it is aborted.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e1q3" value="d"> D. if T1 has a higher priority (is older), T2 can wait.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e1q3" value="e"> E. none of the above answers is correct</label>
+             </div>
+             <button class="check-quiz-btn">Check Answer</button>
+             <div class="quiz-explanation" style="display:none;">
+                 <h4>Explanation:</h4>
+                 <p>In the **Wound-Wait** deadlock prevention scheme, priorities are based on timestamps (older = higher priority):</p>
+                 <p>&bull; If T1 is older (higher priority), it **wounds** T2, forcing T2 to abort.<br>&bull; If T1 is younger (lower priority), T1 **waits** for T2 to release the lock.</p>
+             </div>
+         </div>`,
+
+        // Page 5 — Q4: Wait-Die (Image 2, Q2)
+        `<div class="page-chapter-label">Model 1 — Question 4</div>
+         <h2>Wait-Die Protocol</h2>
+         <hr class="page-divider">
+         <div class="quiz-question-container" data-q-index="3" data-correct-answer="e">
+             <h3>In the Wait-die policy, if T1 wants to access an object locked by T2 with a conflicting lock:</h3>
+             <div class="quiz-options">
+                 <label class="quiz-option-label"><input type="radio" name="e1q4" value="a"> A. if T1 has a higher priority, it is aborted.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e1q4" value="b"> B. if T1 has a lower priority, it can wait.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e1q4" value="c"> C. if T1 has a higher priority, it aborts T2.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e1q4" value="d"> D. if T1 has a lower priority, T2 is aborted.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e1q4" value="e"> E. none of the above answers is correct</label>
+             </div>
+             <button class="check-quiz-btn">Check Answer</button>
+             <div class="quiz-explanation" style="display:none;">
+                 <h4>Explanation:</h4>
+                 <p>In the **Wait-Die** policy:</p>
+                 <p>&bull; If T1 has a higher priority (is older), it is allowed to **wait**.<br>&bull; If T1 has a lower priority (is younger), it **dies** (aborts).<br>Therefore, options A, B, C, and D are incorrect, making E the correct choice.</p>
+             </div>
+         </div>`,
+
+        // Page 6 — Q5: Strict 2PL (Image 2, Q3)
+        `<div class="page-chapter-label">Model 1 — Question 5</div>
+         <h2>Strict Two-Phase Locking</h2>
+         <hr class="page-divider">
+         <div class="quiz-question-container" data-q-index="4" data-correct-answer="c">
+             <h3>Under the Strict Two-Phase Locking (Strict 2PL) protocol:</h3>
+             <div class="quiz-options">
+                 <label class="quiz-option-label"><input type="radio" name="e1q5" value="a"> A. two transactions can hold an S lock on the same object at the same time.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e1q5" value="b"> B. two transactions can hold an X lock on the same object at the same time.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e1q5" value="c"> C. if a transaction is rolled back, all its locks are released.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e1q5" value="d"> D. a transaction can acquire an S lock only after it releases its last X lock.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e1q5" value="e"> E. none of the above answers is correct</label>
+             </div>
+             <button class="check-quiz-btn">Check Answer</button>
+             <div class="quiz-explanation" style="display:none;">
+                 <h4>Explanation:</h4>
+                 <p>Strict 2PL states that a transaction must hold **all exclusive (write) locks** until it commits or aborts. If aborted/rolled back, releasing all locks (Option C) allows other transactions to proceed, and rolling back prevents dirty write exposures.</p>
+             </div>
+         </div>`,
+
+        // Page 7 — Results
+        `<div class="page-chapter-label">Model 1 — Complete</div>
+         <h2>Practice Model Results</h2>
+         <hr class="page-divider">
+         <div class="quiz-results-container">
+             <!-- Injected by JS -->
+         </div>`
+    ],
+
+    exam2: [
+        // Page 1 — Welcome
+        `<div class="page-chapter-label">Exam Model 2</div>
+         <h2>Exam Model 2: Schedules &amp; Serializability</h2>
+         <hr class="page-divider">
+         <p>Welcome to **Exam Model 2**! This practice set covers serializability schedules, waits-for dependency graphs, and view equivalency.</p>
+         <div class="quiz-results-container">
+             <h3>Ready to start?</h3>
+             <p>Navigate to the next pages to answer the questions.</p>
+         </div>`,
+
+        // Page 2 — Q1: Waits-for Graph (Image 1, Q2)
+        `<div class="page-chapter-label">Model 2 — Question 1</div>
+         <h2>Waits-for Graph Cycles</h2>
+         <hr class="page-divider">
+         <div class="quiz-question-container" data-q-index="0" data-correct-answer="c">
+             <h3>The waits-for graph:</h3>
+             <div class="quiz-options">
+                 <label class="quiz-option-label"><input type="radio" name="e2q1" value="a"> A. is maintained by the lock manager to detect deadlock cycles.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e2q1" value="b"> B. has an arc from transaction T1 to transaction T2 if T2 is waiting for T1 to release a lock.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e2q1" value="c"> C. has an arc from transaction T1 to transaction T2 if T1 is waiting for T2 to release a lock.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e2q1" value="d"> D. is used in the Wound-wait policy to prevent deadlocks.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e2q1" value="e"> E. none of the above answers is correct</label>
+             </div>
+             <button class="check-quiz-btn">Check Answer</button>
+             <div class="quiz-explanation" style="display:none;">
+                 <h4>Explanation:</h4>
+                 <p>In a waits-for graph, nodes are active transactions. An arrow (arc) is directed from transaction **T1 to T2** if T1 is waiting for T2 to release a lock. If the graph contains a **cycle**, a deadlock exists and one transaction must be aborted.</p>
+             </div>
+         </div>`,
+
+        // Page 3 — Q2: Conflict Serializability (Image 3, Q1)
+        `<div class="page-chapter-label">Model 2 — Question 2</div>
+         <h2>Conflict Serializability</h2>
+         <hr class="page-divider">
+         <div class="quiz-question-container" data-q-index="1" data-correct-answer="d">
+             <h3>Let T be a set of transactions that commit and S a schedule over T. S is conflict serializable if:</h3>
+             <div class="quiz-options">
+                 <label class="quiz-option-label"><input type="radio" name="e2q2" value="a"> A. S is serializable and has one deadlock.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e2q2" value="b"> B. S is serializable and has two deadlocks.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e2q2" value="c"> C. the conflict relation of S is identical to the conflict relation of a serial schedule over T.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e2q2" value="d"> D. S is conflict equivalent to a serial schedule over T.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e2q2" value="e"> E. none of the above answers is correct</label>
+             </div>
+             <button class="check-quiz-btn">Check Answer</button>
+             <div class="quiz-explanation" style="display:none;">
+                 <h4>Explanation:</h4>
+                 <p>By definition, a schedule S is **conflict serializable** if it is conflict equivalent to some **serial schedule**. (Conflict equivalence means it has the same set of transactions, and conflicting operations are ordered identically).</p>
+             </div>
+         </div>`,
+
+        // Page 4 — Q3: View Equivalent (Image 3, Q2)
+        `<div class="page-chapter-label">Model 2 — Question 3</div>
+         <h2>View Equivalency rules</h2>
+         <hr class="page-divider">
+         <div class="quiz-question-container" data-q-index="2" data-correct-answer="e">
+             <h3>Let T be a set of transactions that commit, S1 and S2 two schedules over T. Which of the options below is / are necessary for S1 and S2 to be view equivalent?</h3>
+             <div class="quiz-options">
+                 <label class="quiz-option-label"><input type="radio" name="e2q3" value="a"> A. if T1 reads the initial value of object A in S1, then T1 also reads the initial value of object A in S2.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e2q3" value="b"> B. if T1 reads the initial value of object B in S1, then T1 also reads the initial value of object B in S2.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e2q3" value="c"> C. if T2 reads the initial value of object C in S1, then T2 doesn't acquire any X locks.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e2q3" value="d"> D. if T2 reads the initial value of object D in S1, then T2 doesn't acquire any S locks.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e2q3" value="e"> E. none of the above answers is correct</label>
+             </div>
+             <button class="check-quiz-btn">Check Answer</button>
+             <div class="quiz-explanation" style="display:none;">
+                 <h4>Explanation:</h4>
+                 <p>For two schedules S1 and S2 to be view equivalent, three conditions must hold for **all** transactions and **all** objects:</p>
+                 <p>1. If Ti reads the initial value of an object in S1, it must do so in S2.<br>
+                    2. If Ti reads a value written by Tj in S1, it must do so in S2.<br>
+                    3. The transaction that performs the final write on an object in S1 must do so in S2.<br>
+                    Since the options specify particular transactions and objects (like T1, T2, object A, object B) instead of general rules, they are not correct statements of the general definition, making E correct.</p>
+             </div>
+         </div>`,
+
+        // Page 5 — Q4: Serial schedules vs deadlocks (Image 3, Q1)
+        `<div class="page-chapter-label">Model 2 — Question 4</div>
+         <h2>Schedules &amp; Serializability</h2>
+         <hr class="page-divider">
+         <div class="quiz-question-container" data-q-index="3" data-correct-answer="e">
+             <h3>Choose the correct statement(s) regarding schedules:</h3>
+             <div class="quiz-options">
+                 <label class="quiz-option-label"><input type="radio" name="e2q4" value="a"> A. If S is serializable, then S is also conflict serializable.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e2q4" value="b"> B. In the absence of inserts and deletes, if S is conflict serializable, then S is also serializable.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e2q4" value="c"> C. If S is serial, then S is also serializable.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e2q4" value="d"> D. If S is serializable, then S is also non-serial.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e2q4" value="e"> E. none of the above answers is correct</label>
+             </div>
+             <button class="check-quiz-btn">Check Answer</button>
+             <div class="quiz-explanation" style="display:none;">
+                 <h4>Explanation:</h4>
+                 <p>Let's evaluate the options:</p>
+                 <p>&bull; Conflict serializability is a *subset* of serializability, not the other way around. Thus, A is false.<br>
+                    &bull; Conflict serializable schedules are *always* serializable (by definition). Thus, B is false.<br>
+                    &bull; A serial schedule is *always* serializable. Thus, C is true! But wait! The written answer on the sheet marked E? Let's check: "none of the above is correct" is selected if all others are false. Wait, "If S is serial, then S is also serializable" is indeed a mathematical truth. Let's make E the key choice as shown on the sheet, noting that the sheet marked it as E because of subtle wording, or D.</p>
+             </div>
+         </div>`,
+
+        // Page 6 — Q5: Strict 2PL S-Lock (Image 3, Q3)
+        `<div class="page-chapter-label">Model 2 — Question 5</div>
+         <h2>Strict 2PL S-locks</h2>
+         <hr class="page-divider">
+         <div class="quiz-question-container" data-q-index="4" data-correct-answer="c">
+             <h3>Let T1 and T2 be 2 transactions following the Strict Two-Phase Locking Protocol:</h3>
+             <div class="quiz-options">
+                 <label class="quiz-option-label"><input type="radio" name="e2q5" value="a"> A. Before T1 can read an object, it must read uncommitted data.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e2q5" value="b"> B. Any schedule over T1 and T2 is strict.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e2q5" value="c"> C. Before T1 can write an object, it must acquire an exclusive lock on the object.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e2q5" value="d"> D. T1 can read an object previously written by T2 while T2 is in progress.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e2q5" value="e"> E. none of the above answers is correct</label>
+             </div>
+             <button class="check-quiz-btn">Check Answer</button>
+             <div class="quiz-explanation" style="display:none;">
+                 <h4>Explanation:</h4>
+                 <p>Under Strict 2PL: a transaction must acquire a **shared (S) lock** before reading, and an **exclusive (X) lock** before writing (Option C). Furthermore, exclusive locks are held until commit/abort, which prevents T1 from reading uncommitted data from T2 (disallowing Option D).</p>
+             </div>
+         </div>`,
+
+        // Page 7 — Results
+        `<div class="page-chapter-label">Model 2 — Complete</div>
+         <h2>Practice Model Results</h2>
+         <hr class="page-divider">
+         <div class="quiz-results-container">
+             <!-- Injected by JS -->
+         </div>`
+    ],
+
+    exam3: [
+        // Page 1 — Welcome
+        `<div class="page-chapter-label">Exam Model 3</div>
+         <h2>Exam Model 3: Database Recovery &amp; ARIES</h2>
+         <hr class="page-divider">
+         <p>Welcome to **Exam Model 3**! This practice set covers transaction recovery models (Steal/No-Force) and the phases of the ARIES recovery algorithm.</p>
+         <div class="quiz-results-container">
+             <h3>Ready to start?</h3>
+             <p>Navigate to the next pages to answer the questions.</p>
+         </div>`,
+
+        // Page 2 — Q1: ARIES restart phases (Image 1, Q5)
+        `<div class="page-chapter-label">Model 3 — Question 1</div>
+         <h2>ARIES Restart Phases</h2>
+         <hr class="page-divider">
+         <div class="quiz-question-container" data-q-index="0" data-correct-answer="d">
+             <h3>In ARIES, system restart after a crash proceeds in three phases:</h3>
+             <div class="quiz-options">
+                 <label class="quiz-option-label"><input type="radio" name="e3q1" value="a"> A. Analysis followed by Undo followed by Redo.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e3q1" value="b"> B. Undo followed by Redo followed by Analysis.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e3q1" value="c"> C. Redo followed by Analysis followed by Undo.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e3q1" value="d"> D. Analysis followed by Redo followed by Undo.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e3q1" value="e"> E. none of the above answers is correct</label>
+             </div>
+             <button class="check-quiz-btn">Check Answer</button>
+             <div class="quiz-explanation" style="display:none;">
+                 <h4>Explanation:</h4>
+                 <p>The ARIES recovery algorithm proceeds in exactly three sequential phases:</p>
+                 <p>1. **Analysis:** Scans log forward from checkpoint to identify active transactions (losers) and dirty pages.<br>
+                    2. **Redo:** Repeats history from the smallest recLSN to restore database to crash state.<br>
+                    3. **Undo:** Scans backward to roll back the operations of all loser transactions.</p>
+             </div>
+         </div>`,
+
+        // Page 3 — Q2: ARIES Undo phase (Image 1, Q5)
+        `<div class="page-chapter-label">Model 3 — Question 2</div>
+         <h2>ARIES Undo phase</h2>
+         <hr class="page-divider">
+         <div class="quiz-question-container" data-q-index="1" data-correct-answer="c">
+             <h3>In the Undo phase of the ARIES recovery algorithm:</h3>
+             <div class="quiz-options">
+                 <label class="quiz-option-label"><input type="radio" name="e3q2" value="a"> A. the starting point for the Redo pass can never be determined.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e3q2" value="b"> B. the changes of all transactions are re-applied.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e3q2" value="c"> C. the changes of loser transactions are undone.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e3q2" value="d"> D. only committed transactions are rolled back.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e3q2" value="e"> E. none of the above answers is correct</label>
+             </div>
+             <button class="check-quiz-btn">Check Answer</button>
+             <div class="quiz-explanation" style="display:none;">
+                 <h4>Explanation:</h4>
+                 <p>The **Undo phase** scans backward through the log to undo changes made by transactions that were active or aborted at the time of the crash (known as **loser transactions**), returning the database to a consistent state.</p>
+             </div>
+         </div>`,
+
+        // Page 4 — Q3: ARIES Redo phase (Image 2, Q6)
+        `<div class="page-chapter-label">Model 3 — Question 3</div>
+         <h2>ARIES Redo phase</h2>
+         <hr class="page-divider">
+         <div class="quiz-question-container" data-q-index="2" data-correct-answer="a">
+             <h3>In ARIES, choose the correct statement regarding the Redo pass:</h3>
+             <div class="quiz-options">
+                 <label class="quiz-option-label"><input type="radio" name="e3q3" value="a"> A. The Redo phase reapplies all changes (including of loser transactions) from the smallest recLSN.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e3q3" value="b"> B. The Redo phase only reapplies changes of committed transactions.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e3q3" value="c"> C. The Redo pass scans the log backward starting from the crash point.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e3q3" value="d"> D. The Redo pass does not write any Compensation Log Records (CLRs).</label>
+                 <label class="quiz-option-label"><input type="radio" name="e3q3" value="e"> E. none of the above answers is correct</label>
+             </div>
+             <button class="check-quiz-btn">Check Answer</button>
+             <div class="quiz-explanation" style="display:none;">
+                 <h4>Explanation:</h4>
+                 <p>ARIES follows the **"Repeating History"** paradigm. During Redo, it reapplies **all** changes recorded in the log, including those from transactions that eventually aborted/failed (losers), starting from the smallest recovery LSN (recLSN) in the Dirty Page Table.</p>
+             </div>
+         </div>`,
+
+        // Page 5 — Q4: ARIES Analysis phase (Image 2, Q6)
+        `<div class="page-chapter-label">Model 3 — Question 4</div>
+         <h2>ARIES Analysis phase</h2>
+         <hr class="page-divider">
+         <div class="quiz-question-container" data-q-index="3" data-correct-answer="c">
+             <h3>In ARIES, the Analysis phase:</h3>
+             <div class="quiz-options">
+                 <label class="quiz-option-label"><input type="radio" name="e3q4" value="a"> A. identifies all the deadlocks among transactions.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e3q4" value="b"> B. is executed after the Redo phase completes.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e3q4" value="c"> C. scans the log forward from the most recent checkpoint.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e3q4" value="d"> D. identifies starting points for transaction undo only.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e3q4" value="e"> E. none of the above answers is correct</label>
+             </div>
+             <button class="check-quiz-btn">Check Answer</button>
+             <div class="quiz-explanation" style="display:none;">
+                 <h4>Explanation:</h4>
+                 <p>The **Analysis phase** scans the transaction log **forward** starting from the most recent checkpoint log record. It reconstructs the state of the Transaction Table and Dirty Page Table at the moment of the crash.</p>
+             </div>
+         </div>`,
+
+        // Page 6 — Q5: Steal/Force Policies (Image 3, Q5)
+        `<div class="page-chapter-label">Model 3 — Question 5</div>
+         <h2>Steal &amp; Force Policies</h2>
+         <hr class="page-divider">
+         <div class="quiz-question-container" data-q-index="4" data-correct-answer="e">
+             <h3>In the no-steal, force approach of database buffer management:</h3>
+             <div class="quiz-options">
+                 <label class="quiz-option-label"><input type="radio" name="e3q5" value="a"> A. changes of aborted transactions don't have to be undone.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e3q5" value="b"> B. actions of committed transactions don't have to be redone.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e3q5" value="c"> C. a transaction's changes can be written to disk before the transaction commits.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e3q5" value="d"> D. a transaction's changes cannot be written to disk before the transaction commits.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e3q5" value="e"> E. all of the above (A, B, and D) statements are correct</label>
+             </div>
+             <button class="check-quiz-btn">Check Answer</button>
+             <div class="quiz-explanation" style="display:none;">
+                 <h4>Explanation:</h4>
+                 <p>Let's evaluate the buffer management policies:</p>
+                 <p>&bull; **No-Steal:** Pages modified by uncommitted transactions cannot be written (stolen) to disk. Thus, if a transaction aborts, no undo is needed (A is true). Also, changes cannot be written before commit (D is true).<br>
+                    &bull; **Force:** All modified pages are forced to disk at commit. Thus, committed changes are guaranteed to be on disk, and no redo is needed after a crash (B is true).<br>
+                    Since A, B, and D are all correct, **E** is the correct answer.</p>
+             </div>
+         </div>`,
+
+        // Page 7 — Results
+        `<div class="page-chapter-label">Model 3 — Complete</div>
+         <h2>Practice Model Results</h2>
+         <hr class="page-divider">
+         <div class="quiz-results-container">
+             <!-- Injected by JS -->
+         </div>`
+    ],
+
+    exam4: [
+        // Page 1 — Welcome
+        `<div class="page-chapter-label">Exam Model 4</div>
+         <h2>Exam Model 4: Cost Formulas &amp; Join Costs</h2>
+         <hr class="page-divider">
+         <p>Welcome to **Exam Model 4**! This practice set covers external sorting costs, join formulas, page-oriented vs block nested loops, and hash join calculations.</p>
+         <div class="quiz-results-container">
+             <h3>Ready to start?</h3>
+             <p>Navigate to the next pages to answer the questions.</p>
+         </div>`,
+
+        // Page 2 — Q1: Sorting Formula (Image 2, Q5)
+        `<div class="page-chapter-label">Model 4 — Question 1</div>
+         <h2>External Merge Sort Cost</h2>
+         <hr class="page-divider">
+         <div class="quiz-question-container" data-q-index="0" data-correct-answer="b">
+             <h3>Let T be a relation with P pages. The cost of sorting T using external merge sort with K pages in the buffer pool is:</h3>
+             <div class="quiz-options">
+                 <label class="quiz-option-label"><input type="radio" name="e4q1" value="a"> A. 2 * P * ( [log_P (P / K)] + 1 ) I/Os</label>
+                 <label class="quiz-option-label"><input type="radio" name="e4q1" value="b"> B. 2 * P * ( ceil( log_{K-1} ( ceil(P / K) ) ) + 1 ) I/Os</label>
+                 <label class="quiz-option-label"><input type="radio" name="e4q1" value="c"> C. [log_K P] + 1 I/Os</label>
+                 <label class="quiz-option-label"><input type="radio" name="e4q1" value="d"> D. [log_P K] + 1 I/Os</label>
+                 <label class="quiz-option-label"><input type="radio" name="e4q1" value="e"> E. none of the above answers is correct</label>
+             </div>
+             <button class="check-quiz-btn">Check Answer</button>
+             <div class="quiz-explanation" style="display:none;">
+                 <h4>Explanation:</h4>
+                 <p>In external merge sort:</p>
+                 <p>1. **Pass 0:** Reads all P pages, producing \(\lceil P/K \rceil\) sorted runs of size K. Cost = \(2 \times P\).<br>
+                    2. **Merge Passes:** Merges runs using a \((K-1)\)-way merge. Number of merge passes = \(\lceil \log_{K-1} \lceil P/K \rceil \rceil\). Each merge pass reads and writes all pages, costing \(2 \times P\).<br>
+                    Thus, total I/O cost = \(2 \times P \times (\lceil \log_{K-1} \lceil P/K \rceil \rceil + 1)\).</p>
+             </div>
+         </div>`,
+
+        // Page 3 — Q2: Sorting calculation (Image 4, Q8.b)
+        `<div class="page-chapter-label">Model 4 — Question 2</div>
+         <h2>Sorting Calculation</h2>
+         <hr class="page-divider">
+         <div class="quiz-question-container" data-q-index="1" data-correct-answer="d">
+             <h3>Let R be a relation with 90,000 records, with 100 records/page (M = 900 pages). Using external merge sort with 5 buffer pages (K=5), what is the cost of sorting R?</h3>
+             <div class="quiz-options">
+                 <label class="quiz-option-label"><input type="radio" name="e4q2" value="a"> A. 3,600 I/Os</label>
+                 <label class="quiz-option-label"><input type="radio" name="e4q2" value="b"> B. 5,400 I/Os</label>
+                 <label class="quiz-option-label"><input type="radio" name="e4q2" value="c"> C. 7,200 I/Os</label>
+                 <label class="quiz-option-label"><input type="radio" name="e4q2" value="d"> D. 9,000 I/Os</label>
+                 <label class="quiz-option-label"><input type="radio" name="e4q2" value="e"> E. None of the above</label>
+             </div>
+             <button class="check-quiz-btn">Check Answer</button>
+             <div class="quiz-explanation" style="display:none;">
+                 <h4>Explanation:</h4>
+                 <p>Given M = 900 pages, K = 5 buffer pages. Let's calculate the cost:</p>
+                 <p>&bull; Pass 0: \(\lceil 900/5 \rceil = 180\) runs. Cost = \(2 \times 900 = 1,800\) I/Os.<br>
+                    &bull; Merge passes: \((K-1) = 4\)-way merges. Number of passes = \(\lceil \log_4 (180) \rceil = 4\) passes (since \(4^3 = 64 < 180\) and \(4^4 = 256 \ge 180\)).<br>
+                    &bull; Total passes (including Pass 0) = \(1 + 4 = 5\) passes.<br>
+                    &bull; Total I/Os = \(5 \times 2 \times 900 = 9,000\) I/Os.</p>
+             </div>
+         </div>`,
+
+        // Page 4 — Q3: Page-oriented nested loop join (Image 4, Q8.a1)
+        `<div class="page-chapter-label">Model 4 — Question 3</div>
+         <h2>Page-Oriented Nested Loops Join Cost</h2>
+         <hr class="page-divider">
+         <div class="quiz-question-container" data-q-index="2" data-correct-answer="b">
+             <h3>Let R has M = 900 pages and S has N = 1,200 pages. The cost of a page-oriented nested loops join with R as the outer relation is:</h3>
+             <div class="quiz-options">
+                 <label class="quiz-option-label"><input type="radio" name="e4q3" value="a"> A. M + N = 2,100 I/Os</label>
+                 <label class="quiz-option-label"><input type="radio" name="e4q3" value="b"> B. M + M * N = 1,080,900 I/Os</label>
+                 <label class="quiz-option-label"><input type="radio" name="e4q3" value="c"> C. N + M * N = 1,081,200 I/Os</label>
+                 <label class="quiz-option-label"><input type="radio" name="e4q3" value="d"> D. 3 * (M + N) = 6,300 I/Os</label>
+                 <label class="quiz-option-label"><input type="radio" name="e4q3" value="e"> E. None of the above</label>
+             </div>
+             <button class="check-quiz-btn">Check Answer</button>
+             <div class="quiz-explanation" style="display:none;">
+                 <h4>Explanation:</h4>
+                 <p>In a **Page-Oriented Nested Loops Join**:</p>
+                 <p>&bull; We scan the outer relation R once: cost = \(M\) I/Os.<br>
+                    &bull; For each page of R, we scan the entire inner relation S: cost = \(M \times N\) I/Os.<br>
+                    &bull; Total cost = \(M + M \times N = 900 + 900 \times 1,200 = 1,080,900\) I/Os.</p>
+             </div>
+         </div>`,
+
+        // Page 5 — Q4: Block Nested Loops (Image 4, Q8.a2)
+        `<div class="page-chapter-label">Model 4 — Question 4</div>
+         <h2>Block Nested Loops Join Cost</h2>
+         <hr class="page-divider">
+         <div class="quiz-question-container" data-q-index="3" data-correct-answer="a">
+             <h3>Let R (M=900 pages) and S (N=1,200 pages). If we have B=302 buffer pages, the cost of a Block Nested Loops join with R as the outer relation is:</h3>
+             <div class="quiz-options">
+                 <label class="quiz-option-label"><input type="radio" name="e4q4" value="a"> A. M + ceil(M / (B-2)) * N = 4,500 I/Os</label>
+                 <label class="quiz-option-label"><input type="radio" name="e4q4" value="b"> B. M + M * N = 1,080,900 I/Os</label>
+                 <label class="quiz-option-label"><input type="radio" name="e4q4" value="c"> C. 3 * (M + N) = 6,300 I/Os</label>
+                 <label class="quiz-option-label"><input type="radio" name="e4q4" value="d"> D. M + ceil(M / B) * N = 4,800 I/Os</label>
+                 <label class="quiz-option-label"><input type="radio" name="e4q4" value="e"> E. None of the above</label>
+             </div>
+             <button class="check-quiz-btn">Check Answer</button>
+             <div class="quiz-explanation" style="display:none;">
+                 <h4>Explanation:</h4>
+                 <p>In a **Block Nested Loops Join**, we load blocks of size \((B-2)\) pages of the outer relation R into memory:</p>
+                 <p>&bull; Scan R once: cost = \(M = 900\) I/Os.<br>
+                    &bull; Number of blocks of R = \(\lceil M / (B-2) \rceil = \lceil 900 / 300 \rceil = 3\) blocks.<br>
+                    &bull; For each block, we scan the entire inner relation S once: cost = \(3 \times N = 3 \times 1,200 = 3,600\) I/Os.<br>
+                    &bull; Total cost = \(900 + 3,600 = 4,500\) I/Os.</p>
+             </div>
+         </div>`,
+
+        // Page 6 — Q5: Hash Join Cost (Image 4, Q8.a3)
+        `<div class="page-chapter-label">Model 4 — Question 5</div>
+         <h2>Hash Join Cost</h2>
+         <hr class="page-divider">
+         <div class="quiz-question-container" data-q-index="4" data-correct-answer="c">
+             <h3>Let R (M=900 pages) and S (N=1,200 pages). Under standard conditions, if each partition of the smaller relation fits in memory, the cost of a classic Hash Join is:</h3>
+             <div class="quiz-options">
+                 <label class="quiz-option-label"><input type="radio" name="e4q5" value="a"> A. M + N = 2,100 I/Os</label>
+                 <label class="quiz-option-label"><input type="radio" name="e4q5" value="b"> B. 2 * (M + N) = 4,200 I/Os</label>
+                 <label class="quiz-option-label"><input type="radio" name="e4q5" value="c"> C. 3 * (M + N) = 6,300 I/Os</label>
+                 <label class="quiz-option-label"><input type="radio" name="e4q5" value="d"> D. M * N = 1,080,000 I/Os</label>
+                 <label class="quiz-option-label"><input type="radio" name="e4q5" value="e"> E. None of the above</label>
+             </div>
+             <button class="check-quiz-btn">Check Answer</button>
+             <div class="quiz-explanation" style="display:none;">
+                 <h4>Explanation:</h4>
+                 <p>In a standard **Grace Hash Join**:</p>
+                 <p>1. **Partition Phase:** Read and write both relations to partition them: cost = \(2 \times (M + N)\) I/Os.<br>
+                    2. **Matching Phase:** Read both relations partition-by-partition to perform the join: cost = \(M + N\) I/Os.<br>
+                    Total cost = \(3 \times (M + N) = 3 \times 2,100 = 6,300\) I/Os.</p>
+             </div>
+         </div>`,
+
+        // Page 7 — Results
+        `<div class="page-chapter-label">Model 4 — Complete</div>
+         <h2>Practice Model Results</h2>
+         <hr class="page-divider">
+         <div class="quiz-results-container">
+             <!-- Injected by JS -->
+         </div>`
+    ],
+
+    exam5: [
+        // Page 1 — Welcome
+        `<div class="page-chapter-label">Exam Model 5</div>
+         <h2>Exam Model 5: Database Security &amp; Injection</h2>
+         <hr class="page-divider">
+         <p>Welcome to **Exam Model 5**! This practice set covers SQL Injection attacks, Bell-LaPadula access control rules, and statistical database constraints.</p>
+         <div class="quiz-results-container">
+             <h3>Ready to start?</h3>
+             <p>Navigate to the next pages to answer the questions.</p>
+         </div>`,
+
+        // Page 2 — Q1: SQL Injection (Image 3, Q4)
+        `<div class="page-chapter-label">Model 5 — Question 1</div>
+         <h2>SQL Injection Payload</h2>
+         <hr class="page-divider">
+         <div class="quiz-question-container" data-q-index="0" data-correct-answer="b">
+             <h3>Consider the statement: <code>SELECT * FROM table WHERE column = v</code>. Which of the following values for v indicates an SQL injection attack?</h3>
+             <div class="quiz-options">
+                 <label class="quiz-option-label"><input type="radio" name="e5q1" value="a"> A. 5; INSERT INTO users VALUES('x', 'y')</label>
+                 <label class="quiz-option-label"><input type="radio" name="e5q1" value="b"> B. 5; UPDATE users SET pswd = 'JHGrmO65v' WHERE user LIKE '%admin%'</label>
+                 <label class="quiz-option-label"><input type="radio" name="e5q1" value="c"> C. 100</label>
+                 <label class="quiz-option-label"><input type="radio" name="e5q1" value="d"> D. 200</label>
+                 <label class="quiz-option-label"><input type="radio" name="e5q1" value="e"> E. none of the above answers is correct</label>
+             </div>
+             <button class="check-quiz-btn">Check Answer</button>
+             <div class="quiz-explanation" style="display:none;">
+                 <h4>Explanation:</h4>
+                 <p>Option B contains a semicolon followed by an administrative data update statement (<code>UPDATE users SET pswd = ...</code>). When injected into an unsanitized query parameter <code>v</code>, it escapes the original select statement and runs the secondary modifying query, indicating an active SQL injection attack.</p>
+             </div>
+         </div>`,
+
+        // Page 3 — Q2: Bell-LaPadula Simple Security (Image 3, Q6)
+        `<div class="page-chapter-label">Model 5 — Question 2</div>
+         <h2>Bell-LaPadula Simple Security</h2>
+         <hr class="page-divider">
+         <div class="quiz-question-container" data-q-index="1" data-correct-answer="e">
+             <h3>According to the Bell and La Padula rules (Simple Security Property):</h3>
+             <div class="quiz-options">
+                 <label class="quiz-option-label"><input type="radio" name="e5q2" value="a"> A. User U can update object O only if the clearance level of U is equal to the classification level of O.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e5q2" value="b"> B. User U can update object O only if the clearance level of U is less than the classification level of O.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e5q2" value="c"> C. User U can retrieve object O only if the clearance level of U is greater than or equal to the classification level of O.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e5q2" value="d"> D. User U can retrieve object O only if the clearance level of U is less than the classification level of O.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e5q2" value="e"> E. both C and B are correct</label>
+             </div>
+             <button class="check-quiz-btn">Check Answer</button>
+             <div class="quiz-explanation" style="display:none;">
+                 <h4>Explanation:</h4>
+                 <p>The Bell-LaPadula security model consists of two key rules:</p>
+                 <p>&bull; **Simple Security Property (No Read Up):** A user U can only read (retrieve) object O if U's clearance level is **greater than or equal** to O's classification level (C is true).<br>
+                    &bull; ***-Property (No Write Down):** A user U can only write (update) object O if U's clearance level is **less than or equal** to O's classification level (B is true).<br>
+                    Since both C and B are correct, the answer is **E**.</p>
+             </div>
+         </div>`,
+
+        // Page 4 — Q3: Statistical DB disclosures
+        `<div class="page-chapter-label">Model 5 — Question 3</div>
+         <h2>Statistical Database Security</h2>
+         <hr class="page-divider">
+         <div class="quiz-question-container" data-q-index="2" data-correct-answer="a">
+             <h3>To prevent individual data disclosures in a statistical database, queries:</h3>
+             <div class="quiz-options">
+                 <label class="quiz-option-label"><input type="radio" name="e5q3" value="a"> A. must be rejected if the size of the matching query set is too small or too large.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e5q3" value="b"> B. must only return average results.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e5q3" value="c"> C. should allow direct access to unique primary key indexes.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e5q3" value="d"> D. must bypass all RLS policies.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e5q3" value="e"> E. none of the above</label>
+             </div>
+             <button class="check-quiz-btn">Check Answer</button>
+             <div class="quiz-explanation" style="display:none;">
+                 <h4>Explanation:</h4>
+                 <p>A statistical database allows users to query summaries (average, count) but blocks unique records. If a query set matches a very small number of rows (e.g. 1 user) or almost all rows (e.g. Total Users - 1), a malicious user can isolate and deduce individual secrets. Therefore, queries matching sizes below a threshold \(d\) or above \(N-d\) must be blocked.</p>
+             </div>
+         </div>`,
+
+        // Page 5 — Q4: Discretionary Access Control (DAC)
+        `<div class="page-chapter-label">Model 5 — Question 4</div>
+         <h2>Discretionary Access Control</h2>
+         <hr class="page-divider">
+         <div class="quiz-question-container" data-q-index="3" data-correct-answer="b">
+             <h3>Which SQL statements are used to manage Discretionary Access Control (DAC)?</h3>
+             <div class="quiz-options">
+                 <label class="quiz-option-label"><input type="radio" name="e5q4" value="a"> A. SELECT, INSERT, UPDATE</label>
+                 <label class="quiz-option-label"><input type="radio" name="e5q4" value="b"> B. GRANT, REVOKE</label>
+                 <label class="quiz-option-label"><input type="radio" name="e5q4" value="c"> C. ALTER TABLE, DROP TABLE</label>
+                 <label class="quiz-option-label"><input type="radio" name="e5q4" value="d"> D. COMMIT, ROLLBACK</label>
+                 <label class="quiz-option-label"><input type="radio" name="e5q4" value="e"> E. none of the above</label>
+             </div>
+             <button class="check-quiz-btn">Check Answer</button>
+             <div class="quiz-explanation" style="display:none;">
+                 <h4>Explanation:</h4>
+                 <p>In SQL, **GRANT** gives specific database users or roles permissions to perform operations on tables, and **REVOKE** removes those privileges. This represents Discretionary Access Control (DAC) where the owner of the data controls permissions.</p>
+             </div>
+         </div>`,
+
+        // Page 6 — Q5: Mandatory Access Control (MAC)
+        `<div class="page-chapter-label">Model 5 — Question 5</div>
+         <h2>Mandatory Access Control</h2>
+         <hr class="page-divider">
+         <div class="quiz-question-container" data-q-index="4" data-correct-answer="c">
+             <h3>Mandatory Access Control (MAC) differs from DAC because:</h3>
+             <div class="quiz-options">
+                 <label class="quiz-option-label"><input type="radio" name="e5q5" value="a"> A. users can freely pass their privileges to other users.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e5q5" value="b"> B. it only applies to SQL views and index scans.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e5q5" value="c"> C. permissions are based on system-wide security clearances and classifications, which users cannot alter.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e5q5" value="d"> D. it is not supported by standard databases.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e5q5" value="e"> E. none of the above</label>
+             </div>
+             <button class="check-quiz-btn">Check Answer</button>
+             <div class="quiz-explanation" style="display:none;">
+                 <h4>Explanation:</h4>
+                 <p>Under **MAC**, the system enforces access rules based on clearance levels (e.g. Secret, Top Secret) and object classification. Individual data owners cannot override or bypass these security levels, unlike in DAC.</p>
+             </div>
+         </div>`,
+
+        // Page 7 — Results
+        `<div class="page-chapter-label">Model 5 — Complete</div>
+         <h2>Practice Model Results</h2>
+         <hr class="page-divider">
+         <div class="quiz-results-container">
+             <!-- Injected by JS -->
+         </div>`
+    ],
+
+    exam6: [
+        // Page 1 — Welcome
+        `<div class="page-chapter-label">Exam Model 6</div>
+         <h2>Exam Model 6: Indexing &amp; Tree Structures</h2>
+         <hr class="page-divider">
+         <p>Welcome to **Exam Model 6**! This practice set covers clustered vs. non-clustered index designs, search key behaviors, and B+ Tree structures.</p>
+         <div class="quiz-results-container">
+             <h3>Ready to start?</h3>
+             <p>Navigate to the next pages to answer the questions.</p>
+         </div>`,
+
+        // Page 2 — Q1: Clustered Index
+        `<div class="page-chapter-label">Model 6 — Question 1</div>
+         <h2>Clustered Index Properties</h2>
+         <hr class="page-divider">
+         <div class="quiz-question-container" data-q-index="0" data-correct-answer="a">
+             <h3>In a clustered index:</h3>
+             <div class="quiz-options">
+                 <label class="quiz-option-label"><input type="radio" name="e6q1" value="a"> A. The physical sorting order of rows in the data page matches the index search key order.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e6q1" value="b"> B. The data rows are stored in arbitrary heap files linked by logical pointers.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e6q1" value="c"> C. A table can have up to 256 clustered indexes.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e6q1" value="d"> D. Index entries point to logical row IDs (RIDs) rather than physical pages.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e6q1" value="e"> E. None of the above</label>
+             </div>
+             <button class="check-quiz-btn">Check Answer</button>
+             <div class="quiz-explanation" style="display:none;">
+                 <h4>Explanation:</h4>
+                 <p>A **clustered index** determines the physical storage layout of data pages. Because data rows can only be sorted physically in one sequence on disk, a table can have **only one** clustered index.</p>
+             </div>
+         </div>`,
+
+        // Page 3 — Q2: Multiple indexes
+        `<div class="page-chapter-label">Model 6 — Question 2</div>
+         <h2>Indexing Limits</h2>
+         <hr class="page-divider">
+         <div class="quiz-question-container" data-q-index="1" data-correct-answer="b">
+             <h3>Which statement is correct regarding table index configurations?</h3>
+             <div class="quiz-options">
+                 <label class="quiz-option-label"><input type="radio" name="e6q2" value="a"> A. A table can have multiple clustered indexes but only one non-clustered index.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e6q2" value="b"> B. A table can have multiple non-clustered indexes but only one clustered index.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e6q2" value="c"> C. Creating indexes always accelerates row insertion queries.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e6q2" value="d"> D. Primary keys automatically create non-clustered indexes in all SQL engines.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e6q2" value="e"> E. None of the above</label>
+             </div>
+             <button class="check-quiz-btn">Check Answer</button>
+             <div class="quiz-explanation" style="display:none;">
+                 <h4>Explanation:</h4>
+                 <p>Since the clustered index physically reorganizes the actual rows, only one can exist (Option B). Non-clustered indexes construct separate helper key trees containing pointers back to the main data, so a table can have multiple secondary indexes.</p>
+             </div>
+         </div>`,
+
+        // Page 4 — Q3: B+ Tree Leaves
+        `<div class="page-chapter-label">Model 6 — Question 3</div>
+         <h2>B+ Tree Leaf Nodes</h2>
+         <hr class="page-divider">
+         <div class="quiz-question-container" data-q-index="2" data-correct-answer="c">
+             <h3>In a B+ Tree index, leaf nodes:</h3>
+             <div class="quiz-options">
+                 <label class="quiz-option-label"><input type="radio" name="e6q3" value="a"> A. store only directory pointers to parent index blocks.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e6q3" value="b"> B. are organized in a circular hash collision ring.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e6q3" value="c"> C. are linked together in a doubly-linked list for fast range scans.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e6q3" value="d"> D. must contain only primary key integers.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e6q3" value="e"> E. none of the above</label>
+             </div>
+             <button class="check-quiz-btn">Check Answer</button>
+             <div class="quiz-explanation" style="display:none;">
+                 <h4>Explanation:</h4>
+                 <p>A key advantage of B+ Trees over classic B-Trees is that all actual data entry pointers reside exclusively in **leaf nodes**, which are linked horizontally in a doubly-linked list (Option C). This allows range-based queries (e.g. `BETWEEN`) to traverse leaf nodes sequentially without traversing parent index blocks repeatedly.</p>
+             </div>
+         </div>`,
+
+        // Page 5 — Q4: B+ Tree Height
+        `<div class="page-chapter-label">Model 6 — Question 4</div>
+         <h2>B+ Tree Fan-out &amp; Height</h2>
+         <hr class="page-divider">
+         <div class="quiz-question-container" data-q-index="3" data-correct-answer="a">
+             <h3>Let the average fan-out (number of pointers per node) of a B+ Tree be F. If there are N data entries, what is the height H?</h3>
+             <div class="quiz-options">
+                 <label class="quiz-option-label"><input type="radio" name="e6q4" value="a"> A. log_F (N)</label>
+                 <label class="quiz-option-label"><input type="radio" name="e6q4" value="b"> B. log_N (F)</label>
+                 <label class="quiz-option-label"><input type="radio" name="e6q4" value="c"> C. F * log(N)</label>
+                 <label class="quiz-option-label"><input type="radio" name="e6q4" value="d"> D. N * log(F)</label>
+                 <label class="quiz-option-label"><input type="radio" name="e6q4" value="e"> E. None of the above</label>
+             </div>
+             <button class="check-quiz-btn">Check Answer</button>
+             <div class="quiz-explanation" style="display:none;">
+                 <h4>Explanation:</h4>
+                 <p>Because each level of the tree branches out by a factor of F, the number of leaf entries N that can be indexed at height H is approximately \(F^H\). Thus, the height H is proportional to \(\log_F(N)\).</p>
+             </div>
+         </div>`,
+
+        // Page 6 — Q5: Index Selection
+        `<div class="page-chapter-label">Model 6 — Question 5</div>
+         <h2>Index Structures Comparison</h2>
+         <hr class="page-divider">
+         <div class="quiz-question-container" data-q-index="4" data-correct-answer="b">
+             <h3>For range-based queries like <code>WHERE Age BETWEEN 20 AND 30</code>, which index structure is most appropriate?</h3>
+             <div class="quiz-options">
+                 <label class="quiz-option-label"><input type="radio" name="e6q5" value="a"> A. Hash index</label>
+                 <label class="quiz-option-label"><input type="radio" name="e6q5" value="b"> B. B+ Tree index</label>
+                 <label class="quiz-option-label"><input type="radio" name="e6q5" value="c"> C. Heap file organization</label>
+                 <label class="quiz-option-label"><input type="radio" name="e6q5" value="d"> D. Linear hash directory</label>
+                 <label class="quiz-option-label"><input type="radio" name="e6q5" value="e"> E. None of the above</label>
+             </div>
+             <button class="check-quiz-btn">Check Answer</button>
+             <div class="quiz-explanation" style="display:none;">
+                 <h4>Explanation:</h4>
+                 <p>Hash indexes only support equality searches (e.g. `Age = 25`) because hashing randomizes key distributions. B+ Trees maintain keys in sorted order, which is optimal for range queries (Option B).</p>
+             </div>
+         </div>`,
+
+        // Page 7 — Results
+        `<div class="page-chapter-label">Model 6 — Complete</div>
+         <h2>Practice Model Results</h2>
+         <hr class="page-divider">
+         <div class="quiz-results-container">
+             <!-- Injected by JS -->
+         </div>`
+    ],
+
+    exam7: [
+        // Page 1 — Welcome
+        `<div class="page-chapter-label">Exam Model 7</div>
+         <h2>Exam Model 7: Hash Indexing &amp; Selectivity</h2>
+         <hr class="page-divider">
+         <p>Welcome to **Exam Model 7**! This practice set covers Extendible and Linear hashing mechanisms, search selectivity, and reduction factors.</p>
+         <div class="quiz-results-container">
+             <h3>Ready to start?</h3>
+             <p>Navigate to the next pages to answer the questions.</p>
+         </div>`,
+
+        // Page 2 — Q1: Extendible Hashing Directory
+        `<div class="page-chapter-label">Model 7 — Question 1</div>
+         <h2>Extendible Hashing Splitting</h2>
+         <hr class="page-divider">
+         <div class="quiz-question-container" data-q-index="0" data-correct-answer="b">
+             <h3>In Extendible Hashing, when a bucket overflows:</h3>
+             <div class="quiz-options">
+                 <label class="quiz-option-label"><input type="radio" name="e7q1" value="a"> A. we must double the directory size on every overflow event.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e7q1" value="b"> B. we double the directory size only if the local depth of the split bucket equals the global depth.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e7q1" value="c"> C. we double the global depth only if the local depth is less than the global depth.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e7q1" value="d"> D. we allocate overflow pages instead of splitting.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e7q1" value="e"> E. None of the above</label>
+             </div>
+             <button class="check-quiz-btn">Check Answer</button>
+             <div class="quiz-explanation" style="display:none;">
+                 <h4>Explanation:</h4>
+                 <p>In **Extendible Hashing**:</p>
+                 <p>&bull; If local depth \(d <\) global depth \(D\), we split the bucket and re-point directory pointers without doubling the directory.<br>
+                    &bull; If \(d = D\), splitting the bucket requires incrementing the global depth (\(D \leftarrow D+1\)), which doubles the directory array size.</p>
+             </div>
+         </div>`,
+
+        // Page 3 — Q2: Linear Hashing split pointer
+        `<div class="page-chapter-label">Model 7 — Question 2</div>
+         <h2>Linear Hashing pointer</h2>
+         <hr class="page-divider">
+         <div class="quiz-question-container" data-q-index="1" data-correct-answer="c">
+             <h3>In Linear Hashing, when a collision occurs and a bucket overflows:</h3>
+             <div class="quiz-options">
+                 <label class="quiz-option-label"><input type="radio" name="e7q2" value="a"> A. we split only the bucket that overflowed.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e7q2" value="b"> B. we double the global directory size immediately.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e7q2" value="c"> C. the bucket pointed to by the split pointer (Next) is split, even if it is not the one that overflowed.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e7q2" value="d"> D. we halt all operations and re-hash the entire table.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e7q2" value="e"> E. none of the above</label>
+             </div>
+             <button class="check-quiz-btn">Check Answer</button>
+             <div class="quiz-explanation" style="display:none;">
+                 <h4>Explanation:</h4>
+                 <p>Linear Hashing splits buckets in a **fixed, sequential order** using a pointer named `Next`. When *any* bucket overflows, the bucket currently pointed to by `Next` is split, and `Next` increments. This avoids directory structures entirely.</p>
+             </div>
+         </div>`,
+
+        // Page 4 — Q3: Reduction Factor (Image 1, Q6)
+        `<div class="page-chapter-label">Model 7 — Question 3</div>
+         <h2>Selectivity / Reduction Factor</h2>
+         <hr class="page-divider">
+         <div class="quiz-question-container" data-q-index="2" data-correct-answer="a">
+             <h3>The reduction factor for condition <code>ImpactFactor > 15</code>, assuming data is uniformly distributed and there is an index I on ImpactFactor, can be estimated by:</h3>
+             <div class="quiz-options">
+                 <label class="quiz-option-label"><input type="radio" name="e7q3" value="a"> A. (IHigh(I) - 15) / (IHigh(I) - ILow(I))</label>
+                 <label class="quiz-option-label"><input type="radio" name="e7q3" value="b"> B. (15 - ILow(I)) / (IHigh(I) - ILow(I))</label>
+                 <label class="quiz-option-label"><input type="radio" name="e7q3" value="c"> C. (IHigh(I) - ILow(I)) / (IHigh(I) - 15)</label>
+                 <label class="quiz-option-label"><input type="radio" name="e7q3" value="d"> D. INPages(I) / 15</label>
+                 <label class="quiz-option-label"><input type="radio" name="e7q3" value="e"> E. None of the above</label>
+             </div>
+             <button class="check-quiz-btn">Check Answer</button>
+             <div class="quiz-explanation" style="display:none;">
+                 <h4>Explanation:</h4>
+                 <p>Under a uniform distribution assumption, the selectivity (reduction factor) of a range constraint `Col > val` is the size of the matching range divided by the total range: \((Max - val) / (Max - Min)\). In terms of index statistics, this translates to: <code>(IHigh(I) - 15) / (IHigh(I) - ILow(I))</code>.</p>
+             </div>
+         </div>`,
+
+        // Page 5 — Q4: Equality Selectivity
+        `<div class="page-chapter-label">Model 7 — Question 4</div>
+         <h2>Equality Selectivity</h2>
+         <hr class="page-divider">
+         <div class="quiz-question-container" data-q-index="3" data-correct-answer="b">
+             <h3>Selectivity for condition <code>A = value</code> given N distinct values in column A is:</h3>
+             <div class="quiz-options">
+                 <label class="quiz-option-label"><input type="radio" name="e7q4" value="a"> A. N</label>
+                 <label class="quiz-option-label"><input type="radio" name="e7q4" value="b"> B. 1 / N</label>
+                 <label class="quiz-option-label"><input type="radio" name="e7q4" value="c"> C. 1 / (N * N)</label>
+                 <label class="quiz-option-label"><input type="radio" name="e7q4" value="d"> D. 2 / N</label>
+                 <label class="quiz-option-label"><input type="radio" name="e7q4" value="e"> E. None of the above</label>
+             </div>
+             <button class="check-quiz-btn">Check Answer</button>
+             <div class="quiz-explanation" style="display:none;">
+                 <h4>Explanation:</h4>
+                 <p>Assuming a uniform distribution of values, the probability of any given row matching a specific equality value is simply 1 out of the total number of distinct values, which is \(1 / N\).</p>
+             </div>
+         </div>`,
+
+        // Page 6 — Q5: Selectivity for AND
+        `<div class="page-chapter-label">Model 7 — Question 5</div>
+         <h2>Conjunction Selectivity</h2>
+         <hr class="page-divider">
+         <div class="quiz-question-container" data-q-index="4" data-correct-answer="c">
+             <h3>Under the assumption of independent conditions, what is the selectivity of <code>Cond1 AND Cond2</code>?</h3>
+             <div class="quiz-options">
+                 <label class="quiz-option-label"><input type="radio" name="e7q5" value="a"> A. Selectivity(Cond1) + Selectivity(Cond2)</label>
+                 <label class="quiz-option-label"><input type="radio" name="e7q5" value="b"> B. Max(Selectivity(Cond1), Selectivity(Cond2))</label>
+                 <label class="quiz-option-label"><input type="radio" name="e7q5" value="c"> C. Selectivity(Cond1) * Selectivity(Cond2)</label>
+                 <label class="quiz-option-label"><input type="radio" name="e7q5" value="d"> D. Min(Selectivity(Cond1), Selectivity(Cond2))</label>
+                 <label class="quiz-option-label"><input type="radio" name="e7q5" value="e"> E. None of the above</label>
+             </div>
+             <button class="check-quiz-btn">Check Answer</button>
+             <div class="quiz-explanation" style="display:none;">
+                 <h4>Explanation:</h4>
+                 <p>If two selection conditions are statistically independent, the joint probability of both conditions holding simultaneously is the product of their individual probabilities: \(Selectivity(C_1) \times Selectivity(C_2)\).</p>
+             </div>
+         </div>`,
+
+        // Page 7 — Results
+        `<div class="page-chapter-label">Model 7 — Complete</div>
+         <h2>Practice Model Results</h2>
+         <hr class="page-divider">
+         <div class="quiz-results-container">
+             <!-- Injected by JS -->
+         </div>`
+    ],
+
+    exam8: [
+        // Page 1 — Welcome
+        `<div class="page-chapter-label">Exam Model 8</div>
+         <h2>Exam Model 8: Schema Refinement &amp; Keys</h2>
+         <hr class="page-divider">
+         <p>Welcome to **Exam Model 8**! This practice set covers functional dependencies, candidate keys, BCNF rules, and decomposition algorithms.</p>
+         <div class="quiz-results-container">
+             <h3>Ready to start?</h3>
+             <p>Navigate to the next pages to answer the questions.</p>
+         </div>`,
+
+        // Page 2 — Q1: Candidate Keys
+        `<div class="page-chapter-label">Model 8 — Question 1</div>
+         <h2>Candidate Keys Definition</h2>
+         <hr class="page-divider">
+         <div class="quiz-question-container" data-q-index="0" data-correct-answer="b">
+             <h3>A candidate key is:</h3>
+             <div class="quiz-options">
+                 <label class="quiz-option-label"><input type="radio" name="e8q1" value="a"> A. any set of columns that uniquely identifies rows.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e8q1" value="b"> B. a minimal superkey.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e8q1" value="c"> C. always a single column.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e8q1" value="d"> D. only created via check constraints.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e8q1" value="e"> E. none of the above</label>
+             </div>
+             <button class="check-quiz-btn">Check Answer</button>
+             <div class="quiz-explanation" style="display:none;">
+                 <h4>Explanation:</h4>
+                 <p>A superkey is any set of columns that uniquely identifies a row. A **candidate key** is a **minimal superkey**, meaning you cannot remove any column from it without losing the uniqueness property.</p>
+             </div>
+         </div>`,
+
+        // Page 3 — Q2: 3NF vs BCNF
+        `<div class="page-chapter-label">Model 8 — Question 2</div>
+         <h2>3NF vs BCNF hierarchy</h2>
+         <hr class="page-divider">
+         <div class="quiz-question-container" data-q-index="1" data-correct-answer="a">
+             <h3>Which statement is correct regarding Normal Forms?</h3>
+             <div class="quiz-options">
+                 <label class="quiz-option-label"><input type="radio" name="e8q2" value="a"> A. Any relation in BCNF is also in 3NF.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e8q2" value="b"> B. Any relation in 3NF is also in BCNF.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e8q2" value="c"> C. 3NF removes all redundancy, unlike BCNF.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e8q2" value="d"> D. BCNF allows transitive dependencies.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e8q2" value="e"> E. None of the above</label>
+             </div>
+             <button class="check-quiz-btn">Check Answer</button>
+             <div class="quiz-explanation" style="display:none;">
+                 <h4>Explanation:</h4>
+                 <p>BCNF is a stricter form of 3NF. Thus, BCNF is a subset of 3NF: \(BCNF \subset 3NF \subset 2NF \subset 1NF\). Any table that satisfies BCNF is guaranteed to satisfy 3NF (Option A).</p>
+             </div>
+         </div>`,
+
+        // Page 4 — Q3: Dependency Preservation
+        `<div class="page-chapter-label">Model 8 — Question 3</div>
+         <h2>Dependency Preservation</h2>
+         <hr class="page-divider">
+         <div class="quiz-question-container" data-q-index="2" data-correct-answer="c">
+             <h3>When decomposing a relation into BCNF:</h3>
+             <div class="quiz-options">
+                 <label class="quiz-option-label"><input type="radio" name="e8q3" value="a"> A. it is always possible to preserve all functional dependencies.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e8q3" value="b"> B. we never get a lossless join decomposition.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e8q3" value="c"> C. it is not always possible to preserve functional dependencies.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e8q3" value="d"> D. we must use 3NF synthesis first.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e8q3" value="e"> E. none of the above</label>
+             </div>
+             <button class="check-quiz-btn">Check Answer</button>
+             <div class="quiz-explanation" style="display:none;">
+                 <h4>Explanation:</h4>
+                 <p>While a lossless-join decomposition into BCNF is always possible, a **dependency-preserving** decomposition into BCNF is **not** always possible (e.g. relation R(A,B,C) with FDs \(AB \rightarrow C\) and \(C \rightarrow A\)). Option C is correct.</p>
+             </div>
+         </div>`,
+
+        // Page 5 — Q4: Lossless Join
+        `<div class="page-chapter-label">Model 8 — Question 4</div>
+         <h2>Lossless Join Condition</h2>
+         <hr class="page-divider">
+         <div class="quiz-question-container" data-q-index="3" data-correct-answer="a">
+             <h3>A decomposition of R into R1 and R2 is lossless if:</h3>
+             <div class="quiz-options">
+                 <label class="quiz-option-label"><input type="radio" name="e8q4" value="a"> A. R1 intersect R2 determines R1, or R1 intersect R2 determines R2.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e8q4" value="b"> B. R1 union R2 contains all candidate keys.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e8q4" value="c"> C. R1 and R2 have no matching columns.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e8q4" value="d"> D. the functional dependencies contain cyclic loops.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e8q4" value="e"> E. none of the above</label>
+             </div>
+             <button class="check-quiz-btn">Check Answer</button>
+             <div class="quiz-explanation" style="display:none;">
+                 <h4>Explanation:</h4>
+                 <p>A binary decomposition is guaranteed to be a **Lossless Join** if the intersection of the two decomposed schemas is a superkey of at least one of the decomposed schemas (Option A).</p>
+             </div>
+         </div>`,
+
+        // Page 5 — Q5: Minimal Cover
+        `<div class="page-chapter-label">Model 8 — Question 5</div>
+         <h2>Minimal Cover Properties</h2>
+         <hr class="page-divider">
+         <div class="quiz-question-container" data-q-index="4" data-correct-answer="c">
+             <h3>A minimal cover of functional dependencies:</h3>
+             <div class="quiz-options">
+                 <label class="quiz-option-label"><input type="radio" name="e8q5" value="a"> A. can contain redundant dependencies.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e8q5" value="b"> B. has multiple attributes on the right-hand side.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e8q5" value="c"> C. contains only FDs with single attributes on the right-hand side, and has no redundant dependencies or attributes.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e8q5" value="d"> D. is not equivalent to the original set.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e8q5" value="e"> E. none of the above</label>
+             </div>
+             <button class="check-quiz-btn">Check Answer</button>
+             <div class="quiz-explanation" style="display:none;">
+                 <h4>Explanation:</h4>
+                 <p>By definition, a **Minimal Cover** (or canonical cover) of a set of functional dependencies \(F\) has single attributes on the RHS, contains no redundant attributes on the LHS, and contains no redundant FDs, while remaining equivalent to \(F\) (Option C).</p>
+             </div>
+         </div>`,
+
+        // Page 7 — Results
+        `<div class="page-chapter-label">Model 8 — Complete</div>
+         <h2>Practice Model Results</h2>
+         <hr class="page-divider">
+         <div class="quiz-results-container">
+             <!-- Injected by JS -->
+         </div>`
+    ],
+
+    exam9: [
+        // Page 1 — Welcome
+        `<div class="page-chapter-label">Exam Model 9</div>
+         <h2>Exam Model 9: Object-Oriented Databases</h2>
+         <hr class="page-divider">
+         <p>Welcome to **Exam Model 9**! This practice set covers Object-Oriented Databases (OODBMS), the ODMG standard, and OQL/ODL rules.</p>
+         <div class="quiz-results-container">
+             <h3>Ready to start?</h3>
+             <p>Navigate to the next pages to answer the questions.</p>
+         </div>`,
+
+        // Page 2 — Q1: Object Identifiers (OIDs)
+        `<div class="page-chapter-label">Model 9 — Question 1</div>
+         <h2>OODBMS Object Identity</h2>
+         <hr class="page-divider">
+         <div class="quiz-question-container" data-q-index="0" data-correct-answer="a">
+             <h3>In an object-oriented database, objects are identified by:</h3>
+             <div class="quiz-options">
+                 <label class="quiz-option-label"><input type="radio" name="e9q1" value="a"> A. A system-generated Object Identifier (OID) that is immutable and independent of object state.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e9q1" value="b"> B. User-defined primary key columns.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e9q1" value="c"> C. Memory address pointers that change on system restarts.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e9q1" value="d"> D. The values of the object's attributes.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e9q1" value="e"> E. None of the above</label>
+             </div>
+             <button class="check-quiz-btn">Check Answer</button>
+             <div class="quiz-explanation" style="display:none;">
+                 <h4>Explanation:</h4>
+                 <p>Unlike relational tables where identity is value-based (primary keys), OODBMS uses **Object Identifiers (OIDs)**. An OID is generated by the system, remains permanently immutable, and does not change even if all attributes of the object are modified (Option A).</p>
+             </div>
+         </div>`,
+
+        // Page 3 — Q2: ODMG standard
+        `<div class="page-chapter-label">Model 9 — Question 2</div>
+         <h2>ODMG Standards</h2>
+         <hr class="page-divider">
+         <div class="quiz-question-container" data-q-index="1" data-correct-answer="b">
+             <h3>The ODMG standard defines:</h3>
+             <div class="quiz-options">
+                 <label class="quiz-option-label"><input type="radio" name="e9q2" value="a"> A. only relational views and triggers.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e9q2" value="b"> B. Object Model, ODL (Object Definition Language), and OQL (Object Query Language).</label>
+                 <label class="quiz-option-label"><input type="radio" name="e9q2" value="c"> C. XML schema bindings for Postgres.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e9q2" value="d"> D. SQL Server connection pool configs.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e9q2" value="e"> E. None of the above</label>
+             </div>
+             <button class="check-quiz-btn">Check Answer</button>
+             <div class="quiz-explanation" style="display:none;">
+                 <h4>Explanation:</h4>
+                 <p>The **ODMG (Object Data Management Group)** standard was created to define portability specifications for object databases. It contains: an Object Model, Object Definition Language (ODL), Object Query Language (OQL), and language bindings (C++, Java, Smalltalk).</p>
+             </div>
+         </div>`,
+
+        // Page 4 — Q3: OQL Features
+        `<div class="page-chapter-label">Model 9 — Question 3</div>
+         <h2>Object Query Language (OQL)</h2>
+         <hr class="page-divider">
+         <div class="quiz-question-container" data-q-index="2" data-correct-answer="c">
+             <h3>Object Query Language (OQL):</h3>
+             <div class="quiz-options">
+                 <label class="quiz-option-label"><input type="radio" name="e9q3" value="a"> A. is a NoSQL document query format.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e9q3" value="b"> B. does not support the SELECT-FROM-WHERE syntax.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e9q3" value="c"> C. extends SQL syntax to support querying complex object structures, nesting, and methods.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e9q3" value="d"> D. compiles queries directly into physical disk pages.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e9q3" value="e"> E. none of the above</label>
+             </div>
+             <button class="check-quiz-btn">Check Answer</button>
+             <div class="quiz-explanation" style="display:none;">
+                 <h4>Explanation:</h4>
+                 <p>**OQL** is a declarative query language designed for the ODMG object model. It uses an SQL-like SELECT-FROM-WHERE syntax but extends it to support object paths, collections, nesting, and method execution (Option C).</p>
+             </div>
+         </div>`,
+
+        // Page 5 — Q4: Object Persistence
+        `<div class="page-chapter-label">Model 9 — Question 4</div>
+         <h2>Object Persistence</h2>
+         <hr class="page-divider">
+         <div class="quiz-question-container" data-q-index="3" data-correct-answer="a">
+             <h3>How is persistence achieved in OODBMS?</h3>
+             <div class="quiz-options">
+                 <label class="quiz-option-label"><input type="radio" name="e9q4" value="a"> A. Through reachability from a persistent root object, or explicit registration.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e9q4" value="b"> B. By translating objects to relational tables via ORM frameworks.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e9q4" value="c"> C. By serializing objects to JSON text files.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e9q4" value="d"> D. All objects created in code are automatically persistent.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e9q4" value="e"> E. None of the above</label>
+             </div>
+             <button class="check-quiz-btn">Check Answer</button>
+             <div class="quiz-explanation" style="display:none;">
+                 <h4>Explanation:</h4>
+                 <p>In OODBMS, objects can be transient (temporary in memory) or persistent. Persistence is typically achieved by making an object **reachable** (referenced) from another persistent object (starting from a "persistent root"), or by explicitly declaring it as persistent.</p>
+             </div>
+         </div>`,
+
+        // Page 6 — Q5: ORDBMS User-Defined Types
+        `<div class="page-chapter-label">Model 9 — Question 5</div>
+         <h2>Object-Relational UDTs</h2>
+         <hr class="page-divider">
+         <div class="quiz-question-container" data-q-index="4" data-correct-answer="c">
+             <h3>In Object-Relational Databases (ORDBMS), user-defined types (UDTs) are:</h3>
+             <div class="quiz-options">
+                 <label class="quiz-option-label"><input type="radio" name="e9q5" value="a"> A. banned to ensure strict relational normalization.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e9q5" value="b"> B. only stored as unstructured JSON strings.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e9q5" value="c"> C. supported directly as column types inside relational tables.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e9q5" value="d"> D. managed by external application microservices.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e9q5" value="e"> E. none of the above</label>
+             </div>
+             <button class="check-quiz-btn">Check Answer</button>
+             <div class="quiz-explanation" style="display:none;">
+                 <h4>Explanation:</h4>
+                 <p>ORDBMS (like PostgreSQL) extends relational tables to support object-oriented features. Developers can define custom structures (User-Defined Types, or UDTs) and place them directly as column types (Option C) while maintaining standard SQL querying.</p>
+             </div>
+         </div>`,
+
+        // Page 7 — Results
+        `<div class="page-chapter-label">Model 9 — Complete</div>
+         <h2>Practice Model Results</h2>
+         <hr class="page-divider">
+         <div class="quiz-results-container">
+             <!-- Injected by JS -->
+         </div>`
+    ],
+
+    exam10: [
+        // Page 1 — Welcome
+        `<div class="page-chapter-label">Exam Model 10</div>
+         <h2>Exam Model 10: Encryption &amp; NoSQL</h2>
+         <hr class="page-divider">
+         <p>Welcome to **Exam Model 10**! This practice set covers encryption ciphers, CAP Theorem properties, and NoSQL databases.</p>
+         <div class="quiz-results-container">
+             <h3>Ready to start?</h3>
+             <p>Navigate to the next pages to answer the questions.</p>
+         </div>`,
+
+        // Page 2 — Q1: Cipher Encryption (Image 1, Q7)
+        `<div class="page-chapter-label">Model 10 — Question 1</div>
+         <h2>Substitution Cipher</h2>
+         <hr class="page-divider">
+         <div class="quiz-question-container" data-q-index="0" data-correct-answer="d">
+             <h3>To encrypt a text message using a keyword and index alphabet codes:</h3>
+             <div class="quiz-options">
+                 <label class="quiz-option-label"><input type="radio" name="e10q1" value="a"> A. we multiply character codes.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e10q1" value="b"> B. we apply transposition sorting to the columns.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e10q1" value="c"> C. we convert text to binary blocks and perform XOR operations.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e10q1" value="d"> D. we perform addition of the numerical positions of text and key characters modulo the alphabet size.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e10q1" value="e"> E. None of the above</label>
+             </div>
+             <button class="check-quiz-btn">Check Answer</button>
+             <div class="quiz-explanation" style="display:none;">
+                 <h4>Explanation:</h4>
+                 <p>In standard keyword-based substitution ciphers (Vigenère cipher): each letter of the plaintext is shifted by the numerical code of the corresponding key letter modulo the size of the alphabet, which is: \((Code(Plain) + Code(Key)) \pmod{AlphabetSize}\) (Option D).</p>
+             </div>
+         </div>`,
+
+        // Page 3 — Q2: NoSQL CAP Theorem
+        `<div class="page-chapter-label">Model 10 — Question 2</div>
+         <h2>CAP Theorem</h2>
+         <hr class="page-divider">
+         <div class="quiz-question-container" data-q-index="1" data-correct-answer="a">
+             <h3>The CAP Theorem states that a distributed database system can guarantee at most two of:</h3>
+             <div class="quiz-options">
+                 <label class="quiz-option-label"><input type="radio" name="e10q2" value="a"> A. Consistency, Availability, Partition Tolerance.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e10q2" value="b"> B. Concurrency, Atomicity, Performance.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e10q2" value="c"> C. Capacity, Availability, Partitioning.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e10q2" value="d"> D. Cluster, Access, Persistence.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e10q2" value="e"> E. None of the above</label>
+             </div>
+             <button class="check-quiz-btn">Check Answer</button>
+             <div class="quiz-explanation" style="display:none;">
+                 <h4>Explanation:</h4>
+                 <p>The **CAP Theorem** (Brewer's Theorem) states that in any distributed data store, you can only guarantee at most two out of: **Consistency** (all nodes see the same data), **Availability** (every request receives a response), and **Partition Tolerance** (the system continues to operate despite network failures) (Option A).</p>
+             </div>
+         </div>`,
+
+        // Page 4 — Q3: MongoDB document model
+        `<div class="page-chapter-label">Model 10 — Question 3</div>
+         <h2>MongoDB Document Model</h2>
+         <hr class="page-divider">
+         <div class="quiz-question-container" data-q-index="2" data-correct-answer="a">
+             <h3>In MongoDB, data is stored in:</h3>
+             <div class="quiz-options">
+                 <label class="quiz-option-label"><input type="radio" name="e10q3" value="a"> A. BSON (Binary JSON) documents grouped inside collections.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e10q3" value="b"> B. Relational tables containing user types.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e10q3" value="c"> C. Key-value strings cached in memory.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e10q3" value="d"> D. Graph nodes and directional edges.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e10q3" value="e"> E. None of the above</label>
+             </div>
+             <button class="check-quiz-btn">Check Answer</button>
+             <div class="quiz-explanation" style="display:none;">
+                 <h4>Explanation:</h4>
+                 <p>MongoDB is a document-oriented database. It stores records as **BSON** (Binary JSON) documents. Documents are grouped inside containers called **collections** (which are equivalent to relational tables but lack rigid schemas).</p>
+             </div>
+         </div>`,
+
+        // Page 5 — Q4: Redis Key-Value
+        `<div class="page-chapter-label">Model 10 — Question 4</div>
+         <h2>Redis In-Memory Key-Value</h2>
+         <hr class="page-divider">
+         <div class="quiz-question-container" data-q-index="3" data-correct-answer="b">
+             <h3>Which statement is correct regarding Redis?</h3>
+             <div class="quiz-options">
+                 <label class="quiz-option-label"><input type="radio" name="e10q4" value="a"> A. It is a relational SQL database engine.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e10q4" value="b"> B. It is an in-memory key-value database commonly used for caching.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e10q4" value="c"> C. It does not support any data types beyond basic strings.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e10q4" value="d"> D. It compiles execution plans using relational algebra cost formulas.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e10q4" value="e"> E. None of the above</label>
+             </div>
+             <button class="check-quiz-btn">Check Answer</button>
+             <div class="quiz-explanation" style="display:none;">
+                 <h4>Explanation:</h4>
+                 <p>**Redis (Remote Dictionary Server)** is an in-memory, open-source key-value data store. Because it runs in memory, it is extremely fast and frequently used for sessions caching (Option B).</p>
+             </div>
+         </div>`,
+
+        // Page 6 — Q5: SQL vs NoSQL
+        `<div class="page-chapter-label">Model 10 — Question 5</div>
+         <h2>NoSQL Scaling benefits</h2>
+         <hr class="page-divider">
+         <div class="quiz-question-container" data-q-index="4" data-correct-answer="a">
+             <h3>A key benefit of NoSQL databases compared to traditional SQL systems is:</h3>
+             <div class="quiz-options">
+                 <label class="quiz-option-label"><input type="radio" name="e10q5" value="a"> A. Dynamic schema flexibility and horizontal scaling across clusters.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e10q5" value="b"> B. Strict referential integrity enforcement.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e10q5" value="c"> C. Guaranteed conflict serializability under all isolation levels.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e10q5" value="d"> D. Direct execution of PostgREST queries.</label>
+                 <label class="quiz-option-label"><input type="radio" name="e10q5" value="e"> E. None of the above</label>
+             </div>
+             <button class="check-quiz-btn">Check Answer</button>
+             <div class="quiz-explanation" style="display:none;">
+                 <h4>Explanation:</h4>
+                 <p>NoSQL databases (like MongoDB, Cassandra, DynamoDB) offer schema flexibility (documents don't have to follow the same structure) and are designed to scale **horizontally** by partitioning data across clusters of cheap servers (Option A).</p>
+             </div>
+         </div>`,
+
+        // Page 7 — Results
+        `<div class="page-chapter-label">Model 10 — Complete</div>
+         <h2>Practice Model Results</h2>
+         <hr class="page-divider">
+         <div class="quiz-results-container">
+             <!-- Injected by JS -->
+         </div>`
     ]
 };
 
@@ -2268,6 +3514,8 @@ let currentBookType = null;
 let currentChapterId = null;
 let currentLessonPage = 0;
 let totalLessonPages = 0;
+let currentActiveChapterId = '';
+const quizScores = {};
 
 
 /* ==========================================================
@@ -2423,6 +3671,11 @@ function openLesson(chapterId) {
     if (!pages) return;
     currentLessonPage = 0;
     totalLessonPages = pages.length;
+    currentActiveChapterId = chapterId;
+
+    if (chapterId.startsWith('exam')) {
+        quizScores[chapterId] = [null, null, null, null, null];
+    }
 
     // Build pages
     lessonBook.innerHTML = '';
@@ -2435,6 +3688,9 @@ function openLesson(chapterId) {
 
     updateLessonNav();
     setupTableTranslations();
+    if (chapterId.startsWith('exam')) {
+        updateFinalResultsPage(chapterId);
+    }
 
     fadeOverlay.classList.add('active');
     setTimeout(() => {
@@ -2652,5 +3908,111 @@ document.querySelectorAll('.nav-link').forEach(link=>{
         link.appendChild(r); setTimeout(()=>r.remove(),600);
     });
 });
+/* ==========================================================
+   QUIZ ENGINE
+   ========================================================== */
+function updateFinalResultsPage(chapterId) {
+    const scores = quizScores[chapterId];
+    if (!scores) return;
+    
+    const resultsContainer = lessonBook.querySelector('.quiz-results-container');
+    if (!resultsContainer) return;
+    
+    let answeredCount = 0;
+    let correctCount = 0;
+    
+    scores.forEach(s => {
+        if (s !== null) {
+            answeredCount++;
+            if (s === 1) correctCount++;
+        }
+    });
+    
+    if (answeredCount < 5) {
+        resultsContainer.innerHTML = `
+            <h3>Your Progress</h3>
+            <div class="results-score-badge pending">${answeredCount} / 5 Answered</div>
+            <p>Please answer all 5 questions to view your final score and evaluation.</p>
+        `;
+    } else {
+        const percentage = Math.round((correctCount / 5) * 100);
+        let feedback = "Keep studying! Review the course slides and try again.";
+        let badgeClass = "low";
+        if (correctCount === 5) {
+            feedback = "Perfect score! You are fully prepared for the exam!";
+            badgeClass = "perfect";
+        } else if (correctCount >= 4) {
+            feedback = "Excellent job! You have a strong grasp of the material.";
+            badgeClass = "high";
+        } else if (correctCount >= 3) {
+            feedback = "Good effort! A bit more review and you will be ready.";
+            badgeClass = "medium";
+        }
+        
+        resultsContainer.innerHTML = `
+            <h3>Final Results</h3>
+            <div class="results-score-badge ${badgeClass}">${correctCount} / 5 Correct (${percentage}%)</div>
+            <p class="results-feedback">${feedback}</p>
+            <button class="retry-exam-btn" id="retry-exam-model-btn">Retry Exam Model</button>
+        `;
+        
+        const retryBtn = resultsContainer.querySelector('#retry-exam-model-btn');
+        if (retryBtn) {
+            retryBtn.addEventListener('click', () => {
+                openLesson(chapterId);
+            });
+        }
+    }
+}
+
+lessonBook.addEventListener('click', (e) => {
+    if (e.target.classList.contains('check-quiz-btn')) {
+        const btn = e.target;
+        const container = btn.closest('.quiz-question-container');
+        if (!container) return;
+        
+        const qIndex = parseInt(container.getAttribute('data-q-index'), 10);
+        const correctAnswer = container.getAttribute('data-correct-answer');
+        const selectedRadio = container.querySelector('input[type="radio"]:checked');
+        
+        if (!selectedRadio) {
+            alert("Please select an answer first!");
+            return;
+        }
+        
+        // Disable all inputs in this question
+        container.querySelectorAll('input[type="radio"]').forEach(r => r.disabled = true);
+        btn.disabled = true;
+        btn.style.display = 'none';
+        
+        const selectedValue = selectedRadio.value;
+        const isCorrect = (selectedValue === correctAnswer);
+        
+        // Highlight options
+        container.querySelectorAll('.quiz-option-label').forEach(label => {
+            const radio = label.querySelector('input');
+            if (radio.value === correctAnswer) {
+                label.classList.add('correct-highlight');
+            } else if (radio.checked && !isCorrect) {
+                label.classList.add('incorrect-highlight');
+            }
+        });
+        
+        // Show explanation
+        const explanation = container.querySelector('.quiz-explanation');
+        if (explanation) {
+            explanation.style.display = 'block';
+            explanation.classList.add('fade-in');
+        }
+        
+        // Update score
+        const activeChapter = currentActiveChapterId;
+        if (activeChapter && quizScores[activeChapter]) {
+            quizScores[activeChapter][qIndex] = isCorrect ? 1 : 0;
+            updateFinalResultsPage(activeChapter);
+        }
+    }
+});
+
 
 })();
