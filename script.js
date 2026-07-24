@@ -1128,7 +1128,7 @@ OrderDate + <span class="sql-type">INTERVAL</span> '30 days'
         `<div class="page-chapter-label">Chapter 11 — Window Functions</div>
          <h2>Introduction to Window Functions</h2>
          <hr class="page-divider">
-         <p>A **Window Function** performs calculations across a set of table rows that are related to the current row. Unlike a `GROUP BY` aggregation, a window function **does not collapse** rows. The output has the same number of rows as the input.</p>
+         <p>A **Window Function** performs calculations across a set of table rows that are related to the current row. Unlike a \`GROUP BY\` aggregation, a window function **does not collapse** rows. The output has the same number of rows as the input.</p>
          <p>We declare a window function using the <strong>OVER()</strong> clause. Inside, we specify:</p>
          <p style="font-size:0.8rem; line-height:1.6; text-align:left; color:#4a3558; margin-left:16px;">
             &bull; <strong>PARTITION BY:</strong> Splits rows into groups (like GROUP BY).<br>
