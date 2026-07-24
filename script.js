@@ -95,6 +95,29 @@ const TIMELINE_DATA = {
             popupDesc: `Test your skills with multiple choice questions on database internals, theory, security, and joins.`,
             hasLesson: true
         }))
+    },
+    'restaurant': {
+        title: 'Restaurant Management System',
+        subtitle: 'Interactive ER Puzzle Game & Implementation',
+        bubbles: [
+            { id: 'restaurant-puzzle', num: 'G.1', label: 'ER Schema Game', popupTitle: 'Interactive ER Diagram Puzzle', popupDesc: 'Drag tables, connect relationships, click multiplicity badges (1:1, 1:N, N:M), and validate your schema.', hasLesson: true },
+            { id: 'restaurant-ddl', num: 'SQL', label: 'Database DDL', popupTitle: 'Restaurant DDL Schema', popupDesc: 'Full SQL CREATE TABLE scripts for Customers, Reservations, Tables, Orders, OrderItems, and Dishes.', hasLesson: true },
+            { id: 'restaurant-dml', num: 'DML', label: 'Order Processing', popupTitle: 'Order & Sales Queries', popupDesc: 'Practical INSERT, UPDATE, and sales query transactions.', hasLesson: true }
+        ]
+    },
+    'bank': {
+        title: 'Bank Management System',
+        subtitle: 'Accounts, Transactions & Auditing',
+        bubbles: [
+            { id: 'bank-overview', num: 'B.1', label: 'Bank Schema', popupTitle: 'Bank Accounts & Audits', popupDesc: 'Database structure for accounts, transfers, loans, and audit trails.', hasLesson: true }
+        ]
+    },
+    'student-records': {
+        title: 'Student Records System',
+        subtitle: 'Enrollments, Grades & GPAs',
+        bubbles: [
+            { id: 'student-overview', num: 'S.1', label: 'Student Schema', popupTitle: 'Academic Records Design', popupDesc: 'Academic records database structure, course enrollments, and GPA views.', hasLesson: true }
+        ]
     }
 };
 
@@ -3071,6 +3094,201 @@ using (var db = new SchoolContext()) {
          <div class="quiz-results-container">
              <!-- Injected by JS -->
          </div>`
+    ],
+
+    'restaurant-puzzle': [
+        // Page 1 — Interactive Puzzle Workbench
+        `<div class="page-chapter-label">Building Project 1 — Restaurant Database Puzzle Game</div>
+         <h2>Interactive ER Diagram Puzzle</h2>
+         <hr class="page-divider">
+         <p style="font-size:0.88rem; line-height:1.5; color:#cbd5e1; margin-bottom:12px;">
+            <strong>Instructions:</strong> Drag table cards around the canvas. Click a connector dot on one table card and then on another to draw a relationship line. Click the <strong>multiplicity badge</strong> on top of the line to change between <code>1:1</code>, <code>1:N</code>, and <code>N:M</code>. Click <strong>Validate Schema</strong> when done!
+         </p>
+
+         <div class="er-game-toolbar">
+             <div class="er-toolbar-actions">
+                 <button class="er-btn er-validate-btn" id="er-validate-btn">✓ Validate Schema</button>
+                 <button class="er-btn er-reset-btn" id="er-reset-btn">↺ Reset Lines</button>
+                 <button class="er-btn er-hint-btn" id="er-hint-btn">💡 Show Hint</button>
+             </div>
+             <div class="er-score-badge" id="er-score-badge">0 / 6 Valid Connections</div>
+         </div>
+
+         <div class="er-game-canvas-wrapper" id="er-game-canvas-wrapper">
+             <svg class="er-lines-svg" id="er-lines-svg"></svg>
+             <div class="er-badges-container" id="er-badges-container"></div>
+             
+             <!-- Table Cards -->
+             <div class="er-table-card" id="card-customers" data-table="customers" style="left: 20px; top: 20px;">
+                 <div class="er-card-header">
+                     <span>📋 Customers</span>
+                     <div class="er-dot-node" data-table="customers" title="Click to connect"></div>
+                 </div>
+                 <ul class="er-card-cols">
+                     <li class="pk">🔑 CustomerID (PK)</li>
+                     <li>Name</li>
+                     <li>Phone</li>
+                     <li>Email</li>
+                 </ul>
+             </div>
+
+             <div class="er-table-card" id="card-reservations" data-table="reservations" style="left: 250px; top: 20px;">
+                 <div class="er-card-header">
+                     <span>📅 Reservations</span>
+                     <div class="er-dot-node" data-table="reservations" title="Click to connect"></div>
+                 </div>
+                 <ul class="er-card-cols">
+                     <li class="pk">🔑 ReservationID (PK)</li>
+                     <li class="fk">🔗 CustomerID (FK)</li>
+                     <li class="fk">🔗 TableID (FK)</li>
+                     <li>ReservationDate</li>
+                     <li>PartySize</li>
+                 </ul>
+             </div>
+
+             <div class="er-table-card" id="card-dining_tables" data-table="dining_tables" style="left: 480px; top: 20px;">
+                 <div class="er-card-header">
+                     <span>🪑 DiningTables</span>
+                     <div class="er-dot-node" data-table="dining_tables" title="Click to connect"></div>
+                 </div>
+                 <ul class="er-card-cols">
+                     <li class="pk">🔑 TableID (PK)</li>
+                     <li>TableNumber</li>
+                     <li>Capacity</li>
+                     <li>Location</li>
+                 </ul>
+             </div>
+
+             <div class="er-table-card" id="card-orders" data-table="orders" style="left: 250px; top: 230px;">
+                 <div class="er-card-header">
+                     <span>🍽️ Orders</span>
+                     <div class="er-dot-node" data-table="orders" title="Click to connect"></div>
+                 </div>
+                 <ul class="er-card-cols">
+                     <li class="pk">🔑 OrderID (PK)</li>
+                     <li class="fk">🔗 CustomerID (FK)</li>
+                     <li class="fk">🔗 TableID (FK)</li>
+                     <li>OrderTime</li>
+                     <li>TotalAmount</li>
+                 </ul>
+             </div>
+
+             <div class="er-table-card" id="card-order_items" data-table="order_items" style="left: 480px; top: 230px;">
+                 <div class="er-card-header">
+                     <span>🧾 OrderItems</span>
+                     <div class="er-dot-node" data-table="order_items" title="Click to connect"></div>
+                 </div>
+                 <ul class="er-card-cols">
+                     <li class="pk">🔑 OrderItemID (PK)</li>
+                     <li class="fk">🔗 OrderID (FK)</li>
+                     <li class="fk">🔗 DishID (FK)</li>
+                     <li>Quantity</li>
+                     <li>ItemPrice</li>
+                 </ul>
+             </div>
+
+             <div class="er-table-card" id="card-dishes" data-table="dishes" style="left: 710px; top: 230px;">
+                 <div class="er-card-header">
+                     <span>🍕 Dishes</span>
+                     <div class="er-dot-node" data-table="dishes" title="Click to connect"></div>
+                 </div>
+                 <ul class="er-card-cols">
+                     <li class="pk">🔑 DishID (PK)</li>
+                     <li>DishName</li>
+                     <li>Category</li>
+                     <li>Price</li>
+                 </ul>
+             </div>
+         </div>
+
+         <div class="er-feedback-toast" id="er-feedback-toast" style="display:none;"></div>`,
+
+        // Page 2 — Schema Solution Overview
+        `<div class="page-chapter-label">Restaurant Database Solution &amp; Schema</div>
+         <h2>Restaurant Management Schema Solution</h2>
+         <hr class="page-divider">
+         <p>Here is the completed relational model structure for the Restaurant Management System:</p>
+         <table class="compare-table" data-table-id="restaurant-schema-table">
+            <tr><th>Relationship</th><th>From Table</th><th>To Table</th><th>Multiplicity</th><th>Description</th></tr>
+            <tr><td>Customer Reservations</td><td>Customers</td><td>Reservations</td><td><code>1:N</code></td><td>One customer can make multiple table reservations.</td></tr>
+            <tr><td>Reserved Dining Table</td><td>DiningTables</td><td>Reservations</td><td><code>1:N</code></td><td>One table can be reserved multiple times across different time slots.</td></tr>
+            <tr><td>Customer Orders</td><td>Customers</td><td>Orders</td><td><code>1:N</code></td><td>One customer can place multiple dining orders.</td></tr>
+            <tr><td>Table Orders</td><td>DiningTables</td><td>Orders</td><td><code>1:N</code></td><td>One dining table can host multiple orders throughout a business day.</td></tr>
+            <tr><td>Order Line Items</td><td>Orders</td><td>OrderItems</td><td><code>1:N</code></td><td>One order contains multiple line items (dishes ordered).</td></tr>
+            <tr><td>Dish Catalog Items</td><td>Dishes</td><td>OrderItems</td><td><code>1:N</code></td><td>One dish appears on multiple order line items.</td></tr>
+         </table>`
+    ],
+
+    'restaurant-ddl': [
+        `<div class="page-chapter-label">Building Project 1 — DDL</div>
+         <h2>Restaurant Database DDL Schema</h2>
+         <hr class="page-divider">
+         <p>Execute these SQL statements to build the physical relational database schema for the Restaurant Management System:</p>
+         <div class="sql-block"><code><span class="sql-comment">-- 1. Create Customers Table</span>
+<span class="sql-kw">CREATE TABLE</span> Customers (
+    CustomerID <span class="sql-kw">INT PRIMARY KEY IDENTITY</span>(1,1),
+    Name <span class="sql-kw">VARCHAR</span>(100) <span class="sql-kw">NOT NULL</span>,
+    Phone <span class="sql-kw">VARCHAR</span>(20),
+    Email <span class="sql-kw">VARCHAR</span>(100) <span class="sql-kw">UNIQUE</span>
+);
+
+<span class="sql-comment">-- 2. Create Dining Tables</span>
+<span class="sql-kw">CREATE TABLE</span> DiningTables (
+    TableID <span class="sql-kw">INT PRIMARY KEY IDENTITY</span>(1,1),
+    TableNumber <span class="sql-kw">INT NOT NULL UNIQUE</span>,
+    Capacity <span class="sql-kw">INT NOT NULL CHECK</span> (Capacity &gt; 0),
+    Location <span class="sql-kw">VARCHAR</span>(50)
+);
+
+<span class="sql-comment">-- 3. Create Reservations Table</span>
+<span class="sql-kw">CREATE TABLE</span> Reservations (
+    ReservationID <span class="sql-kw">INT PRIMARY KEY IDENTITY</span>(1,1),
+    CustomerID <span class="sql-kw">INT REFERENCES</span> Customers(CustomerID) <span class="sql-kw">ON DELETE CASCADE</span>,
+    TableID <span class="sql-kw">INT REFERENCES</span> DiningTables(TableID),
+    ReservationDate <span class="sql-kw">DATETIME NOT NULL</span>,
+    PartySize <span class="sql-kw">INT CHECK</span> (PartySize &gt; 0)
+);</code></div>`
+    ],
+
+    'restaurant-dml': [
+        `<div class="page-chapter-label">Building Project 1 — DML</div>
+         <h2>Order Processing &amp; Analytics</h2>
+         <hr class="page-divider">
+         <p>Sample query transactions for managing restaurant sales and calculating revenue by dish category:</p>
+         <div class="sql-block"><code><span class="sql-comment">-- Query Total Revenue per Dish Category</span>
+<span class="sql-kw">SELECT</span> d.Category,
+       <span class="sql-kw">COUNT</span>(oi.OrderItemID) <span class="sql-kw">AS</span> TotalItemsSold,
+       <span class="sql-kw">SUM</span>(oi.Quantity * oi.ItemPrice) <span class="sql-kw">AS</span> TotalRevenue
+<span class="sql-kw">FROM</span> Dishes d
+<span class="sql-kw">JOIN</span> OrderItems oi <span class="sql-kw">ON</span> d.DishID = oi.DishID
+<span class="sql-kw">GROUP BY</span> d.Category
+<span class="sql-kw">ORDER BY</span> TotalRevenue <span class="sql-kw">DESC</span>;</code></div>`
+    ],
+
+    'bank-overview': [
+        `<div class="page-chapter-label">Building Project 2 — Banking</div>
+         <h2>Bank Management Schema</h2>
+         <hr class="page-divider">
+         <p>Schema design for managing bank accounts, customer profiles, and ledger transactions:</p>
+         <div class="sql-block"><code><span class="sql-kw">CREATE TABLE</span> Accounts (
+    AccountID <span class="sql-kw">INT PRIMARY KEY IDENTITY</span>(1000,1),
+    CustomerID <span class="sql-kw">INT NOT NULL</span>,
+    AccountType <span class="sql-kw">VARCHAR</span>(20) <span class="sql-kw">CHECK</span> (AccountType <span class="sql-kw">IN</span> ('SAVINGS','CHECKING')),
+    Balance <span class="sql-kw">DECIMAL</span>(15,2) <span class="sql-kw">DEFAULT</span> 0.00
+);</code></div>`
+    ],
+
+    'student-overview': [
+        `<div class="page-chapter-label">Building Project 3 — Student Records</div>
+         <h2>Student Records Schema</h2>
+         <hr class="page-divider">
+         <p>Relational model for managing university courses, student enrollments, and GPA score calculations:</p>
+         <div class="sql-block"><code><span class="sql-kw">CREATE TABLE</span> Enrollments (
+    EnrollmentID <span class="sql-kw">INT PRIMARY KEY IDENTITY</span>(1,1),
+    StudentID <span class="sql-kw">INT REFERENCES</span> Students(StudentID),
+    CourseID <span class="sql-kw">INT REFERENCES</span> Courses(CourseID),
+    Grade <span class="sql-kw">DECIMAL</span>(3,2)
+);</code></div>`
     ]
 };
 
@@ -3692,6 +3910,10 @@ function openLesson(chapterId) {
         updateFinalResultsPage(chapterId);
     }
 
+    if (chapterId === 'restaurant-puzzle') {
+        setTimeout(initErGame, 700);
+    }
+
     fadeOverlay.classList.add('active');
     setTimeout(() => {
         contentPage.classList.remove('visible');
@@ -4014,5 +4236,268 @@ lessonBook.addEventListener('click', (e) => {
     }
 });
 
+
+/* ==========================================================
+   INTERACTIVE ER DIAGRAM PUZZLE GAME ENGINE
+   ========================================================== */
+let erConnections = [];
+let activeStartTable = null;
+
+const ER_SOLUTION = [
+    { from: 'customers', to: 'reservations', multiplicity: '1:N' },
+    { from: 'dining_tables', to: 'reservations', multiplicity: '1:N' },
+    { from: 'customers', to: 'orders', multiplicity: '1:N' },
+    { from: 'dining_tables', to: 'orders', multiplicity: '1:N' },
+    { from: 'orders', to: 'order_items', multiplicity: '1:N' },
+    { from: 'dishes', to: 'order_items', multiplicity: '1:N' }
+];
+
+function initErGame() {
+    const wrapper = document.getElementById('er-game-canvas-wrapper');
+    if (!wrapper) return;
+
+    erConnections = [];
+    activeStartTable = null;
+
+    // Attach button handlers
+    const validateBtn = document.getElementById('er-validate-btn');
+    const resetBtn = document.getElementById('er-reset-btn');
+    const hintBtn = document.getElementById('er-hint-btn');
+
+    if (validateBtn) validateBtn.onclick = validateErSchema;
+    if (resetBtn) resetBtn.onclick = resetErGame;
+    if (hintBtn) hintBtn.onclick = showErHint;
+
+    // Attach card drag and dot node handlers
+    const cards = wrapper.querySelectorAll('.er-table-card');
+    cards.forEach(card => {
+        setupCardDrag(card);
+        const dot = card.querySelector('.er-dot-node');
+        if (dot) {
+            dot.onclick = (e) => {
+                e.stopPropagation();
+                handleDotClick(card.dataset.table);
+            };
+        }
+    });
+
+    renderErLines();
+}
+
+function handleDotClick(tableId) {
+    const wrapper = document.getElementById('er-game-canvas-wrapper');
+    if (!wrapper) return;
+
+    if (!activeStartTable) {
+        activeStartTable = tableId;
+        wrapper.querySelectorAll('.er-dot-node').forEach(d => {
+            d.classList.toggle('active-source', d.dataset.table === tableId);
+        });
+        showErToast(`Selected start table: ${tableId.toUpperCase()}. Now click another table node to connect!`, 'info');
+    } else {
+        if (activeStartTable === tableId) {
+            activeStartTable = null;
+            wrapper.querySelectorAll('.er-dot-node').forEach(d => d.classList.remove('active-source'));
+            showErToast(`Selection cancelled.`, 'info');
+            return;
+        }
+
+        const from = activeStartTable;
+        const to = tableId;
+        activeStartTable = null;
+        wrapper.querySelectorAll('.er-dot-node').forEach(d => d.classList.remove('active-source'));
+
+        // Check if connection already exists
+        const exists = erConnections.some(c => 
+            (c.from === from && c.to === to) || (c.from === to && c.to === from)
+        );
+
+        if (exists) {
+            showErToast(`Connection between ${from.toUpperCase()} and ${to.toUpperCase()} already exists!`, 'warning');
+            return;
+        }
+
+        erConnections.push({
+            id: 'conn_' + Date.now(),
+            from: from,
+            to: to,
+            multiplicity: '1:N',
+            status: null
+        });
+
+        showErToast(`Connected ${from.toUpperCase()} to ${to.toUpperCase()} (Default: 1:N). Click badge to change multiplicity!`, 'success');
+        renderErLines();
+    }
+}
+
+function setupCardDrag(card) {
+    const header = card.querySelector('.er-card-header');
+    if (!header) return;
+
+    let isDragging = false;
+    let startX = 0, startY = 0;
+    let initialLeft = 0, initialTop = 0;
+
+    header.onmousedown = (e) => {
+        if (e.target.classList.contains('er-dot-node')) return;
+        isDragging = true;
+        startX = e.clientX;
+        startY = e.clientY;
+        initialLeft = card.offsetLeft;
+        initialTop = card.offsetTop;
+        card.style.zIndex = 100;
+
+        document.onmousemove = (e) => {
+            if (!isDragging) return;
+            const dx = e.clientX - startX;
+            const dy = e.clientY - startY;
+            card.style.left = Math.max(0, initialLeft + dx) + 'px';
+            card.style.top = Math.max(0, initialTop + dy) + 'px';
+            renderErLines();
+        };
+
+        document.onmouseup = () => {
+            isDragging = false;
+            card.style.zIndex = 10;
+            document.onmousemove = null;
+            document.onmouseup = null;
+        };
+    };
+}
+
+function renderErLines() {
+    const svg = document.getElementById('er-lines-svg');
+    const badgesContainer = document.getElementById('er-badges-container');
+    const wrapper = document.getElementById('er-game-canvas-wrapper');
+    if (!svg || !badgesContainer || !wrapper) return;
+
+    svg.innerHTML = '';
+    badgesContainer.innerHTML = '';
+
+    erConnections.forEach(conn => {
+        const cardFrom = wrapper.querySelector(`[data-table="${conn.from}"]`);
+        const cardTo = wrapper.querySelector(`[data-table="${conn.to}"]`);
+        if (!cardFrom || !cardTo) return;
+
+        const x1 = cardFrom.offsetLeft + cardFrom.offsetWidth / 2;
+        const y1 = cardFrom.offsetTop + cardFrom.offsetHeight / 2;
+        const x2 = cardTo.offsetLeft + cardTo.offsetWidth / 2;
+        const y2 = cardTo.offsetTop + cardTo.offsetHeight / 2;
+
+        let strokeColor = 'rgba(167, 139, 250, 0.6)';
+        let strokeDash = '4';
+        if (conn.status === 'valid') {
+            strokeColor = '#10b981';
+            strokeDash = 'none';
+        } else if (conn.status === 'invalid') {
+            strokeColor = '#f87171';
+            strokeDash = 'none';
+        }
+
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', x1);
+        line.setAttribute('y1', y1);
+        line.setAttribute('x2', x2);
+        line.setAttribute('y2', y2);
+        line.setAttribute('stroke', strokeColor);
+        line.setAttribute('stroke-width', '3');
+        line.setAttribute('stroke-dasharray', strokeDash);
+        svg.appendChild(line);
+
+        // Midpoint badge
+        const midX = (x1 + x2) / 2;
+        const midY = (y1 + y2) / 2;
+
+        const badge = document.createElement('button');
+        badge.className = `er-line-badge ${conn.status || ''}`;
+        badge.style.left = `${midX}px`;
+        badge.style.top = `${midY}px`;
+
+        let statusSymbol = '';
+        if (conn.status === 'valid') statusSymbol = ' ✓';
+        if (conn.status === 'invalid') statusSymbol = ' ✖';
+
+        badge.innerHTML = `${conn.multiplicity}${statusSymbol}`;
+        badge.title = 'Click to cycle multiplicity (1:1 -> 1:N -> N:M)';
+
+        badge.onclick = (e) => {
+            e.stopPropagation();
+            if (conn.multiplicity === '1:1') conn.multiplicity = '1:N';
+            else if (conn.multiplicity === '1:N') conn.multiplicity = 'N:M';
+            else conn.multiplicity = '1:1';
+            conn.status = null;
+            renderErLines();
+        };
+
+        badgesContainer.appendChild(badge);
+    });
+
+    updateErScoreBadge();
+}
+
+function validateErSchema() {
+    if (erConnections.length === 0) {
+        showErToast('Please connect tables using the node dots before validating!', 'warning');
+        return;
+    }
+
+    let validCount = 0;
+
+    erConnections.forEach(conn => {
+        const match = ER_SOLUTION.find(sol => 
+            ((sol.from === conn.from && sol.to === conn.to) || (sol.from === conn.to && sol.to === conn.from))
+        );
+
+        if (match && match.multiplicity === conn.multiplicity) {
+            conn.status = 'valid';
+            validCount++;
+        } else {
+            conn.status = 'invalid';
+        }
+    });
+
+    renderErLines();
+
+    if (validCount === ER_SOLUTION.length && erConnections.length === ER_SOLUTION.length) {
+        showErToast('🎉 PERFECT SCHEMA! All 6 restaurant table connections & multiplicities are correct!', 'success');
+    } else {
+        showErToast(`Validation Complete: ${validCount} / ${ER_SOLUTION.length} correct. Check red lines (✖) and click badge to adjust multiplicities or delete bad connections!`, 'warning');
+    }
+}
+
+function resetErGame() {
+    erConnections = [];
+    activeStartTable = null;
+    renderErLines();
+    showErToast('Connections reset.', 'info');
+}
+
+function showErHint() {
+    showErToast('💡 Hint: Customers & DiningTables connect to Reservations and Orders (1:N). Orders connect to OrderItems (1:N), and Dishes connect to OrderItems (1:N).', 'info');
+}
+
+function updateErScoreBadge() {
+    const badge = document.getElementById('er-score-badge');
+    if (!badge) return;
+    const validCount = erConnections.filter(c => c.status === 'valid').length;
+    badge.textContent = `${validCount} / ${ER_SOLUTION.length} Valid Connections`;
+    if (validCount === ER_SOLUTION.length) {
+        badge.classList.add('perfect');
+    } else {
+        badge.classList.remove('perfect');
+    }
+}
+
+function showErToast(msg, type) {
+    const toast = document.getElementById('er-feedback-toast');
+    if (!toast) return;
+    toast.textContent = msg;
+    toast.className = `er-feedback-toast ${type} active`;
+    toast.style.display = 'block';
+    setTimeout(() => {
+        toast.classList.remove('active');
+        setTimeout(() => toast.style.display = 'none', 300);
+    }, 4500);
+}
 
 })();
