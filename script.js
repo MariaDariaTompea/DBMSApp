@@ -3359,16 +3359,106 @@ using (var db = new SchoolContext()) {
     ],
 
     'student-overview': [
-        `<div class="page-chapter-label">Building Project 3 — Student Records</div>
-         <h2>Student Records Schema</h2>
+        // Page 1 — Interactive Query Builder Game Workbench
+        `<div class="page-chapter-label">Building Project 3 — Student Records Query Game</div>
+         <h2>Interactive Student Database Query Builder</h2>
          <hr class="page-divider">
-         <p>Relational model for managing university courses, student enrollments, and GPA score calculations:</p>
-         <div class="sql-block"><code><span class="sql-kw">CREATE TABLE</span> Enrollments (
-    EnrollmentID <span class="sql-kw">INT PRIMARY KEY IDENTITY</span>(1,1),
-    StudentID <span class="sql-kw">INT REFERENCES</span> Students(StudentID),
-    CourseID <span class="sql-kw">INT REFERENCES</span> Courses(CourseID),
-    Grade <span class="sql-kw">DECIMAL</span>(3,2)
-);</code></div>`
+         <p style="font-size:0.88rem; line-height:1.5; color:#cbd5e1; margin-bottom:14px;">
+            <strong>Instructions:</strong> You are the University Registrar! Select a mission below, then click or drag SQL building blocks from the palette on the right into the <strong>SELECT</strong>, <strong>FROM</strong>, <strong>JOIN</strong>, <strong>WHERE</strong>, and <strong>GROUP BY</strong> slots. Click <strong>Execute &amp; Validate Query</strong> to see the live virtual dataset results!
+         </p>
+
+         <!-- Mission Selector Tabs -->
+         <div class="student-mission-tabs">
+             <button class="student-tab active" data-mission="1">Mission 1: Honor Students</button>
+             <button class="student-tab" data-mission="2">Mission 2: Department GPAs</button>
+             <button class="student-tab" data-mission="3">Mission 3: Unenrolled Students</button>
+         </div>
+
+         <div class="bank-game-toolbar" style="margin-top:10px;">
+             <div class="er-toolbar-actions">
+                 <button class="er-btn er-validate-btn" id="student-validate-btn">▶ Execute &amp; Validate Query</button>
+                 <button class="er-btn er-reset-btn" id="student-reset-btn">↺ Reset Query</button>
+                 <button class="er-btn er-hint-btn" id="student-hint-btn">💡 Show Hint</button>
+             </div>
+             <div class="er-score-badge" id="student-score-badge">0 / 3 Missions Solved</div>
+         </div>
+
+         <!-- Mission Objective Box -->
+         <div class="student-mission-box" id="student-mission-box">
+             <h4>🎯 Mission 1 Objective:</h4>
+             <p>Find student names and grades for students enrolled in <strong>'Database Management'</strong> who scored a grade higher than <strong>9.00</strong>.</p>
+         </div>
+
+         <div class="student-game-workbench" id="student-game-workbench">
+             <!-- LEFT SIDE: SQL QUERY CANVAS -->
+             <div class="student-query-canvas">
+                 <div class="canvas-header">
+                     <span>⚡ Interactive SQL Query Canvas</span>
+                     <span class="canvas-status" id="canvas-status">Drafting Query...</span>
+                 </div>
+                 <div class="query-builder-slots">
+                     <div class="slot-row">
+                         <span class="kw-label">SELECT</span>
+                         <div class="query-slot active-slot" data-slot="select" data-placeholder="[ Select Columns ]">[ Select Columns ]</div>
+                     </div>
+
+                     <div class="slot-row">
+                         <span class="kw-label">FROM</span>
+                         <div class="query-slot" data-slot="from" data-placeholder="[ Primary Table ]">[ Primary Table ]</div>
+                     </div>
+
+                     <div class="slot-row">
+                         <span class="kw-label">JOIN</span>
+                         <div class="query-slot" data-slot="join" data-placeholder="[ Joined Table (Optional) ]">[ Joined Table (Optional) ]</div>
+                         <span class="kw-label">ON</span>
+                         <div class="query-slot" data-slot="join_on" data-placeholder="[ Join Condition (Optional) ]">[ Join Condition (Optional) ]</div>
+                     </div>
+
+                     <div class="slot-row">
+                         <span class="kw-label">WHERE</span>
+                         <div class="query-slot" data-slot="where" data-placeholder="[ Filter Condition (Optional) ]">[ Filter Condition (Optional) ]</div>
+                     </div>
+
+                     <div class="slot-row">
+                         <span class="kw-label">GROUP BY</span>
+                         <div class="query-slot" data-slot="groupby" data-placeholder="[ Grouping Column (Optional) ]">[ Grouping Column (Optional) ]</div>
+                     </div>
+                 </div>
+
+                 <!-- Live Query Output Results Table -->
+                 <div class="query-output-box">
+                     <div class="output-header">📊 Virtual Query Result Set Output</div>
+                     <div class="output-table-wrapper" id="query-output-table-wrapper">
+                         <p class="empty-output-msg">Click 'Execute &amp; Validate Query' to run your query on the student database.</p>
+                     </div>
+                 </div>
+             </div>
+
+             <!-- RIGHT SIDE: SQL BLOCKS PALETTE -->
+             <div class="student-blocks-palette">
+                 <div class="pool-header">
+                     <span>🧱 SQL Query Blocks</span>
+                     <span class="pool-sub">Click a block to insert into active query slot</span>
+                 </div>
+                 <div class="student-blocks-grid" id="student-blocks-grid">
+                     <!-- Injected dynamically by JS per active mission -->
+                 </div>
+             </div>
+         </div>
+
+         <div class="er-feedback-toast" id="student-feedback-toast" style="display:none;"></div>`,
+
+        // Page 2 — Student Solution Overview
+        `<div class="page-chapter-label">Student Records — Solution &amp; Relational Queries</div>
+         <h2>Student Records Query Solution Guide</h2>
+         <hr class="page-divider">
+         <p>Here are the complete SQL query solutions for all 3 Student Records administrative missions:</p>
+         <table class="compare-table" data-table-id="student-solution-table">
+            <tr><th>Mission #</th><th>Title</th><th>Target Relational Query</th><th>Description</th></tr>
+            <tr><td>Mission 1</td><td>Honor Students</td><td><code>SELECT Students.Name, Enrollments.Grade FROM Students JOIN Enrollments ON Students.StudentID = Enrollments.StudentID WHERE Enrollments.CourseName = 'Database Management' AND Enrollments.Grade &gt; 9.00</code></td><td>Filter student grades with JOIN &amp; compound WHERE predicate.</td></tr>
+            <tr><td>Mission 2</td><td>Department GPAs</td><td><code>SELECT Departments.DeptName, AVG(Enrollments.Grade) AS AvgGPA FROM Students JOIN Departments ON Students.DeptID = Departments.DeptID JOIN Enrollments ON Students.StudentID = Enrollments.StudentID GROUP BY Departments.DeptName</code></td><td>Grouped aggregate query with AVG() function across departments.</td></tr>
+            <tr><td>Mission 3</td><td>Unenrolled Students</td><td><code>SELECT Students.Name, Students.Email FROM Students LEFT JOIN Enrollments ON Students.StudentID = Enrollments.StudentID WHERE Enrollments.EnrollmentID IS NULL</code></td><td>Outer Join / Anti-join finding students without enrollment records.</td></tr>
+         </table>`
     ]
 };
 
@@ -3995,6 +4085,9 @@ function openLesson(chapterId) {
     }
     if (chapterId === 'bank-overview') {
         setTimeout(initBankCodeGame, 700);
+    }
+    if (chapterId === 'student-overview') {
+        setTimeout(initStudentGame, 700);
     }
 
     fadeOverlay.classList.add('active');
@@ -4742,6 +4835,344 @@ function updateBankScoreBadge() {
 
 function showBankToast(msg, type) {
     const toast = document.getElementById('bank-feedback-toast');
+    if (!toast) return;
+    toast.textContent = msg;
+    toast.className = `er-feedback-toast ${type} active`;
+    toast.style.display = 'block';
+    setTimeout(() => {
+        toast.classList.remove('active');
+        setTimeout(() => toast.style.display = 'none', 300);
+    }, 4500);
+}
+
+/* ==========================================================
+   INTERACTIVE STUDENT RECORDS QUERY BUILDER GAME ENGINE
+   ========================================================== */
+let studentActiveMission = 1;
+let studentQuerySlots = { select: null, from: null, join: null, join_on: null, where: null, groupby: null };
+let studentActiveSlot = 'select';
+let studentSolvedMissions = { 1: false, 2: false, 3: false };
+
+const STUDENT_MISSIONS = {
+    1: {
+        title: 'Mission 1 Objective:',
+        desc: 'Find student names and grades for students enrolled in <strong>\'Database Management\'</strong> who scored a grade higher than <strong>9.00</strong>.',
+        hint: 'SELECT: Students.Name, Enrollments.Grade | FROM: Students | JOIN: Enrollments | ON: Students.StudentID = Enrollments.StudentID | WHERE: Enrollments.CourseName = \'Database Management\' AND Enrollments.Grade > 9.00',
+        blocks: [
+            'Students.Name, Enrollments.Grade',
+            'Students',
+            'Enrollments',
+            'Students.StudentID = Enrollments.StudentID',
+            "Enrollments.CourseName = 'Database Management' AND Enrollments.Grade > 9.00",
+            // Distractors
+            'Departments.DeptName',
+            'Courses.CourseID = Enrollments.CourseID',
+            'Enrollments.Grade < 5.00'
+        ],
+        solution: {
+            select: 'Students.Name, Enrollments.Grade',
+            from: 'Students',
+            join: 'Enrollments',
+            join_on: 'Students.StudentID = Enrollments.StudentID',
+            where: "Enrollments.CourseName = 'Database Management' AND Enrollments.Grade > 9.00",
+            groupby: null
+        },
+        rows: [
+            { 'Students.Name': 'Elena Popescu', 'Enrollments.Grade': '9.85' },
+            { 'Students.Name': 'Andrei Ionescu', 'Enrollments.Grade': '9.50' },
+            { 'Students.Name': 'Daria Tompea', 'Enrollments.Grade': '10.00' }
+        ]
+    },
+    2: {
+        title: 'Mission 2 Objective:',
+        desc: 'Calculate the average GPA (<code>AVG(Enrollments.Grade)</code>) for each Academic Department.',
+        hint: 'SELECT: Departments.DeptName, AVG(Enrollments.Grade) AS AvgGPA | FROM: Students | JOIN: Departments | ON: Students.DeptID = Departments.DeptID | GROUP BY: Departments.DeptName',
+        blocks: [
+            'Departments.DeptName, AVG(Enrollments.Grade) AS AvgGPA',
+            'Students',
+            'Departments',
+            'Students.DeptID = Departments.DeptID',
+            'Departments.DeptName',
+            // Distractors
+            'Students.Name',
+            'Enrollments.Grade > 8.00',
+            'Courses.Credits'
+        ],
+        solution: {
+            select: 'Departments.DeptName, AVG(Enrollments.Grade) AS AvgGPA',
+            from: 'Students',
+            join: 'Departments',
+            join_on: 'Students.DeptID = Departments.DeptID',
+            where: null,
+            groupby: 'Departments.DeptName'
+        },
+        rows: [
+            { 'DeptName': 'Computer Science', 'AvgGPA': '9.42' },
+            { 'DeptName': 'Mathematics', 'AvgGPA': '8.95' },
+            { 'DeptName': 'Physics & IT', 'AvgGPA': '8.80' }
+        ]
+    },
+    3: {
+        title: 'Mission 3 Objective:',
+        desc: 'Identify students who have <strong>NOT enrolled</strong> in any course this semester (Anti-Join / NULL check).',
+        hint: 'SELECT: Students.Name, Students.Email | FROM: Students | JOIN: Enrollments | ON: Students.StudentID = Enrollments.StudentID | WHERE: Enrollments.EnrollmentID IS NULL',
+        blocks: [
+            'Students.Name, Students.Email',
+            'Students',
+            'Enrollments',
+            'Students.StudentID = Enrollments.StudentID',
+            'Enrollments.EnrollmentID IS NULL',
+            // Distractors
+            'Enrollments.Grade = 10.00',
+            'Departments.DeptID = 1',
+            'COUNT(StudentID) > 5'
+        ],
+        solution: {
+            select: 'Students.Name, Students.Email',
+            from: 'Students',
+            join: 'Enrollments',
+            join_on: 'Students.StudentID = Enrollments.StudentID',
+            where: 'Enrollments.EnrollmentID IS NULL',
+            groupby: null
+        },
+        rows: [
+            { 'Students.Name': 'Matei Vasile', 'Students.Email': 'matei.vasile@bbu.ro' },
+            { 'Students.Name': 'Laura Cosma', 'Students.Email': 'laura.cosma@bbu.ro' }
+        ]
+    }
+};
+
+function initStudentGame() {
+    const workbench = document.getElementById('student-game-workbench');
+    if (!workbench) return;
+
+    // Attach button handlers
+    const validateBtn = document.getElementById('student-validate-btn');
+    const resetBtn = document.getElementById('student-reset-btn');
+    const hintBtn = document.getElementById('student-hint-btn');
+
+    if (validateBtn) validateBtn.onclick = validateStudentQuery;
+    if (resetBtn) resetBtn.onclick = resetStudentQuery;
+    if (hintBtn) hintBtn.onclick = showStudentHint;
+
+    // Attach mission tab handlers
+    const tabs = document.querySelectorAll('.student-tab');
+    tabs.forEach(tab => {
+        tab.onclick = () => {
+            tabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            loadStudentMission(parseInt(tab.dataset.mission));
+        };
+    });
+
+    // Slots handlers
+    const slots = workbench.querySelectorAll('.query-slot');
+    slots.forEach(slot => {
+        const slotKey = slot.dataset.slot;
+        slot.onclick = () => handleStudentSlotClick(slotKey);
+    });
+
+    loadStudentMission(1);
+}
+
+function loadStudentMission(missionNum) {
+    studentActiveMission = missionNum;
+    studentQuerySlots = { select: null, from: null, join: null, join_on: null, where: null, groupby: null };
+    studentActiveSlot = 'select';
+
+    const missionData = STUDENT_MISSIONS[missionNum];
+    if (!missionData) return;
+
+    // Update mission objective box
+    const box = document.getElementById('student-mission-box');
+    if (box) {
+        box.innerHTML = `<h4>🎯 ${missionData.title}</h4><p>${missionData.desc}</p>`;
+    }
+
+    // Populate blocks palette
+    const grid = document.getElementById('student-blocks-grid');
+    if (grid) {
+        grid.innerHTML = '';
+        missionData.blocks.forEach(blockText => {
+            const chip = document.createElement('div');
+            chip.className = 'student-block-chip';
+            chip.textContent = blockText;
+            chip.dataset.text = blockText;
+            chip.onclick = () => handleStudentBlockClick(chip, blockText);
+            grid.appendChild(chip);
+        });
+    }
+
+    // Clear output table
+    const tableWrapper = document.getElementById('query-output-table-wrapper');
+    if (tableWrapper) {
+        tableWrapper.innerHTML = `<p class="empty-output-msg">Click 'Execute &amp; Validate Query' to run your query on the student database.</p>`;
+    }
+
+    const statusSpan = document.getElementById('canvas-status');
+    if (statusSpan) statusSpan.textContent = 'Drafting Query...';
+
+    updateStudentUI();
+}
+
+function handleStudentSlotClick(slotKey) {
+    if (studentQuerySlots[slotKey]) {
+        studentQuerySlots[slotKey] = null;
+        studentActiveSlot = slotKey;
+        showStudentToast(`Cleared ${slotKey.toUpperCase()} slot.`, 'info');
+    } else {
+        studentActiveSlot = slotKey;
+        showStudentToast(`Selected ${slotKey.toUpperCase()} slot. Click a query block on the right to insert!`, 'info');
+    }
+    updateStudentUI();
+}
+
+function handleStudentBlockClick(chipEl, blockText) {
+    if (chipEl.classList.contains('used')) return;
+
+    if (!studentActiveSlot || studentQuerySlots[studentActiveSlot]) {
+        const slotOrder = ['select', 'from', 'join', 'join_on', 'where', 'groupby'];
+        const emptySlot = slotOrder.find(k => studentQuerySlots[k] === null);
+        if (emptySlot) {
+            studentActiveSlot = emptySlot;
+        } else {
+            showStudentToast(`All query slots are filled! Click a slot to clear it or click Execute & Validate.`, 'warning');
+            return;
+        }
+    }
+
+    studentQuerySlots[studentActiveSlot] = blockText;
+    showStudentToast(`Inserted into ${studentActiveSlot.toUpperCase()} slot!`, 'success');
+
+    const slotOrder = ['select', 'from', 'join', 'join_on', 'where', 'groupby'];
+    const nextEmpty = slotOrder.find(k => studentQuerySlots[k] === null);
+    if (nextEmpty) studentActiveSlot = nextEmpty;
+    else studentActiveSlot = null;
+
+    updateStudentUI();
+}
+
+function updateStudentUI() {
+    const workbench = document.getElementById('student-game-workbench');
+    if (!workbench) return;
+
+    const usedBlocks = Object.values(studentQuerySlots).filter(Boolean);
+
+    workbench.querySelectorAll('.student-block-chip').forEach(chip => {
+        chip.classList.toggle('used', usedBlocks.includes(chip.dataset.text));
+    });
+
+    workbench.querySelectorAll('.query-slot').forEach(slot => {
+        const slotKey = slot.dataset.slot;
+        const val = studentQuerySlots[slotKey];
+
+        slot.classList.toggle('active-slot', slotKey === studentActiveSlot);
+        slot.classList.toggle('filled', !!val);
+
+        if (val) {
+            slot.textContent = val;
+        } else {
+            slot.textContent = slot.dataset.placeholder;
+            slot.classList.remove('valid', 'invalid');
+        }
+    });
+
+    updateStudentScoreBadge();
+}
+
+function validateStudentQuery() {
+    const workbench = document.getElementById('student-game-workbench');
+    if (!workbench) return;
+
+    const missionData = STUDENT_MISSIONS[studentActiveMission];
+    if (!missionData) return;
+
+    const sol = missionData.solution;
+    let isValid = true;
+
+    workbench.querySelectorAll('.query-slot').forEach(slot => {
+        const slotKey = slot.dataset.slot;
+        const userVal = studentQuerySlots[slotKey];
+        const targetVal = sol[slotKey];
+
+        if (targetVal === null) {
+            if (!userVal) {
+                slot.classList.remove('invalid', 'valid');
+            } else {
+                slot.classList.add('invalid');
+                isValid = false;
+            }
+        } else {
+            if (userVal === targetVal) {
+                slot.classList.add('valid');
+                slot.classList.remove('invalid');
+            } else {
+                slot.classList.add('invalid');
+                slot.classList.remove('valid');
+                isValid = false;
+            }
+        }
+    });
+
+    const statusSpan = document.getElementById('canvas-status');
+    const tableWrapper = document.getElementById('query-output-table-wrapper');
+
+    if (isValid) {
+        studentSolvedMissions[studentActiveMission] = true;
+        if (statusSpan) statusSpan.textContent = '✓ Query Execution Successful!';
+
+        if (tableWrapper && missionData.rows) {
+            const cols = Object.keys(missionData.rows[0]);
+            let html = `<table class="compare-table"><thead><tr>${cols.map(c => `<th>${c}</th>`).join('')}</tr></thead><tbody>`;
+            missionData.rows.forEach(r => {
+                html += `<tr>${cols.map(c => `<td>${r[c]}</td>`).join('')}</tr>`;
+            });
+            html += `</tbody></table>`;
+            tableWrapper.innerHTML = html;
+        }
+
+        showStudentToast(`🎉 MISSION ${studentActiveMission} PASSED! Live virtual query output executed with 100% accuracy!`, 'success');
+    } else {
+        if (statusSpan) statusSpan.textContent = '✖ Query Error';
+        showStudentToast(`Query Execution Failed: Red slots contain syntax/logic errors or missing join predicates! Click hint for help.`, 'warning');
+    }
+
+    updateStudentScoreBadge();
+}
+
+function resetStudentQuery() {
+    studentQuerySlots = { select: null, from: null, join: null, join_on: null, where: null, groupby: null };
+    studentActiveSlot = 'select';
+    const workbench = document.getElementById('student-game-workbench');
+    if (workbench) {
+        workbench.querySelectorAll('.query-slot').forEach(s => s.classList.remove('valid', 'invalid'));
+    }
+    const tableWrapper = document.getElementById('query-output-table-wrapper');
+    if (tableWrapper) {
+        tableWrapper.innerHTML = `<p class="empty-output-msg">Click 'Execute &amp; Validate Query' to run your query on the student database.</p>`;
+    }
+    updateStudentUI();
+    showStudentToast('Query canvas reset.', 'info');
+}
+
+function showStudentHint() {
+    const m = STUDENT_MISSIONS[studentActiveMission];
+    if (m && m.hint) {
+        showStudentToast(`💡 Mission ${studentActiveMission} Hint: ${m.hint}`, 'info');
+    }
+}
+
+function updateStudentScoreBadge() {
+    const badge = document.getElementById('student-score-badge');
+    if (!badge) return;
+    const solvedCount = Object.values(studentSolvedMissions).filter(Boolean).length;
+    badge.textContent = `${solvedCount} / 3 Missions Solved`;
+    if (solvedCount === 3) badge.classList.add('perfect');
+    else badge.classList.remove('perfect');
+}
+
+function showStudentToast(msg, type) {
+    const toast = document.getElementById('student-feedback-toast');
     if (!toast) return;
     toast.textContent = msg;
     toast.className = `er-feedback-toast ${type} active`;

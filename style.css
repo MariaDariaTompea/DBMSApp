@@ -863,4 +863,201 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     border-color: rgba(255, 255, 255, 0.06);
 }
 
+/* ===== STUDENT RECORDS QUERY GAME ===== */
+.student-mission-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+.student-tab {
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    color: #94a3b8;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.student-tab:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+}
+.student-tab.active {
+    background: linear-gradient(135deg, var(--sakura-500), var(--accent-purple));
+    color: #fff;
+    border-color: transparent;
+    box-shadow: 0 4px 12px rgba(244, 114, 182, 0.3);
+}
+.student-mission-box {
+    background: rgba(99, 102, 241, 0.06);
+    border-left: 4px solid #818cf8;
+    padding: 12px 16px;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 14px;
+}
+.student-mission-box h4 {
+    margin: 0 0 4px 0;
+    color: #a78bfa;
+    font-size: 0.95rem;
+}
+.student-mission-box p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #cbd5e1;
+}
+
+.student-game-workbench {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 16px;
+}
+@media (max-width: 880px) {
+    .student-game-workbench {
+        grid-template-columns: 1fr;
+    }
+}
+.student-query-canvas {
+    background: #0f172a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+.canvas-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px;
+    background: rgba(255, 255, 255, 0.04);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #e2e8f0;
+}
+.canvas-status {
+    font-weight: 600;
+    color: #fbbf24;
+    font-size: 0.75rem;
+}
+.query-builder-slots {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.slot-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.kw-label {
+    font-family: 'Fira Code', monospace;
+    font-weight: 700;
+    font-size: 0.82rem;
+    color: #f472b6;
+    min-width: 80px;
+}
+.query-slot {
+    flex: 1;
+    min-width: 140px;
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 2px dashed rgba(167, 139, 250, 0.4);
+    border-radius: 6px;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.78rem;
+    color: #cbd5e1;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.query-slot:hover, .query-slot.active-slot {
+    background: rgba(167, 139, 250, 0.12);
+    border-color: #a78bfa;
+    box-shadow: 0 0 10px rgba(167, 139, 250, 0.3);
+}
+.query-slot.filled {
+    border-style: solid;
+    border-color: #38bdf8;
+    color: #38bdf8;
+    background: rgba(56, 189, 248, 0.1);
+}
+.query-slot.valid {
+    border-style: solid;
+    border-color: #10b981;
+    color: #34d399;
+    background: rgba(16, 185, 129, 0.15);
+}
+.query-slot.invalid {
+    border-style: solid;
+    border-color: #f87171;
+    color: #f87171;
+    background: rgba(239, 68, 68, 0.15);
+    animation: erShake 0.4s ease;
+}
+
+.query-output-box {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(0, 0, 0, 0.2);
+    padding: 12px 16px;
+}
+.output-header {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #a78bfa;
+    margin-bottom: 8px;
+}
+.output-table-wrapper {
+    max-height: 150px;
+    overflow-y: auto;
+}
+.empty-output-msg {
+    margin: 0;
+    font-size: 0.78rem;
+    color: #64748b;
+    font-style: italic;
+}
+
+.student-blocks-palette {
+    background: rgba(20, 15, 30, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.student-blocks-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.student-block-chip {
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.75rem;
+    color: #e2e8f0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+    word-break: break-all;
+}
+.student-block-chip:hover {
+    background: rgba(244, 114, 182, 0.15);
+    border-color: var(--sakura-400);
+    transform: translateX(4px);
+}
+.student-block-chip.used {
+    opacity: 0.3;
+    pointer-events: none;
+    text-decoration: line-through;
+}
+
+
 
