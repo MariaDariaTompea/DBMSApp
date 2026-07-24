@@ -1172,7 +1172,7 @@ OrderDate + <span class="sql-type">INTERVAL</span> '30 days'
         `<div class="page-chapter-label">Chapter 11 — Window Aggregates</div>
          <h2>Aggregate Window Functions</h2>
          <hr class="page-divider">
-         <p>You can use standard aggregate functions (`SUM`, `AVG`, `COUNT`, `MIN`, `MAX`) as window functions simply by appending the `OVER` clause.</p>
+         <p>You can use standard aggregate functions (<code>SUM</code>, <code>AVG</code>, <code>COUNT</code>, <code>MIN</code>, <code>MAX</code>) as window functions simply by appending the <code>OVER</code> clause.</p>
          <div class="sql-block"><code><span class="sql-comment">-- Compare employee salary with their department average</span>
 <span class="sql-kw">SELECT</span> Name, DeptID, Salary,
        AVG(Salary) <span class="sql-kw">OVER</span> (PARTITION BY DeptID) <span class="sql-kw">AS</span> DeptAvgSalary
@@ -1524,7 +1524,7 @@ const { data, error } = await supabase.auth.signUp({
         `<div class="page-chapter-label">Chapter 17 — User Sync</div>
          <h2>Syncing Users with Triggers</h2>
          <hr class="page-divider">
-         <p>To link users in the secure <code>auth.users</code> table with tables in your `public` schema, use a **Postgres Trigger** to copy user records automatically upon signup.</p>
+         <p>To link users in the secure <code>auth.users</code> table with tables in your <code>public</code> schema, use a **Postgres Trigger** to copy user records automatically upon signup.</p>
          <div class="sql-block"><code><span class="sql-comment">-- Auto-run function on user creation</span>
 <span class="sql-kw">CREATE FUNCTION</span> public.handle_new_user()
 <span class="sql-kw">RETURNS TRIGGER AS</span> $$
@@ -1640,7 +1640,7 @@ const { data, error } = await supabase
         `<div class="page-chapter-label">Chapter 19 — Deleting</div>
          <h2>Deleting Data</h2>
          <hr class="page-divider">
-         <p>To delete records, use the `.delete()` method chained with specific target filter criteria:</p>
+         <p>To delete records, use the <code>.delete()</code> method chained with specific target filter criteria:</p>
          <div class="sql-block"><code><span class="sql-comment">-- Delete student with ID 12</span>
 const { data, error } = await supabase
   .from('students')
@@ -1709,7 +1709,7 @@ app.get('/api/students', async (req, res) => {
         `<div class="page-chapter-label">Chapter 20 — React Fetch</div>
          <h2>React Frontend Fetch Integration</h2>
          <hr class="page-divider">
-         <p>In your React client, use the `fetch` API inside a `useEffect` hook to retrieve the database records from your Node.js backend:</p>
+         <p>In your React client, use the <code>fetch</code> API inside a <code>useEffect</code> hook to retrieve the database records from your Node.js backend:</p>
          <div class="sql-block"><code>import { useEffect, useState } from 'react';
 
 function StudentList() {
@@ -1729,7 +1729,7 @@ function StudentList() {
          <h2>Safe Configuration &amp; Secrets</h2>
          <hr class="page-divider">
          <p>**Security Warning:** Never hardcode your database passwords, connection URIs, or admin API keys in frontend code or check them into GitHub.</p>
-         <p>Always use **Environment Variables** loaded via a `.env` file, and append it to your `.gitignore` configuration.</p>
+         <p>Always use **Environment Variables** loaded via a <code>.env</code> file, and append it to your <code>.gitignore</code> configuration.</p>
          <div class="sql-block"><code><span class="sql-comment">-- Content of .env file (secret)</span>
 DATABASE_URL=postgresql://postgres:myPassword123@db.supabase.co:5432/postgres
 PORT=5000</code></div>
@@ -2538,7 +2538,7 @@ using (var db = new SchoolContext()) {
              <button class="check-quiz-btn">Check Answer</button>
              <div class="quiz-explanation" style="display:none;">
                  <h4>Explanation:</h4>
-                 <p>A key advantage of B+ Trees over classic B-Trees is that all actual data entry pointers reside exclusively in **leaf nodes**, which are linked horizontally in a doubly-linked list (Option C). This allows range-based queries (e.g. `BETWEEN`) to traverse leaf nodes sequentially without traversing parent index blocks repeatedly.</p>
+                 <p>A key advantage of B+ Trees over classic B-Trees is that all actual data entry pointers reside exclusively in **leaf nodes**, which are linked horizontally in a doubly-linked list (Option C). This allows range-based queries (e.g. <code>BETWEEN</code>) to traverse leaf nodes sequentially without traversing parent index blocks repeatedly.</p>
              </div>
          </div>`,
 
@@ -2578,7 +2578,7 @@ using (var db = new SchoolContext()) {
              <button class="check-quiz-btn">Check Answer</button>
              <div class="quiz-explanation" style="display:none;">
                  <h4>Explanation:</h4>
-                 <p>Hash indexes only support equality searches (e.g. `Age = 25`) because hashing randomizes key distributions. B+ Trees maintain keys in sorted order, which is optimal for range queries (Option B).</p>
+                 <p>Hash indexes only support equality searches (e.g. <code>Age = 25</code>) because hashing randomizes key distributions. B+ Trees maintain keys in sorted order, which is optimal for range queries (Option B).</p>
              </div>
          </div>`,
 
@@ -2640,7 +2640,7 @@ using (var db = new SchoolContext()) {
              <button class="check-quiz-btn">Check Answer</button>
              <div class="quiz-explanation" style="display:none;">
                  <h4>Explanation:</h4>
-                 <p>Linear Hashing splits buckets in a **fixed, sequential order** using a pointer named `Next`. When *any* bucket overflows, the bucket currently pointed to by `Next` is split, and `Next` increments. This avoids directory structures entirely.</p>
+                 <p>Linear Hashing splits buckets in a **fixed, sequential order** using a pointer named <code>Next</code>. When *any* bucket overflows, the bucket currently pointed to by <code>Next</code> is split, and <code>Next</code> increments. This avoids directory structures entirely.</p>
              </div>
          </div>`,
 
@@ -2660,7 +2660,7 @@ using (var db = new SchoolContext()) {
              <button class="check-quiz-btn">Check Answer</button>
              <div class="quiz-explanation" style="display:none;">
                  <h4>Explanation:</h4>
-                 <p>Under a uniform distribution assumption, the selectivity (reduction factor) of a range constraint `Col > val` is the size of the matching range divided by the total range: \((Max - val) / (Max - Min)\). In terms of index statistics, this translates to: <code>(IHigh(I) - 15) / (IHigh(I) - ILow(I))</code>.</p>
+                 <p>Under a uniform distribution assumption, the selectivity (reduction factor) of a range constraint <code>Col &gt; val</code> is the size of the matching range divided by the total range: \((Max - val) / (Max - Min)\). In terms of index statistics, this translates to: <code>(IHigh(I) - 15) / (IHigh(I) - ILow(I))</code>.</p>
              </div>
          </div>`,
 
